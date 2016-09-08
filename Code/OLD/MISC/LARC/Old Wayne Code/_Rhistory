@@ -1,0 +1,512 @@
+# usable for running optimization. The new dataframe includes a "Team" variable that has
+# each NBA team listed once, as such this dataframe only has 30 observations (one for each
+# team). The next variable is "Strength" and is one for every team when this function is
+# used. "Wins" is the third variable and is the number of wins that team has had. Finally,
+# the variable "Versus" is a matrix that includes the number of times each team plays each
+# opponent, where the first column of the matrix is associated with the first observation
+# or the first team listed in the dataframe. It can also take a reldate (relevant date)
+# arguement if you only wish to include data from before a certain date, the date must be
+# in the following format "YYYY-MM-DD".
+dataconfigure <- function(df,reldate=Sys.Date()){
+tt <- length(unique(df$Home))
+#these first lines create a new dataframe with Team, Strength, and Wins
+NBAdata <- data.frame(sort(unique(df$Home)),rep(1,tt),table(df$Winner[df$Date
+<= reldate-1]))
+names(NBAdata) <- c("Team","Strength","Temp","Wins")
+NBAdata$Temp <- NULL
+#the rest of the lines within the function create the versus matrix by first creating
+# an empty ttxtt matrix and then filling it via a for loops.
+mm <- matrix(0, tt, tt)
+ww <- matrix(0, tt, tt)
+pstn <- 0
+for (i in NBAdata$Team){
+for (n in NBAdata$Team){
+pstn <- pstn + 1
+x <- 0
+z <- 0
+for (y in 1:length(which(df$Date <= Sys.Date()-1))){
+if(df$Home[y]==i && df$Visitor[y]==n){
+x <- x + 1
+if(df$HPTS[y] < df$VPTS[y]){
+z <- z + 1
+}
+}
+if(df$Home[y]==n && df$Visitor[y]==i){
+x <- x + 1
+if(df$HPTS[y] > df$VPTS[y]){
+z <- z + 1
+}
+}
+}
+mm[pstn] <- x
+ww[pstn] <- z
+}
+}
+NBAdata$Versus <- mm
+NBAdata$VersusWins <- ww
+return(NBAdata)
+}
+NBAdf <- dataconfigure(NBAScores)
+NBAdf$VersusWins[1,2]
+NBAdf$VersusWins[1]
+NBAdf$Wins[1]
+sum(NBAdf$VersusWins[1,])
+dataconfigure <- function(df,reldate=Sys.Date()){
+tt <- length(unique(df$Home))
+#these first lines create a new dataframe with Team, Strength, and Wins
+NBAdata <- data.frame(sort(unique(df$Home)),rep(1,tt),table(df$Winner[df$Date
+<= reldate-1]))
+names(NBAdata) <- c("Team","Strength","Temp","WinsTotal")
+NBAdata$Temp <- NULL
+#the rest of the lines within the function create the versus matrix by first creating
+# an empty ttxtt matrix and then filling it via a for loops.
+mm <- matrix(0, tt, tt)
+ww <- matrix(0, tt, tt)
+pstn <- 0
+for (i in NBAdata$Team){
+for (n in NBAdata$Team){
+pstn <- pstn + 1
+x <- 0
+z <- 0
+for (y in 1:length(which(df$Date <= Sys.Date()-1))){
+if(df$Home[y]==i && df$Visitor[y]==n){
+x <- x + 1
+if(df$HPTS[y] < df$VPTS[y]){
+z <- z + 1
+}
+}
+if(df$Home[y]==n && df$Visitor[y]==i){
+x <- x + 1
+if(df$HPTS[y] > df$VPTS[y]){
+z <- z + 1
+}
+}
+}
+mm[pstn] <- x
+ww[pstn] <- z
+}
+}
+NBAdata$Versus <- mm
+NBAdata$WinsVersus <- ww
+return(NBAdata)
+}
+NBAdf <- dataconfigure(NBAScores)
+NHLdf <- dataconfigure(NHLScores)
+NFLdf <- dataconfigure(NFLScores)
+Wi <- 1
+i <- 1
+W[i] <- sum(NBAdf$VersusWins[i,])
+W <- vector()
+W
+W[i] <- sum(NBAdf$VersusWins[i,])
+W
+i <- 2
+W[i] <- sum(NBAdf$VersusWins[i,])
+W
+W[i] <- sum(NBAdf$WinsVersus[i,])
+W
+BradleyTerryLARC <- function(strengths,wins,versus) {
+PI <- 1
+PIPI <- 1
+W <- vector()
+for (i in 1:length(strengths)) {
+W[i] <- sum(wins[i,])
+PI <- PI*strengths[i]^(W[i]+1)
+for (j in (i+1):length(strengths)) {
+if (j < length(strengths)+1) {
+PIPI <- PIPI*(1/(strengths[i]+strengths[j])^versus[i,j])
+}
+}
+}
+return(exp(-sum(strengths))*PI*PIPI)
+}
+BradleyTerryLARC(NBAdf$Strength,NBAdf$WinsVersus,NBAdf$Versus)
+y <- 0
+for (i in 1:30) {
+y <- y + sum(NBAdf$Versus[i,i:30])
+}
+exp(-30)*1*(1/2^y)
+LARC.Optim <- function(df,details=FALSE,func=BradleyTerryLARC){
+library(optimx)
+if(details==TRUE){
+optimx(df$Strength,func,wins=df$WinsVersus,versus=df$Versus,method="L-BFGS-B"
+,lower=0,upper=Inf,control=list(trace=6,fnscale=-1,maxit=99999,REPORT=1))
+} else {
+optimx(df$Strength,func,wins=df$WinsVersus,versus=df$Versus,method="L-BFGS-B"
+,lower=0,upper=Inf,control=list(fnscale=-1,maxit=99999,REPORT=1))
+}
+}
+NBARanking <- LARC.Rank(NBAdf)
+NBARankingM <- LARC.Rank(NBAdf,MostellerLARC)
+LARC.Rank <- function(df,func=BradleyTerryLARC,dgt=3) {
+options(digits=dgt)
+tt <- nrow(df)
+optimized <- LARC.Optim(df,details=FALSE,func)
+df$UpdatedStrength <- round(t(optimized[1:tt]),dgt)
+TempOrder <- df[order(-df$UpdatedStrength,-df$WinsTotal),]
+Ranked <- data.frame(1:tt,TempOrder$Team,TempOrder$UpdatedStrength,TempOrder$Wins)
+names(Ranked) <- c("Rank","Team","Strength","WinsTotal")
+Ranking <- data.frame(Ranked$Rank,Ranked$Team,Ranked$Strength,Ranked$Wins)
+names(Ranking) <- c("Rank","Team","Strength","WinsTotal")
+return(Ranking)
+}
+NBARanking <- LARC.Rank(NBAdf)
+NBARankingM <- LARC.Rank(NBAdf,MostellerLARC)
+LARC.Rank <- function(df,func=BradleyTerryLARC,dgt=3) {
+options(digits=dgt)
+tt <- nrow(df)
+optimized <- LARC.Optim(df,details=FALSE,func)
+df$UpdatedStrength <- round(t(optimized[1:tt]),dgt)
+TempOrder <- df[order(-df$UpdatedStrength,-df$WinsTotal),]
+Ranked <- data.frame(1:tt,TempOrder$Team,TempOrder$UpdatedStrength,TempOrder$WinsTotal)
+names(Ranked) <- c("Rank","Team","Strength","WinsTotal")
+Ranking <- data.frame(Ranked$Rank,Ranked$Team,Ranked$Strength,Ranked$WinsTotal)
+names(Ranking) <- c("Rank","Team","Strength","WinsTotal")
+return(Ranking)
+}
+NBARanking <- LARC.Rank(NBAdf)
+NBARankingM <- LARC.Rank(NBAdf,MostellerLARC)
+View(NBARanking)
+View(NBARankingM)
+LARC.Optim(NBAdf,FALSE,MostellerLARC)
+LARC.Optim(NBAdf,TRUE,MostellerLARC)
+vs <- matrix(c(0,1,0,0,0,0,0,
+1,0,1,0,0,0,0,
+0,1,0,1,0,0,0,
+0,0,1,0,1,0,0,
+0,0,0,1,0,1,0,
+0,0,0,0,1,0,1,
+0,0,0,0,0,1,0),7,7)
+Sample5 <- data.frame(1:7,c(1,1,1,1,1,1,0),1)
+names(Sample5) <- c("Team","Wins","Strength")
+Sample5$Versus <- vs
+Sample5
+vw <- matrix(c(0,0,0,0,0,0,0,
+1,0,0,0,0,0,0,
+0,1,0,0,0,0,0,
+0,0,1,0,0,0,0,
+0,0,0,1,0,0,0,
+0,0,0,0,1,0,0,
+0,0,0,0,0,1,0),7,7)
+vw
+Sample5$Versus <- vs
+Sample5$WinsVersus <- vw
+MostellerLARC(Sample5$Strength,Sample5$WinsVersus,Sample5$Versus)
+BradleyTerryLARC(Sample5$Strength,Sample5$WinsVersus,Sample5$Versus)
+LARC.Rank(Sample5)
+Sample5 <- data.frame(1:7,c(1,1,1,1,1,1,0),1)
+names(Sample5) <- c("Team","WinsTotal","Strength")
+Sample5$Versus <- vs
+Sample5$WinsVersus <- vw
+Sample5
+BradleyTerryLARC(Sample5$Strength,Sample5$WinsVersus,Sample5$Versus)
+MostellerLARC(Sample5$Strength,Sample5$WinsVersus,Sample5$Versus)
+LARC.Rank(Sample5)
+LARC.Rank(Sample5,,MostellerLARC)
+LARC.Rank(Sample5,FALSE,MostellerLARC)
+LARC.Rank(Sample5,MostellerLARC)
+vs <- matrix(c(0,1,1,1,
+1,0,2,1,
+1,2,0,1,
+1,1,1,0),4,4)
+vw <- matrix(c(0,1,1,1,
+0,0,1,1,
+0,1,0,0,
+0,0,0,0),4,4))
+Sample6 <- data.frame(1:4,c(3,2,1,0),1)
+names(Sample6) <- c("Team","WinsTotal","Strength")
+Sample6$Versus <- vs
+Sample6$WinsVersus <- vw
+Sample6
+vs <- matrix(c(0,1,1,1,
+1,0,2,1,
+1,2,0,1,
+1,1,1,0),4,4)
+vw <- matrix(c(0,1,1,1,
+0,0,1,1,
+0,1,0,0,
+0,0,0,0),4,4)
+Sample6 <- data.frame(1:4,c(3,2,1,0),1)
+names(Sample6) <- c("Team","WinsTotal","Strength")
+Sample6$Versus <- vs
+Sample6$WinsVersus <- vw
+Sample6
+BradleyTerryLARC(Sample6$Strength,Sample6$WinsVersus,Sample6$Versus)
+MostellerLARC(Sample6$Strength,Sample6$WinsVersus,Sample6$Versus)
+LARC.Rank(Sample6,MostellerLARC)
+maxreached = rep(c(F),times=t)
+t    = 16       # the number of teams
+maxreached = rep(c(F),times=t)
+source('C:/Users/tanne/Google Drive/School/Research/LARC/Old Wayne Code/optomize.par.R', echo=TRUE)
+maxhreached
+maxreached
+maxhreached    = FALSE
+s <- rep(1,18)
+s
+snew = s
+maxreached = rep(c(F),times=t)
+# we have not reached a maximun for
+# for any of the t strengths
+maxhreached    = FALSE
+# we have not reached the maximum
+# for the home court value
+iter = 0             # how many iterations do we have
+pmaxr = 0            # pmaxr is short hand for posterior maximun reached
+# the code below checks to see if
+# a maximum appears to be reached and
+# repeats itself four times we will stop the iterations
+while ( (!all(maxreached) | !maxhreached ) & iter < 30 & pmaxr < 4) {
+iter = iter + 1
+if( iter == 1) {
+post = postBT( s, h)
+# first time while loop compute posterior
+} else {
+post = newpost   # otherwise, post is equal to newpost
+}
+for ( i in 1:t) {
+snew[i] = max.i.strength(post,i,s,h)
+if ( snew[i] - s[i] == 0) { maxreached[i] = T}
+# we have reached a maximun with respect to s[i]
+}                               #end for
+hnew = max.h(post,s,h)
+if ( hnew - h == 0) { maxhreached = T }
+# we have reached a maximum with respect to h
+newpost = postBT( snew, hnew )
+s = snew
+h = hnew
+if( round( post, digits = 4) == round(newpost, digits = 4)) {
+# have we reached a maximum with respect to post?
+pmaxr = pmaxr + 1
+} else {
+pmaxr = 0
+}                  # end else
+}
+source('change.h.R')
+source('change.i.strength.R')
+source('cond.i.R')
+source('max.h.R')
+source('max.i.strength.R')
+source('optomize.par.R')
+source('postBT.R')
+source('postBT.minus.strengths.R')
+source('xp0.R')
+source('xp1.R')
+setwd("C:/Users/tanne/Google Drive/School/Research/LARC/Old Wayne Code")
+source('change.h.R')
+source('change.i.strength.R')
+source('cond.i.R')
+source('max.h.R')
+source('max.i.strength.R')
+source('optomize.par.R')
+source('postBT.R')
+source('postBT.minus.strengths.R')
+source('xp0.R')
+source('xp1.R')
+while ( (!all(maxreached) | !maxhreached ) & iter < 30 & pmaxr < 4) {
+#if any of the t-maxreached values is FALSE,
+#all(maxreache) is FALSE
+# this while loop will continue as long as
+# at least one strength estimate or
+# the home court advantage has not reached
+# a maximun
+# also if the calculated posterior is the
+# same (to five decimal digits accuracy)
+# four times in a row, we exit the while loop
+# finally we will exit while if we take over
+# 200 iterations
+iter = iter + 1
+if( iter == 1) {
+post = postBT( s, h)
+# first time while loop compute posterior
+} else {
+post = newpost   # otherwise, post is equal to newpost
+}
+for ( i in 1:t) {
+snew[i] = max.i.strength(post,i,s,h)
+if ( snew[i] - s[i] == 0) { maxreached[i] = T}
+# we have reached a maximun with respect to s[i]
+}                               #end for
+hnew = max.h(post,s,h)
+if ( hnew - h == 0) { maxhreached = T }
+# we have reached a maximum with respect to h
+newpost = postBT( snew, hnew )
+s = snew
+h = hnew
+if( round( post, digits = 4) == round(newpost, digits = 4)) {
+# have we reached a maximum with respect to post?
+pmaxr = pmaxr + 1
+} else {
+pmaxr = 0
+}                  # end else
+}
+snew = s
+maxreached = rep(c(F),times=t)
+# we have not reached a maximun for
+# for any of the t strengths
+maxhreached    = FALSE
+# we have not reached the maximum
+# for the home court value
+iter = 0             # how many iterations do we have
+pmaxr = 0            # pmaxr is short hand for posterior maximun reached
+# the code below checks to see if
+# repeats itself four times we will stop the iterations
+while ( (!all(maxreached) | !maxhreached ) & iter < 30 & pmaxr < 4) {
+# a maximum appears to be reached and
+#if any of the t-maxreached values is FALSE,
+#all(maxreache) is FALSE
+# this while loop will continue as long as
+# at least one strength estimate or
+# the home court advantage has not reached
+# a maximun
+# also if the calculated posterior is the
+# same (to five decimal digits accuracy)
+# four times in a row, we exit the while loop
+# finally we will exit while if we take over
+# 200 iterations
+iter = iter + 1
+if( iter == 1) {
+post = postBT( s, h)
+# first time while loop compute posterior
+} else {
+post = newpost   # otherwise, post is equal to newpost
+}
+for ( i in 1:t) {
+snew[i] = max.i.strength(post,i,s,h)
+if ( snew[i] - s[i] == 0) { maxreached[i] = T}
+# we have reached a maximun with respect to s[i]
+}                               #end for
+hnew = max.h(post,s,h)
+if ( hnew - h == 0) { maxhreached = T }
+# we have reached a maximum with respect to h
+newpost = postBT( snew, hnew )
+s = snew
+h = hnew
+if( round( post, digits = 4) == round(newpost, digits = 4)) {
+# have we reached a maximum with respect to post?
+pmaxr = pmaxr + 1
+} else {
+pmaxr = 0
+}                  # end else
+}                     # end while
+result = list( s = s, h = h, post = post, n.iter = iter)
+h = 2           # starting value for h
+while ( (!all(maxreached) | !maxhreached ) & iter < 30 & pmaxr < 4) {
+#if any of the t-maxreached values is FALSE,
+#all(maxreache) is FALSE
+# this while loop will continue as long as
+# at least one strength estimate or
+# the home court advantage has not reached
+# a maximun
+# also if the calculated posterior is the
+# same (to five decimal digits accuracy)
+# four times in a row, we exit the while loop
+# finally we will exit while if we take over
+# 200 iterations
+iter = iter + 1
+if( iter == 1) {
+post = postBT( s, h)
+# first time while loop compute posterior
+} else {
+post = newpost   # otherwise, post is equal to newpost
+}
+for ( i in 1:t) {
+snew[i] = max.i.strength(post,i,s,h)
+if ( snew[i] - s[i] == 0) { maxreached[i] = T}
+# we have reached a maximun with respect to s[i]
+}                               #end for
+hnew = max.h(post,s,h)
+if ( hnew - h == 0) { maxhreached = T }
+# we have reached a maximum with respect to h
+newpost = postBT( snew, hnew )
+s = snew
+h = hnew
+if( round( post, digits = 4) == round(newpost, digits = 4)) {
+# have we reached a maximum with respect to post?
+pmaxr = pmaxr + 1
+} else {
+pmaxr = 0
+}                  # end else
+}
+# function for optomizing the Bradley-Terry Model
+optomize.par = function() {
+# Oct 29, 2012
+# The following global variables are defined in Bradley-Terry
+# h, s, t
+snew = s
+maxreached = rep(c(F),times=t)
+# we have not reached a maximun for
+# for any of the t strengths
+maxhreached    = FALSE
+# we have not reached the maximum
+# for the home court value
+iter = 0             # how many iterations do we have
+pmaxr = 0            # pmaxr is short hand for posterior maximun reached
+# the code below checks to see if
+# a maximum appears to be reached and
+# repeats itself four times we will stop the iterations
+while ( (!all(maxreached) | !maxhreached ) & iter < 30 & pmaxr < 4) {
+#if any of the t-maxreached values is FALSE,
+#all(maxreache) is FALSE
+# this while loop will continue as long as
+# at least one strength estimate or
+# the home court advantage has not reached
+# a maximun
+# also if the calculated posterior is the
+# same (to five decimal digits accuracy)
+# four times in a row, we exit the while loop
+# finally we will exit while if we take over
+# 200 iterations
+iter = iter + 1
+if( iter == 1) {
+post = postBT( s, h)
+# first time while loop compute posterior
+} else {
+post = newpost   # otherwise, post is equal to newpost
+}
+for ( i in 1:t) {
+snew[i] = max.i.strength(post,i,s,h)
+if ( snew[i] - s[i] == 0) { maxreached[i] = T}
+# we have reached a maximun with respect to s[i]
+}                               #end for
+hnew = max.h(post,s,h)
+if ( hnew - h == 0) { maxhreached = T }
+# we have reached a maximum with respect to h
+newpost = postBT( snew, hnew )
+s = snew
+h = hnew
+if( round( post, digits = 4) == round(newpost, digits = 4)) {
+# have we reached a maximum with respect to post?
+pmaxr = pmaxr + 1
+} else {
+pmaxr = 0
+}                  # end else
+}                     # end while
+result = list( s = s, h = h, post = post, n.iter = iter)
+return(result)
+}                       # end function
+incr = 0.0001  # what precision do I want to compute
+t    = 16       # the number of teams
+s <- rep(1,16)
+s
+h = 2           # starting value for h
+opt = optomize.par() # find the optimal solution
+View(NBAdf)
+View(NFLRanking)
+View(NHLRanking)
+vs <- matrix(c(0,1,1,1,
+1,0,2,1,
+1,2,0,1,
+1,1,1,0),4,4)
+vw <- matrix(c(0,1,1,1,
+0,0,1,1,
+0,1,0,0,
+0,0,0,0),4,4)
+Sample6 <- data.frame(1:4,c(3,2,1,0),1)
+names(Sample6) <- c("Team","WinsTotal","Strength")
+Sample6$Versus <- vs
+Sample6$WinsVersus <- vw
+Sample6
+BradleyTerryLARC(Sample6$Strength,Sample6$WinsVersus,Sample6$Versus)
+MostellerLARC(Sample6$Strength,Sample6$WinsVersus,Sample6$Versus)
+LARC.Rank(Sample6,MostellerLARC)
+LARC.Rank(Sample6)
