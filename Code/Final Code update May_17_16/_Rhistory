@@ -1,0 +1,512 @@
+} else {
+Strength <- (abs(drawtype(teamsC,arg1,arg2,arg3))+.001)
+}
+}
+}
+}
+} else {
+Strength <- strengths
+}
+if (swtch == FALSE) {
+Strength <- rev(sort(Strength))
+}
+strengths <- Strength
+cmprsn <- table(c("Bradley-Terry","Thurstone-Mosteller","Tie"))-1
+fllcmp <- table(c("Bradley-Terry","Thurstone-Mosteller","Tie"))-1
+TST <- data.frame(Team,Strength)
+for (i in 1:simulations) {
+if (is.null(drawtype)) {
+df <- full.sim.gen(teams, weeks, strengths, divisions, gid, god, god.type, enddate, type)
+} else {
+if (is.null(arg1)) {
+df <- full.sim.gen(teams, weeks, (abs(drawtype(teamsC))+.001), divisions, gid, god,
+god.type, enddate, type)
+} else {
+if (is.null(arg2)) {
+df <- full.sim.gen(teams, weeks, (abs(drawtype(teamsC,arg1))+.001), divisions, gid,
+god, god.type, enddate, type)
+} else {
+if (is.null(arg3)) {
+df <- full.sim.gen(teams, weeks, (abs(drawtype(teamsC,arg1,arg2))+.001), divisions, gid,
+god, god.type, enddate, type)
+} else {
+df <- full.sim.gen(teams, weeks, (abs(drawtype(teamsC,arg1,arg2,arg3))+.001), divisions,
+gid, god, god.type, enddate, type)
+}
+}
+}
+}
+round <- dataconfigure(df)
+pp <- progresspredict(df)
+cmprsn <- cmprsn + pp$Comparison
+if(pp$Comparison[1]==pp$Comparison[2]){
+fllcmp <- fllcmp + c(0,0,1)
+} else {
+fllcmp <- fllcmp + ifelse(pp$Comparison==max(pp$Comparison),1,0)
+}
+pt <- pp$ProgressionTable
+if (i == 1) {
+plot(pt$Week,pt$ThurstoneMosteller,col=2,ylim=c(0,teams))
+} else {
+points(pt$Week,pt$ThurstoneMosteller,pch=i,col=2)
+}
+points(pt$Week,pt$BradleyTerry,pch=i,col=4,cex=.75)
+samdf <- data.frame(Team=round$Team,WT=round$WinsTotal,MS=pp$FinalTMStrenghs,BTS=pp$FinalBTStrenghs)
+prpTM <- table(c(TST[order(-TST$Strength),]$Team,1,0)==c(samdf[order(-samdf$TMS),]$Team,0,1))
+prpTM <- prpTM-1
+prcntTM <- c(prcntTM,prop.table(prpTM)[2])
+prpBT <- table(c(TST[order(-TST$Strength),]$Team,1,0)==c(samdf[order(-samdf$BTS),]$Team,0,1))
+prpBT <- prpBT-1
+prcntBT <- c(prcntBT,prop.table(prpBT)[2])
+strongTM[,i] <- pp$FinalTMStrenghs
+strongBT[,i] <- pp$FinalBTStrenghs
+strengthsTM <- ((i - 1) * strengthsTM + pp$FinalTMStrenghs)/i
+strengthsBT <- ((i - 1) * strengthsBT + pp$FinalBTStrenghs)/i
+wins <- ((i - 1) * wins + round$WinsTotal)/i
+}
+varsTM <- vector()
+varsBT <- vector()
+for (i in 1:N) {
+varsTM[i] <- var(strongTM[i,])
+varsBT[i] <- var(strongBT[i,])
+}
+biTM <- strengthsTM/mean(strengthsTM) - TST$Strength/mean(TST$Strength)
+biBT <- strengthsBT/mean(strengthsBT) - TST$Strength/mean(TST$Strength)
+newdf <- data.frame(TST$Team, strengthsBT, strengthsTM, wins)
+names(newdf) <- c("Team","BradleyTerrySimulatedStrength","ThurstoneMostellerSimulatedStrength",
+"WinsSummary")
+prcntgs <- prop.table(cmprsn)
+return(list(SimulatedData=newdf,BradleyTerryStrengths=strongBT,ThurstoneMostellerStrengths=strongM,
+BradleyTerryVariance=varsBT,ThurstoneMostellerVariance=varsM,BradleyTerryBias=biBT,
+ThurstoneMostellerBias=biM,BradleyTerryPercentPerfect=prcntBT,ThurstoneMostellerPercentPerfect=prcntM,
+FullSimulationComparison=fllcmp,Comparison=cmprsn,Proportion=prcntgs))
+}
+Comparison <- 1:48
+Judge <- rep(c("Bob","Jim","Kara","Sally","Al","Rich","Bill","Ellen",
+"Andrew","Ross","Mary","Jane"),4)
+Winner <- c("Jim","Rich","Mary","Mary","Ellen","Sally","Sally","Al","Bill","Al","Jim",
+"Sally","Bob","Ellen","Jane","Mary","Ellen","Jim","Jane","Kara","Ross","Ellen",
+"Ellen","Sally","Sally","Mary","Jane","Mary","Jim","Mary","Sally","Bob","Bob",
+"Bill","Ellen","Ellen","Jim","Jane","Bob","Mary","Kara","Bill","Bill","Andrew",
+"Jim","Jim","Rich","Andrew")
+Loser <- c("Kara","Ellen","Andrew","Al","Kara","Rich","Mary","Kara","Al","Jane","Andrew",
+"Bob","Jim","Bill","Al","Al","Kara","Bob","Bill","Rich","Andrew","Andrew",
+"Sally","Bob","Rich","Rich","Ross","Ross","Al","Jane","Ross","Andrew","Rich",
+"Al","Jane","Bob","Mary","Rich","Bill","Ellen","Andrew","Bob","Sally","Ross",
+"Kara","Ross","Jim","Ross")
+EmployeeScores <- data.frame(Comparison,Judge,Winner,HPTS = 1,Loser,VPTS = 0,
+Date = as.Date(Sys.Date()-2))
+EmployeeScores$Winner <- as.character(EmployeeScores$Winner)
+EmployeeScores$Loser <- as.character(EmployeeScores$Loser)
+EmployeeScores$Home <- as.character(EmployeeScores$Winner)
+EmployeeScores$Visitor <- as.character(EmployeeScores$Loser)
+Employeedf <- dataconfigure(EmployeeScores)
+EmployeeRank <- LARC.Rank(Employeedf)
+#This is a function to automate the datascrape of the NBA data. It could be adjusted to
+# accomodate other types of data as well, but for now it will only scrape for NBA data.
+#install.packages("XML")
+datascrape <- function(datatype="NBA",playoffs=FALSE,year=substr(Sys.Date(),1,4)){
+#this package is needed in order to scrape the data off the internet.
+library(XML)
+#the following lines of code scrape the data off of the website that has the URL
+# corresponding with the chosen data type
+if(datatype=="NBA"){
+url <- paste("http://www.basketball-reference.com/leagues/NBA_",year,"_games.html",sep="")
+tables <- readHTMLTable(url)
+if (playoffs==TRUE) {
+tables[[1]] <- rbind(tables[[1]],tables[[2]])
+}
+names(tables[[1]]) <- c("Date","Start(ET)","BoxScore","Visitor","VPTS","Home",
+"HPTS","OT?","Notes")
+tables[[1]]$Day <- substr(tables[[1]]$Date,1,3)
+tables[[1]]$Date <- as.Date(gsub(",","",substr(tables[[1]]$Date,6,
+nchar(as.character(tables[[1]]$Date)))), "%b %d %Y")
+}
+if(datatype=="NHL"){
+url <- paste("http://www.hockey-reference.com/leagues/NHL_",year,"_games.html",sep="")
+tables <- readHTMLTable(url)
+if (playoffs==TRUE) {
+tables[[1]] <- rbind(tables[[1]],tables[[2]])
+}
+names(tables[[1]]) <- c("Date","Visitor","VPTS","Home","HPTS","OT?"," ","Attendance",
+"LOG","Notes1","Notes2")
+tables[[1]]$Date <- as.Date(tables[[1]]$Date, "%Y-%m-%d")
+tables[[1]]$Day <- substr(weekdays(tables[[1]]$Date),1,3)
+}
+if(datatype=="NFL") {
+url <- paste("http://www.pro-football-reference.com/years/",year,"/games.htm",sep="")
+tables <- readHTMLTable(url)
+tables[[1]] <- tables[[1]][!(tables[[1]]$Date=="Date" | tables[[1]]$Date=="Playoffs"),]
+if(playoffs==FALSE) {
+tables[[1]] <- tables[[1]][!as.numeric(tables[[1]]$Week) > 18,]
+}
+names(tables[[1]]) <- c("Week","Day","Date","BoxScore","Winner","Location","Loser",
+"WPTS","LPTS","WYDS","WTO","LYDS","LTO")
+tables[[1]]$Visitor <- ifelse(tables[[1]]$Location == "@",as.character(tables[[1]]$Winner),
+as.character(tables[[1]]$Loser))
+tables[[1]]$Home <- ifelse(tables[[1]]$Location == "@",as.character(tables[[1]]$Loser),
+as.character(tables[[1]]$Winner))
+tables[[1]]$VPTS <- ifelse(tables[[1]]$Location == "@",as.numeric(as.character(tables[[1]]$WPTS)),
+as.numeric(as.character(tables[[1]]$LPTS)))
+tables[[1]]$HPTS <- ifelse(tables[[1]]$Location == "@",as.numeric(as.character(tables[[1]]$LPTS)),
+as.numeric(as.character(tables[[1]]$WPTS)))
+tables[[1]]$Date <- ifelse(Sys.Date() > as.Date(tables[[1]]$Date,"%B %d"),
+as.Date(paste(tables[[1]]$Date,
+as.numeric(substr(Sys.Date(),1,4))),"%B %d %Y")
+,as.Date(paste(tables[[1]]$Date,as.numeric(
+substr(Sys.Date(),1,4))-1),"%B %d %Y"))
+tables[[1]]$Date <- as.Date(tables[[1]]$Date, origin = "1970-01-01")
+tables[[1]]$`OT?` <- "UNK"
+}
+if(datatype=="NCAAB"){
+tables <- read.fwf(file=url("http://masseyratings.com/scores.php?s=284067&sub=11590&all=1&mode=3&sch=on&format=0"),
+skip=39, n=5869, widths=c(10, 2, 24, 3, 2, 24, 3, 10, 25),
+col.names=c("Date","Where1","Team1","PTS1","Where2","Team2","PTS2","OT?","Notes"))
+head(tables)
+table1 <- read.fwf(file=url("http://masseyratings.com/scores.php?s=284067&sub=11590&all=1&mode=3&sch=on&format=0"),
+skip=39, n=10, widths=c(19, 2, 24, 3, 2, 24, 3, 10, 16),
+col.names=c("Date","Where1","Team1","PTS1","Where2","Team2","PTS2","OT?","Notes"))
+head(table1,3)
+table1$PTS1 <- as.character(table1$PTS1)
+table1$PTS2 <- as.character(table1$PTS2)
+table1$Date <- gsub("<hr><pre>","",as.character(table1$Date))
+table1$OT. <- ifelse(is.na(table1$OT.),"          ",table1$OT.)
+table1$Notes <- ifelse(is.na(table1$Notes)," ",table1$Notes)
+tables[1,] <- table1[1,]#c("2015-10-30", "  ", "AK Anchorage            ", " 74", "  ",
+head(tables)#"Upper Iowa              ", " 71", "          ", " ")
+tables[[1]] <- tables
+tables[[1]]$Date <- as.Date(tables[[1]]$Date)
+tables[[1]]$Day <- substr(weekdays(tables[[1]]$Date),1,3)
+tables[[1]]$Team1 <- gsub(" ","",as.character(tables[[1]]$Team1))
+tables[[1]]$Team2 <- gsub(" ","",as.character(tables[[1]]$Team2))
+tables[[1]]$PTS1 <- as.numeric(tables[[1]]$PTS1)
+tables[[1]]$PTS2 <- as.numeric(tables[[1]]$PTS2)
+tables[[1]]$`OT?` <- gsub(" ","",as.character(tables[[1]]$`OT.`))
+for (i in 1:nrow(tables[[1]])) {
+if (length(grep("O",tables[[1]]$`OT?`[i]))==1) {
+tables[[1]]$`OT?`[i] <- tables[[1]]$`OT?`[i]
+} else {
+tables[[1]]$`OT?`[i] <- "NO"
+}
+}
+tables[[1]]$Visitor <- ifelse(tables[[1]]$Where1 == " @",as.character(tables[[1]]$Team2),
+as.character(tables[[1]]$Team1))
+tables[[1]]$Home <- ifelse(tables[[1]]$Where1 == " @",as.character(tables[[1]]$Team1),
+as.character(tables[[1]]$Team2))
+tables[[1]]$VPTS <- ifelse(tables[[1]]$Where1 == " @",as.character(tables[[1]]$PTS2),
+as.character(tables[[1]]$PTS1))
+tables[[1]]$HPTS <- ifelse(tables[[1]]$Where1 == " @",as.character(tables[[1]]$PTS1),
+as.character(tables[[1]]$PTS2))
+}
+#the next few lines create a dataframe with the data that we care about, removing empty
+# and irrelevant columns
+Scoresdf <- data.frame(tables[[1]]$Date,tables[[1]]$Day,tables[[1]]$Visitor,
+tables[[1]]$VPTS,tables[[1]]$Home,tables[[1]]$HPTS,
+tables[[1]]$`OT?`)
+names(Scoresdf) <- c("Date","Day","Visitor","VPTS","Home","HPTS","OT?")
+#these lines convert each column's data into useful data types
+Scoresdf$VPTS <- as.numeric(as.character(Scoresdf$VPTS))
+Scoresdf$HPTS <- as.numeric(as.character(Scoresdf$HPTS))
+Scoresdf$Visitor <- as.character(Scoresdf$Visitor)
+Scoresdf$Home <- as.character(Scoresdf$Home)
+Scoresdf$`OT?` <- as.character(Scoresdf$`OT?`)
+#these two lines create new columns for the winner and lower of each game
+Scoresdf$Winner <- ifelse(Scoresdf$VPTS > Scoresdf$HPTS,Scoresdf$Visitor,Scoresdf$Home)
+Scoresdf$Loser <- ifelse(Scoresdf$VPTS < Scoresdf$HPTS,Scoresdf$Visitor,Scoresdf$Home)
+#this line edits the OT? column, removing blanks and making it more understandable
+Scoresdf$`OT?` <- ifelse(Scoresdf$`OT?` == "", "NO", ifelse(Scoresdf$`OT?` == "OT", "O1",
+Scoresdf$`OT?`))
+return(Scoresdf)
+}
+#this is an example:
+NBAScores <- datascrape()
+#This is a function to automate the datascrape of the NBA data. It could be adjusted to
+# accomodate other types of data as well, but for now it will only scrape for NBA data.
+#If the website down you use try this http://webcache.googleusercontent.com/search?q=cache:http://www.basketball-reference.com/leagues/NBA_2016_games.html
+#original website http://www.basketball-reference.com/leagues/NBA_
+#install.packages("XML")
+datascrape <- function(datatype="NBA",playoffs=FALSE,year=substr(Sys.Date(),1,4)){
+#this package is needed in order to scrape the data off the internet.
+library(XML)
+#the following lines of code scrape the data off of the website that has the URL
+# corresponding with the chosen data type
+if(datatype=="NBA"){
+url <- paste("http://webcache.googleusercontent.com/search?q=cache:http://www.basketball-reference.com/leagues/NBA_",year,"_games.html",sep="")
+tables <- readHTMLTable(url)
+if (playoffs==TRUE) {
+tables[[1]] <- rbind(tables[[1]],tables[[2]])
+}
+names(tables[[1]]) <- c("Date","Start(ET)","BoxScore","Visitor","VPTS","Home",
+"HPTS","OT?","Notes")
+tables[[1]]$Day <- substr(tables[[1]]$Date,1,3)
+tables[[1]]$Date <- as.Date(gsub(",","",substr(tables[[1]]$Date,6,
+nchar(as.character(tables[[1]]$Date)))), "%b %d %Y")
+}
+if(datatype=="NHL"){
+url <- paste("http://www.hockey-reference.com/leagues/NHL_",year,"_games.html",sep="")
+tables <- readHTMLTable(url)
+if (playoffs==TRUE) {
+tables[[1]] <- rbind(tables[[1]],tables[[2]])
+}
+names(tables[[1]]) <- c("Date","Visitor","VPTS","Home","HPTS","OT?"," ","Attendance",
+"LOG","Notes1","Notes2")
+tables[[1]]$Date <- as.Date(tables[[1]]$Date, "%Y-%m-%d")
+tables[[1]]$Day <- substr(weekdays(tables[[1]]$Date),1,3)
+}
+if(datatype=="NFL") {
+url <- paste("http://www.pro-football-reference.com/years/",year,"/games.htm",sep="")
+tables <- readHTMLTable(url)
+tables[[1]] <- tables[[1]][!(tables[[1]]$Date=="Date" | tables[[1]]$Date=="Playoffs"),]
+if(playoffs==FALSE) {
+tables[[1]] <- tables[[1]][!as.numeric(tables[[1]]$Week) > 18,]
+}
+names(tables[[1]]) <- c("Week","Day","Date","BoxScore","Winner","Location","Loser",
+"WPTS","LPTS","WYDS","WTO","LYDS","LTO")
+tables[[1]]$Visitor <- ifelse(tables[[1]]$Location == "@",as.character(tables[[1]]$Winner),
+as.character(tables[[1]]$Loser))
+tables[[1]]$Home <- ifelse(tables[[1]]$Location == "@",as.character(tables[[1]]$Loser),
+as.character(tables[[1]]$Winner))
+tables[[1]]$VPTS <- ifelse(tables[[1]]$Location == "@",as.numeric(as.character(tables[[1]]$WPTS)),
+as.numeric(as.character(tables[[1]]$LPTS)))
+tables[[1]]$HPTS <- ifelse(tables[[1]]$Location == "@",as.numeric(as.character(tables[[1]]$LPTS)),
+as.numeric(as.character(tables[[1]]$WPTS)))
+tables[[1]]$Date <- ifelse(Sys.Date() > as.Date(tables[[1]]$Date,"%B %d"),
+as.Date(paste(tables[[1]]$Date,
+as.numeric(substr(Sys.Date(),1,4))),"%B %d %Y")
+,as.Date(paste(tables[[1]]$Date,as.numeric(
+substr(Sys.Date(),1,4))-1),"%B %d %Y"))
+tables[[1]]$Date <- as.Date(tables[[1]]$Date, origin = "1970-01-01")
+tables[[1]]$`OT?` <- "UNK"
+}
+if(datatype=="NCAAB"){
+tables <- read.fwf(file=url("http://masseyratings.com/scores.php?s=284067&sub=11590&all=1&mode=3&sch=on&format=0"),
+skip=39, n=5869, widths=c(10, 2, 24, 3, 2, 24, 3, 10, 25),
+col.names=c("Date","Where1","Team1","PTS1","Where2","Team2","PTS2","OT?","Notes"))
+head(tables)
+table1 <- read.fwf(file=url("http://masseyratings.com/scores.php?s=284067&sub=11590&all=1&mode=3&sch=on&format=0"),
+skip=39, n=10, widths=c(19, 2, 24, 3, 2, 24, 3, 10, 16),
+col.names=c("Date","Where1","Team1","PTS1","Where2","Team2","PTS2","OT?","Notes"))
+head(table1,3)
+table1$PTS1 <- as.character(table1$PTS1)
+table1$PTS2 <- as.character(table1$PTS2)
+table1$Date <- gsub("<hr><pre>","",as.character(table1$Date))
+table1$OT. <- ifelse(is.na(table1$OT.),"          ",table1$OT.)
+table1$Notes <- ifelse(is.na(table1$Notes)," ",table1$Notes)
+tables[1,] <- table1[1,]#c("2015-10-30", "  ", "AK Anchorage            ", " 74", "  ",
+head(tables)#"Upper Iowa              ", " 71", "          ", " ")
+tables[[1]] <- tables
+tables[[1]]$Date <- as.Date(tables[[1]]$Date)
+tables[[1]]$Day <- substr(weekdays(tables[[1]]$Date),1,3)
+tables[[1]]$Team1 <- gsub(" ","",as.character(tables[[1]]$Team1))
+tables[[1]]$Team2 <- gsub(" ","",as.character(tables[[1]]$Team2))
+tables[[1]]$PTS1 <- as.numeric(tables[[1]]$PTS1)
+tables[[1]]$PTS2 <- as.numeric(tables[[1]]$PTS2)
+tables[[1]]$`OT?` <- gsub(" ","",as.character(tables[[1]]$`OT.`))
+for (i in 1:nrow(tables[[1]])) {
+if (length(grep("O",tables[[1]]$`OT?`[i]))==1) {
+tables[[1]]$`OT?`[i] <- tables[[1]]$`OT?`[i]
+} else {
+tables[[1]]$`OT?`[i] <- "NO"
+}
+}
+tables[[1]]$Visitor <- ifelse(tables[[1]]$Where1 == " @",as.character(tables[[1]]$Team2),
+as.character(tables[[1]]$Team1))
+tables[[1]]$Home <- ifelse(tables[[1]]$Where1 == " @",as.character(tables[[1]]$Team1),
+as.character(tables[[1]]$Team2))
+tables[[1]]$VPTS <- ifelse(tables[[1]]$Where1 == " @",as.character(tables[[1]]$PTS2),
+as.character(tables[[1]]$PTS1))
+tables[[1]]$HPTS <- ifelse(tables[[1]]$Where1 == " @",as.character(tables[[1]]$PTS1),
+as.character(tables[[1]]$PTS2))
+}
+#the next few lines create a dataframe with the data that we care about, removing empty
+# and irrelevant columns
+Scoresdf <- data.frame(tables[[1]]$Date,tables[[1]]$Day,tables[[1]]$Visitor,
+tables[[1]]$VPTS,tables[[1]]$Home,tables[[1]]$HPTS,
+tables[[1]]$`OT?`)
+names(Scoresdf) <- c("Date","Day","Visitor","VPTS","Home","HPTS","OT?")
+#these lines convert each column's data into useful data types
+Scoresdf$VPTS <- as.numeric(as.character(Scoresdf$VPTS))
+Scoresdf$HPTS <- as.numeric(as.character(Scoresdf$HPTS))
+Scoresdf$Visitor <- as.character(Scoresdf$Visitor)
+Scoresdf$Home <- as.character(Scoresdf$Home)
+Scoresdf$`OT?` <- as.character(Scoresdf$`OT?`)
+#these two lines create new columns for the winner and lower of each game
+Scoresdf$Winner <- ifelse(Scoresdf$VPTS > Scoresdf$HPTS,Scoresdf$Visitor,Scoresdf$Home)
+Scoresdf$Loser <- ifelse(Scoresdf$VPTS < Scoresdf$HPTS,Scoresdf$Visitor,Scoresdf$Home)
+#this line edits the OT? column, removing blanks and making it more understandable
+Scoresdf$`OT?` <- ifelse(Scoresdf$`OT?` == "", "NO", ifelse(Scoresdf$`OT?` == "OT", "O1",
+Scoresdf$`OT?`))
+return(Scoresdf)
+}
+#this is an example:
+NBAScores <- datascrape()
+View(NBAScores)
+# WAL -- Ala'a annoted this function at some length.  I leave all his comments in.  I preface each of my few comments with WAL.
+# WAL -- this function takes a data frame, df and produces a new data frame.
+# WAL -- the program employees invokes this routine
+# WAL -- df is described in "employees.r"
+# WAL -- the output data frame is also described in "employees.r"
+# WAL -- this function also has three addition variables
+# WAL ----  reldate
+# WAL ----  forsim
+# WAL ----  tt
+# WAL -- when "employees" invokes this function it does not use these three variables
+# WAL -- hence I will not describe them here
+#
+#The following function takes the dataframe of the NBA data and converts it into a format
+# usable for running optimization. The new dataframe includes a "Team" variable that has
+# each NBA team listed once, as such this dataframe only has 30 observations (one for each
+# team). The next variable is "Strength" and is one for every team when this function is
+# used. "Wins" is the third variable and is the number of wins that team has had. Finally,
+# the variable "Versus" is a matrix that includes the number of times each team plays each
+# opponent, where the first column of the matrix is associated with the first observation
+# or the first team listed in the dataframe. It can also take a reldate (relevant date)
+# arguement if you only wish to include data from before a certain date, the date must be
+# in the following format "YYYY-MM-DD". There is also a third arguement forsim that is set
+# to FALSE as the default but should be set to TRUE to create data frame without the Wins
+# variables and including a complete Versus matrix for all the games to be included within
+# that sport season.
+dataconfigure <- function(df, reldate=Sys.Date()-1, forsim=FALSE) {
+tt <- length(unique(c(df$Home,df$Visitor)))
+if (forsim == TRUE) {
+reldate <- Sys.Date() + 365
+#These commented out lines may need to be readded, I cannot figure out the purpose they serve
+# but they were causing issues with some datasets and I don't think omitting them causes any issues
+} #else {
+#LD <- length(which(df$Date <= reldate))
+#while (is.na(df$HPTS[LD+1])) {
+#  reldate <- reldate - 1
+#  LD <- length(which(df$Date <= reldate))
+#}
+#}
+#these first lines create a new dataframe with Team, Strength, and Wins
+data <- data.frame(sort(unique(c(df$Home,df$Visitor))),rep(1,tt),
+table(c(df$Winner[df$Date <= reldate],unique(c(df$Home,df$Visitor))))-1)
+names(data) <- c("Team","Strength","Temp","WinsTotal")
+data$Temp <- NULL
+#the rest of the lines within the function create the versus matrix by first creating
+# an empty ttxtt matrix and then filling it via a for loops.
+mm <- matrix(0, tt, tt)
+ww <- matrix(0, tt, tt)
+pstn <- 0
+for (i in data$Team){
+for (n in data$Team){
+pstn <- pstn + 1
+x <- 0
+z <- 0
+for (y in 1:length(which(df$Date <= reldate))){
+if(df$Home[y]==i && df$Visitor[y]==n){
+x <- x + 1
+if((df$HPTS[y] < df$VPTS[y]) && forsim == FALSE){
+z <- z + 1
+}
+}
+if(df$Home[y]==n && df$Visitor[y]==i){
+x <- x + 1
+if((df$HPTS[y] > df$VPTS[y]) && forsim == FALSE){
+z <- z + 1
+}
+}
+}
+mm[pstn] <- x
+if(forsim == FALSE) {
+ww[pstn] <- z
+}
+}
+}
+data$Versus <- mm
+data$WinsVersus <- ww
+data$Team <- as.character(data$Team)
+if (forsim == TRUE) {
+data$WinsVersus <- NULL
+data$WinsTotal <- NULL
+}
+return(data)
+}
+#These line of code shows the funtion in action.
+# NBAdf <- dataconfigure(NBAScores)
+#These line of code shows the funtion in action.
+# NBAdf <- dataconfigure(NBAScores)
+# Employees is the 'Main' program for computing employee strengths based on 48 pairwise comparisons made by 12 ficitional employees
+# These fictional employees are called Judges in this code
+# Note -- as it stands now the code never uses this information.  That is for future research
+# Each of the 48 comparisons have a 'judge,' a 'winner,' and a 'loser'
+# There are two data frames in the code described below
+#
+# EmployeeScores -- 48 observations of 9 variables
+#    Comparision -- the integers between 1 and 48
+#    Judge --  the names of the 12 judges
+#    Winner -- the names of the 48 winners
+#    HTPS -- whether the winner was on his home court
+#            note homecourt has not been used in any of our calculations.  It was put in these data frames for future research
+#            for this data all the home courts are listed as '1'
+#    Loser  -- the names of the 48 losers
+#    VTPS   -- Which 'team' was on the vistors court -- again not used -- for this data all are set to 0
+#    Date   -- Date is used in the calculations for NBA and such, but not used here so some arbitary data is specified
+#    Home   -- For the employee data each was presented two names for which the judge was to pick a winner.  The first name is considered as home.
+#    Visitor - The second name presented to the judge.  Again all of this is for future research.
+#
+# The code takes the above data frame and involves the function 'dataconfigure' to produce the second dataframe
+# Employeedf -- 12 observations of 5 variables
+# Team -- the names of the 12 employees
+# Strength -- the employees strength -- for the Bradley-Terry Model these are initially 1.0
+#                                    -- for the Mosteller Model these are initially 0.0
+#                                    -- at the end of this program these are the estimated strengths based on the data
+# WinsTotal -- the number of wins each for each 'team'
+# Versus    -- a 12 by 12 matrix
+#           -- the number of times each team 'plays' each other team
+# WinVersus -- a 12 bt 12 matrix
+#           -- the number of times each team beats each other team
+#
+# Employees invokes two other functions, which in turn invokes lower leverl functions
+#  dataconfigure
+#  Larc.Rank
+#
+Comparison <- 1:48
+Judge <- rep(c("Bob","Jim","Kara","Sally","Al","Rich","Bill","Ellen",
+"Andrew","Ross","Mary","Jane"),4)
+Winner <- c("Jim","Rich","Mary","Mary","Ellen","Sally","Sally","Al","Bill","Al","Jim",
+"Sally","Bob","Ellen","Jane","Mary","Ellen","Jim","Jane","Kara","Ross","Ellen",
+"Ellen","Sally","Sally","Mary","Jane","Mary","Jim","Mary","Sally","Bob","Bob",
+"Bill","Ellen","Ellen","Jim","Jane","Bob","Mary","Kara","Bill","Bill","Andrew",
+"Jim","Jim","Rich","Andrew")
+Loser <- c("Kara","Ellen","Andrew","Al","Kara","Rich","Mary","Kara","Al","Jane","Andrew",
+"Bob","Jim","Bill","Al","Al","Kara","Bob","Bill","Rich","Andrew","Andrew",
+"Sally","Bob","Rich","Rich","Ross","Ross","Al","Jane","Ross","Andrew","Rich",
+"Al","Jane","Bob","Mary","Rich","Bill","Ellen","Andrew","Bob","Sally","Ross",
+"Kara","Ross","Jim","Ross")
+EmployeeScores <- data.frame(Comparison,Judge,Winner,HPTS = 1,Loser,VPTS = 0,
+Date = as.Date(Sys.Date()-2))
+EmployeeScores$Winner <- as.character(EmployeeScores$Winner)
+EmployeeScores$Loser <- as.character(EmployeeScores$Loser)
+EmployeeScores$Home <- as.character(EmployeeScores$Winner)
+EmployeeScores$Home <- as.character(EmployeeScores$Winner)
+EmployeeScores$Visitor <- as.character(EmployeeScores$Loser)
+Employeedf <- dataconfigure(EmployeeScores)
+EmployeeRank <- LARC.Rank(Employeedf)
+first.matrix <- matrix(1:12,ncol = 4)
+first.matrix
+matrix(1:12, ncol =4, byrow = TRUE)
+str(first.matrix)
+dim(first.matrix)
+nrow(first.matrix)
+ncol(first.matrix)
+length(first.matrix)
+my.arrray <- array(1:24, dim = c(3,4,s))
+my.arrray <- array(1:24, dim = c(3,4,2))
+baskets.team <- rbind(baskets.of.granny = )
+baskets.team <- rbind(
+baskets.of.granny =
+c(4,5,6,9,3),
+baskets.of.Geraldine =
+c(5,4,2,4,12,9)
+)
+baskets.team <- rbind(
+baskets.of.granny =
+c(12,4,5,6,9,3),
+baskets.of.Geraldine =
+c(5,4,2,4,12,9)
+)
+attributes(my.arrray)
+attributes(baskets.team)
+?attributes
