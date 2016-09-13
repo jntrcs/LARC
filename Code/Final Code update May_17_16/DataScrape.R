@@ -17,7 +17,7 @@ datascrape <- function(datatype="NBA",playoffs=FALSE,year=substr(Sys.Date(),1,4)
     if (playoffs==TRUE) {
       tables[[1]] <- rbind(tables[[1]],tables[[2]])
     }
-    names(tables[[1]]) <- c("Date","Start(ET)","BoxScore","Visitor","VPTS","Home",
+    names(tables[[1]]) <- c("Date","Start(ET)","Visitor","VPTS","Home",
                             "HPTS","OT?","Notes")
     tables[[1]]$Day <- substr(tables[[1]]$Date,1,3)
     tables[[1]]$Date <- as.Date(gsub(",","",substr(tables[[1]]$Date,6,
@@ -125,4 +125,5 @@ datascrape <- function(datatype="NBA",playoffs=FALSE,year=substr(Sys.Date(),1,4)
 }
 
 #this is an example:
-NBAScores <- datascrape()
+NBAdata<-datascrape()
+dataconfigure(NBAdata)
