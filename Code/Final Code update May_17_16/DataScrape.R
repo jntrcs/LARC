@@ -67,7 +67,7 @@ scrapeNCAAB<-function(playoffs=FALSE,year=substr(Sys.Date(),1,4)){
   tables <- read.fwf(file=url("http://masseyratings.com/scores.php?s=284067&sub=11590&all=1&mode=3&sch=on&format=0"),
                      skip=39, n=5869, widths=c(10, 2, 24, 3, 2, 24, 3, 10, 25),
                      col.names=c("Date","Where1","Team1","PTS1","Where2","Team2","PTS2","OT?","Notes"))
-  head(tables)
+  
   table1 <- read.fwf(file=url("http://masseyratings.com/scores.php?s=284067&sub=11590&all=1&mode=3&sch=on&format=0"),
                      skip=39, n=10, widths=c(19, 2, 24, 3, 2, 24, 3, 10, 16),
                      col.names=c("Date","Where1","Team1","PTS1","Where2","Team2","PTS2","OT?","Notes"))
@@ -108,8 +108,8 @@ scrapeNCAAB<-function(playoffs=FALSE,year=substr(Sys.Date(),1,4)){
 scrapeNCAAF<-function(playoffs=FALSE,year=substr(Sys.Date(),1,4))
 {
   #Am skipping the first game because of formatting issues, add it in manually?
-  table1 <- read.fwf(file=url("http://www.masseyratings.com/scores.php?s=286577&sub=286577&all=1&mode=3&format=0"),
-                     skip=15, n=-1, widths=c(10, 2, 24, 3, 2, 24, 3, 4, 25),
+  table1 <- read.fwf(file=url("http://www.masseyratings.com/scores.php?s=286577&sub=11604&all=1"),
+                     skip=26, n=-1, widths=c(10, 2, 24, 3, 2, 24, 3, 4, 25),
                      col.names=c("Date","Where1","Team1","PTS1","Where2","Team2","PTS2","OT?","Notes"),
                      strip.white=TRUE)
   table1<-table1[1:(nrow(table1)-6),]
@@ -192,4 +192,6 @@ datascrape <- function(datatype,playoffs=FALSE,year=substr(Sys.Date(),1,4)){
 }
 
 
-###TODO: fix parameters to require what is needed and respect choices. Fix NFL and NHL (I don't think I broke those)
+###TODO: fix parameters to require what is needed and respect choices. 
+#Fix NFL and NHL (I don't think I broke those)
+#Get rid of NCAAF warning message
