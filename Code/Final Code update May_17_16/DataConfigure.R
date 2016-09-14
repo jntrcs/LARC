@@ -88,5 +88,4 @@ dataconfigure <- function(df, reldate=Sys.Date()-1, forsim=FALSE) {
   return(data)
 }
 
-#These line of code shows the funtion in action.
-# NBAdf <- dataconfigure(NBAScores)
+
