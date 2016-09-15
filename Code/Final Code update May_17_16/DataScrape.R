@@ -5,7 +5,7 @@
 #install.packages("XML")
 
 #All specific sports are called within Datascrape(). Therefore any outside callers should call datascrape("Sport") and not the sport directly
-#testing
+
 scrapeNBA<-function(playoffs=FALSE,year=substr(Sys.Date(),1,4))
 {
   url <- paste("http://webcache.googleusercontent.com/search?q=cache:http://www.basketball-reference.com/leagues/NBA_",year,"_games.html",sep="")
