@@ -4,9 +4,9 @@
 
 load("NCAAWeek2Configured.RData")
 load("BTResultsWeek2.RData")
-load("'MTResultsWeek2.RData")
-
-#ncaadata<-datascrape("NCAAF")
+load("MTResultsWeek2.RData")
+load("NCAAWeek1Configured.RData")
+ncaadata<-datascrape("NCAAF")
 #head(ncaadata)
 #system.time(
 #football<-dataconfigure(ncaadata)
@@ -14,8 +14,8 @@ load("'MTResultsWeek2.RData")
 #head(football)
 #system.time(
 #bradter<-LARC.Rank(football))
-system.time(
-Mosteller<-LARC.Rank(week2Configured, increment=.01, func = ThurstoneMostellerLARC)) #11 minutes at .01 accuracy
+#system.time(
+#Mosteller<-LARC.Rank(week2Configured, increment=.01, func = ThurstoneMostellerLARC)) #11 minutes at .01 accuracy
 #BradleyTerryRank<-bradter
 #week2Configured<-football
 #save(week2Configured, file="NCAAWeek2Configured.RData")
@@ -24,3 +24,7 @@ Mosteller<-LARC.Rank(week2Configured, increment=.01, func = ThurstoneMostellerLA
 #MTNCAAFweek2<-Mosteller
 #save(MTNCAAFweek2, file="MTResultsWeek2.RData")
 cbind(MTNCAAFweek2, BradleyTerryRank)
+#week1<-dataconfigure(datascrape("NCAAF"), reldate = Sys.Date()-7)
+#save(week1, file="NCAAFWeek1Configured.Rdata")
+BTResultsWeek1<-LARC.Rank(week1)
+TMResultsWeek1<-LARC.Rank(week1, increment = .01, func=ThurstoneMostellerLARC)

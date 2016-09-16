@@ -105,7 +105,7 @@ scrapeNCAAB<-function(playoffs=FALSE,year=substr(Sys.Date(),1,4)){
   tables[[1]]
 }
 
-scrapeNCAAF<-function(playoffs=FALSE,year=substr(Sys.Date(),1,4))
+scrapeNCAAF<-function()
 {
   #Am skipping the first game because of formatting issues, add it in manually?
   table1 <- read.fwf(file=url("http://www.masseyratings.com/scores.php?s=286577&sub=11604&all=1"),
@@ -136,10 +136,13 @@ scrapeNCAAF<-function(playoffs=FALSE,year=substr(Sys.Date(),1,4))
       table1$`OT?`[i] <- "NO"
     }
   }
-  table1
+  
+a<-data.frame("2016-08-26", " ", "Hawaii", 31, " ", "California", 51, " ", "Australia", "Hawaii", "California", 31, 51, "Fri", "NO")
+names(a)<-names(table1)
+rbind(table1, a)
 }
 
-datascrape <- function(datatype,playoffs=FALSE,year=substr(Sys.Date(),1,4)){
+datascrape <- function(datatype,playoffs=FALSE,year=substr(Sys.Date(),1,4), date = Sys.Date()){
   
   #this package is needed in order to scrape the data off the internet.
   library(XML)
