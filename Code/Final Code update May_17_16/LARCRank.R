@@ -1,5 +1,5 @@
 # LARC.Rank is the key computation function for computing the strengths of the teams 
-
+# testing 17 Sept 2016
 # This function returns a data frame that has the teams estimated strengths. Also the teams are ranked from highests to lows.
 #
 # -- the input parameters are defined below
