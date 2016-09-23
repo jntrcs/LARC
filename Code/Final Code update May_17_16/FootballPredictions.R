@@ -14,10 +14,10 @@
 #distance from their prediction to the correct answer. This gives us the desirable property that if Team A
 #beat Team B 95 out of 100 times, and model A predicted team A at 95% and Model B at 99%, 
 #Model B would be penalized more for it's 5 misses then A for it's 95 misses.
-TMStrengths<-MTNCAAFweek2
-BTStrengths<-BTStrengths
+TMStrengths<-TMResultsWeek2
+BTStrengths<-BTResultsWeek2
 schedule<-datascrape("NCAAF")
-startdate<-"2016-09-11" #Week 2
+startdate<-"2016-09-11" 
 enddate<-"2016-09-18"
 NCAAFPredictor<-function(TMStrengths, BTStrengths, schedule, startdate, enddate)
 {
@@ -33,15 +33,14 @@ NCAAFPredictor<-function(TMStrengths, BTStrengths, schedule, startdate, enddate)
     #The messy if elses are to handle the case where they play a team that has no previously estimated strength
     weekGames$HomeTMStength[i]<-ifelse(weekGames$Home[i]%in%TMStrengths$Team,TMStrengths$Strength[which(TMStrengths$Team==weekGames$Home[i])],0)
     weekGames$AwayTMStrength[i]<-ifelse(weekGames$Visitor[i]%in%TMStrengths$Team,TMStrengths$Strength[which(TMStrengths$Team==weekGames$Visitor[i])],0)
-    weekGames$AwayBTStrength[i]<-ifelse(weekGames$Home[i]%in%BTStrengths$Team,BTStrengths$Strength[which(BTStrengths$Team==weekGames$Visitor[i])],1)
-    weekGames$HomeBTStrength[i]<-ifelse(weekGames$Visitor[i]%in%BTStrengths$Team,BTStrengths$Strength[which(BTStrengths$Team==weekGames$Home[i])],1)
+    weekGames$AwayBTStrength[i]<-ifelse(weekGames$Visitor[i]%in%BTStrengths$Team,BTStrengths$Strength[which(BTStrengths$Team==weekGames$Visitor[i])],1)
+    weekGames$HomeBTStrength[i]<-ifelse(weekGames$Home[i]%in%BTStrengths$Team,BTStrengths$Strength[which(BTStrengths$Team==weekGames$Home[i])],1)
   }
   #Right now there is an error in the datascrape where it lists the winner as the away team. 
   #When I get around to fixing this will work accurately
   weekGames$BTHomeWin<-weekGames$HomeBTStrength/(weekGames$HomeBTStrength+weekGames$AwayBTStrength)
   weekGames$TMHomeWin<-pnorm(weekGames$HomeTMStength-weekGames$AwayTMStrength)
   weekGames$HomeTeamWon<-weekGames$Home==weekGames$Winner
-  head(weekGames)
   #This line looks at which prediction was closer to the actual value of who won and who lost
   weekGames$DidBetter<-ifelse(abs(ifelse(weekGames$HomeTeamWon, 1, 0)-weekGames$BTHomeWin)<abs(ifelse(weekGames$HomeTeamWon, 1, 0)-weekGames$TMHomeWin), "Bradley-Terry", "Thurstone-Mosteller")
   weekGames$DidBetter[weekGames$BTHomeWin == weekGames$TMHomeWin]<-"Tie"
@@ -52,11 +51,27 @@ NCAAFPredictor<-function(TMStrengths, BTStrengths, schedule, startdate, enddate)
   penalties<-c(sum(weekGames$Penalty[weekGames$DidWorse=="Bradley-Terry"]),
   sum(weekGames$Penalty[weekGames$DidWorse=="Thurstone-Mosteller"]))
   names(penalties)<-c("Bradley-Terry Penalty", "Thurstone-Mosteller Penalty")
-  penalties
   results<-list(weekGames, table(weekGames$DidBetter), penalties)
   results
 }  
 
 predictWeek2<-NCAAFPredictor(TMResultsWeek1, BTResultsWeek1, datascrape("NCAAF"), "2016-09-05", "2016-09-11")
-predictWeek3<-NCAAFPredictor(MTNCAAFweek2, BTStrengths, datascrape("NCAAF"), "2016-09-11", "2016-09-18")
-predictWeek3[[3]]
+predictWeek3<-NCAAFPredictor(TMResultsWeek2, BTResultsWeek2, datascrape("NCAAF"), "2016-09-11", "2016-09-18")
+save(predictWeek2, predictWeek3, file="WeeklyPredictions.RData")
+load("WeeklyPredictions.RData")
+
+performance<-list(predictWeek2[[2]], predictWeek3[[2]])
+
+graphic<-sapply(performance, FUN=function(vec){vec[1]/(vec[2]+vec[1])})
+plot(graphic, type='l', main="Bradley-Terry 'Win' Percentage", ylab="Percent BT Model Favored",
+     xlab="Week", xaxt="n")
+axis(1,at=1:length(graphic),labels=2:(length(graphic)+1))
+
+penalties<-list(predictWeek2[[3]], predictWeek3[[3]])
+BTPenalties<-sapply(penalties, FUN = function(vec){vec[1]})
+TMPenalties<-sapply(penalties, FUN = function(vec){vec[2]})
+plot(BTPenalties, type='l', col="Red", main="Bad Prediction Penalization", ylab="Penatly Score",
+     xlab="Week Predicted", xaxt="n")
+lines(TMPenalties, col="Blue", lty=2)
+axis(1,at=1:length(BTPenalties),labels=2:(length(BTPenalties)+1))
+legend(1, 18.5,c("Bradley-Terry", "Thurstone-Mosteller"), col=c("Red", "Blue"), lty=c(1,2))
