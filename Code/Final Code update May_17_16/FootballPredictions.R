@@ -57,17 +57,18 @@ NCAAFPredictor<-function(TMStrengths, BTStrengths, schedule, startdate, enddate)
 
 predictWeek2<-NCAAFPredictor(TMResultsWeek1, BTResultsWeek1, datascrape("NCAAF"), "2016-09-05", "2016-09-11")
 predictWeek3<-NCAAFPredictor(TMResultsWeek2, BTResultsWeek2, datascrape("NCAAF"), "2016-09-11", "2016-09-18")
-save(predictWeek2, predictWeek3, file="WeeklyPredictions.RData")
+predictWeek4<-NCAAFPredictor(TMResultsWeek3, BTResultsWeek3, datascrape("NCAAF"), "2016-09-18", "2016-09-25")
+save(predictWeek2, predictWeek3, predictWeek4, file="WeeklyPredictions.RData")
 load("WeeklyPredictions.RData")
 
-performance<-list(predictWeek2[[2]], predictWeek3[[2]])
+performance<-list(predictWeek2[[2]], predictWeek3[[2]], predictWeek4[[2]])
 
 graphic<-sapply(performance, FUN=function(vec){vec[1]/(vec[2]+vec[1])})
 plot(graphic, type='l', main="Bradley-Terry 'Win' Percentage", ylab="Percent BT Model Favored",
      xlab="Week", xaxt="n")
 axis(1,at=1:length(graphic),labels=2:(length(graphic)+1))
 
-penalties<-list(predictWeek2[[3]], predictWeek3[[3]])
+penalties<-list(predictWeek2[[3]], predictWeek3[[3]], predictWeek4[[3]])
 BTPenalties<-sapply(penalties, FUN = function(vec){vec[1]})
 TMPenalties<-sapply(penalties, FUN = function(vec){vec[2]})
 plot(BTPenalties, type='l', col="Red", main="Bad Prediction Penalization", ylab="Penatly Score",
@@ -75,3 +76,5 @@ plot(BTPenalties, type='l', col="Red", main="Bad Prediction Penalization", ylab=
 lines(TMPenalties, col="Blue", lty=2)
 axis(1,at=1:length(BTPenalties),labels=2:(length(BTPenalties)+1))
 legend(1, 18.5,c("Bradley-Terry", "Thurstone-Mosteller"), col=c("Red", "Blue"), lty=c(1,2))
+
+

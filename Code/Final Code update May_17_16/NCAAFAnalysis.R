@@ -7,6 +7,18 @@ BradleyTerryRank[BradleyTerryRank$Team=="California",]
 BTResultsWeek3[BTResultsWeek3$Team=="Hawaii",]
 BradleyTerryRank[BradleyTerryRank$Team=="Hawaii",]
 
+
+#WEEK 4
+week4<-dataconfigure(datascrape("NCAAF"), reldate = as.Date("2016-09-25"))
+save(week4, file="NCAAFWeek4Configured.Rdata")
+system.time(
+  BTResultsWeek4<-LARC.Rank(week4)
+)
+system.time(
+  TMResultsWeek4<-LARC.Rank(week4, increment = .01, func=ThurstoneMostellerLARC)
+)
+save(BTResultsWeek4, TMResultsWeek4, file="Week4Results.RData")
+
 #WEEK 3
 week3<-dataconfigure(datascrape("NCAAF"), reldate = as.Date("2016-09-18"))
 save(week3, file="NCAAFWeek3Configured.Rdata")
@@ -20,8 +32,7 @@ save(BTResultsWeek3, TMResultsWeek3, file="Week3Results.RData")
 
 #WEEK 2
 
-week2<-week2Configured
-#week2<-dataconfigure(datascrape("NCAAF"), reldate = as.Date("2016-09-11"))
+week2<-dataconfigure(datascrape("NCAAF"), reldate = as.Date("2016-09-11"))
 save(week2, file="NCAAFWeek2Configured.Rdata")
 system.time(
   BTResultsWeek2<-LARC.Rank(week2)
