@@ -25,7 +25,11 @@
 # WinsVersus -- num -- t x t matrix of the number of times each team beats each team
 #
 #
+df<-raw
+reldate<-"2016-09-18"
 dataconfigure <- function(df, reldate=Sys.Date()-1, forsim=FALSE) {
+  df$Date <-as.Date(df$Date)
+  df<-df[df$Date<=reldate,]
   tt <- length(unique(c(df$Home,df$Visitor)))
   
   if (forsim == TRUE) {
@@ -88,4 +92,12 @@ dataconfigure <- function(df, reldate=Sys.Date()-1, forsim=FALSE) {
   return(data)
 }
 
-
+week1 <- dataconfigure(raw, reldate="2016-09-04")
+sum(week1[week1$Team=="Hawaii", 4])
+week1
+head(week1,1)
+week1$Versus[week1$Team=="Hawaii"]
+week1[25,1]
+week2<-dataconfigure(raw, reldate="2016-09-11")
+library(xlsx)
+write.xlsx(week2[,4], file="NewWeek2.xlsx")
