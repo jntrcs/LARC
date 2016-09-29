@@ -55,9 +55,9 @@ NCAAFPredictor<-function(TMStrengths, BTStrengths, schedule, startdate, enddate)
   results
 }  
 
-predictWeek2<-NCAAFPredictor(TMResultsWeek1, BTResultsWeek1, datascrape("NCAAF"), "2016-09-05", "2016-09-11")
-predictWeek3<-NCAAFPredictor(TMResultsWeek2, BTResultsWeek2, datascrape("NCAAF"), "2016-09-11", "2016-09-18")
-predictWeek4<-NCAAFPredictor(TMResultsWeek3, BTResultsWeek3, datascrape("NCAAF"), "2016-09-18", "2016-09-25")
+predictWeek2<-NCAAFPredictor(TMResultsWeek1, BTResultsWeek1, latestRaw, "2016-09-05", "2016-09-11")
+predictWeek3<-NCAAFPredictor(TMResultsWeek2, BTResultsWeek2, latestRaw, "2016-09-11", "2016-09-18")
+predictWeek4<-NCAAFPredictor(TMResultsWeek3, BTResultsWeek3, latestRaw, "2016-09-18", "2016-09-25")
 save(predictWeek2, predictWeek3, predictWeek4, file="WeeklyPredictions.RData")
 load("WeeklyPredictions.RData")
 
