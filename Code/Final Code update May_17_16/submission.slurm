@@ -19,4 +19,5 @@ export PBS_QUEUE=batch
 export OMP_NUM_THREADS=$SLURM_CPUS_ON_NODE
 
 # LOAD MODULES, INSERT CODE, AND RUN YOUR PROGRAMS HERE
-module load r/3.1.1
+module load r/3/3
+Rscript NCAAFAnalysis.R
