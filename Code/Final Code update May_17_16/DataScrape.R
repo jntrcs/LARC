@@ -195,6 +195,8 @@ datascrape <- function(datatype,playoffs=FALSE,year=substr(Sys.Date(),1,4), date
 }
 
 
+latestRaw<-datascrape("NCAAF")
+save(latestRaw, file="LatestNCAAF.RData")
 ###TODO: fix parameters to require what is needed and respect choices. 
 #Fix NFL and NHL (I don't think I broke those)
 #Get rid of NCAAF warning message
