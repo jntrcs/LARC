@@ -105,11 +105,21 @@ scrapeNCAAB<-function(playoffs=FALSE,year=substr(Sys.Date(),1,4)){
   tables[[1]]
 }
 
-scrapeNCAAF<-function()
+scrapeNCAAF<-function(year="2016")
 {
-  #Am skipping the first game because of formatting issues, add it in manually?
-  table1 <- read.fwf(file=url("http://www.masseyratings.com/scores.php?s=286577&sub=11604&all=1"),
-                     skip=25, n=-1, widths=c(10, 2, 24, 3, 2, 24, 3, 4, 25),
+  site<-""
+  skip<-0
+  if (year=="2016")
+    {site<-"http://www.masseyratings.com/scores.php?s=286577&sub=11604&all=1"
+    skip<-25
+    }
+  else if (year=="2015")
+  { 
+    site<-"http://www.masseyratings.com/scores.php?s=279541&sub=11590&all=1"
+    skip=10
+    }
+  table1 <- read.fwf(file=url(site),
+                     skip=skip, n=-1, widths=c(10, 2, 24, 3, 2, 24, 3, 4, 25),
                      col.names=c("Date","Where1","Team1","PTS1","Where2","Team2","PTS2","OT?","Notes"),
                      strip.white=TRUE)
   table1<-table1[1:(nrow(table1)-6),]
@@ -136,10 +146,24 @@ scrapeNCAAF<-function()
       table1$`OT?`[i] <- "NO"
     }
   }
+
+if (toString(year)=="2016")
+  a<-data.frame("2016-08-26", " ", "Hawaii", 31, " ", "California", 51, " ", "Australia", "Hawaii", "California", 31, 51, "Fri", "NO")
+else if (toString(year)=="2015")
+  a<-data.frame("2015-08-29", "@", "Montana", 38, " ", "N Dakota St", 35, " ", " ", "Montana", "N Dakota St", 31, 51, "Fri", "NO")
   
-a<-data.frame("2016-08-26", " ", "Hawaii", 31, " ", "California", 51, " ", "Australia", "Hawaii", "California", 31, 51, "Fri", "NO")
 names(a)<-names(table1)
-rbind(table1, a)
+table1<-rbind(table1, a)
+  
+  table1$Visitor <- ifelse(table1$Where1 == "@",as.character(table1$Team2),
+                                as.character(table1$Team1))
+  table1$Home <- ifelse(table1$Where1 == "@",as.character(table1$Team1),
+                             as.character(table1$Team2))
+  table1$VPTS <- ifelse(table1$Where1 == "@",as.character(table1$PTS2),
+                             as.character(table1$PTS1))
+  table1$HPTS <- ifelse(table1$Where1 == "@",as.character(table1$PTS1),
+                             as.character(table1$PTS2))  
+table1
 }
 
 datascrape <- function(datatype,playoffs=FALSE,year=substr(Sys.Date(),1,4), date = Sys.Date()){
@@ -167,7 +191,7 @@ datascrape <- function(datatype,playoffs=FALSE,year=substr(Sys.Date(),1,4), date
   
   else if (datatype=="NCAAF")
   {
-    table1<-scrapeNCAAF()
+    table1<-scrapeNCAAF(year)
   }
   
   #the next few lines create a dataframe with the data that we care about, removing empty
@@ -194,7 +218,7 @@ datascrape <- function(datatype,playoffs=FALSE,year=substr(Sys.Date(),1,4), date
   Scoresdf
 }
 
-
+raw2015<-datascrape("NCAAF", year=2015)
 latestRaw<-datascrape("NCAAF")
 save(latestRaw, file="LatestNCAAF.RData")
 ###TODO: fix parameters to require what is needed and respect choices. 
