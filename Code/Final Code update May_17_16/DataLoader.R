@@ -12,9 +12,11 @@ load("LatestNCAAF.RData")
 
 latestRaw<-datascrape("NCAAF")
 
+save(latestRaw, file="LatestNCAAF.RData")
+
 save(BTResultsWeek1, BTResultsWeek2, BTResultsWeek3, BTResultsWeek4, BTResultsWeek5,
      TMResultsWeek1, TMResultsWeek2, TMResultsWeek3, TMResultsWeek4, TMResultsWeek5,
-     week1, week2, week3, week4,week5 predictWeek2, predictWeek3, predictWeek4, latestRaw,
+     week1, week2, week3, week4,week5, predictWeek2, predictWeek3, predictWeek4, latestRaw,
      file="2016FootballData.RData") 
-#c
+
 #2015 Football
