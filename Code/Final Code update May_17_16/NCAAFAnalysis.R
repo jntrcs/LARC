@@ -15,27 +15,27 @@ system.time(
 save(BTResultsWeek5, TMResultsWeek5, file="Week5Results.RData")
 
 #WEEK 4
-week4<-dataconfigure(latestRaw, reldate = as.Date("2016-09-25"))
-save(week4, file="NCAAFWeek4Configured.Rdata")
+#week4<-dataconfigure(latestRaw, reldate = as.Date("2016-09-25"))
+#save(week4, file="NCAAFWeek4Configured.Rdata")
 
-system.time(
-  BTResultsWeek4<-LARC.Rank(week4)
-)
-system.time(
-  TMResultsWeek4<-LARC.Rank(week4, increment = .01, func=ThurstoneMostellerLARC)
-)
-save(BTResultsWeek4, TMResultsWeek4, file="Week4Results.RData")
+#system.time(
+#  BTResultsWeek4<-LARC.Rank(week4)
+#)
+#system.time(
+ # TMResultsWeek4<-LARC.Rank(week4, increment = .01, func=ThurstoneMostellerLARC)
+#)
+#save(BTResultsWeek4, TMResultsWeek4, file="Week4Results.RData")
 
 #WEEK 3
-week3<-dataconfigure(latestRaw, reldate = as.Date("2016-09-18"))
-save(week3, file="NCAAFWeek3Configured.Rdata")
-system.time(
-  BTResultsWeek3<-LARC.Rank(week3)
-)
-system.time(
-  TMResultsWeek3<-LARC.Rank(week3, increment = .01, func=ThurstoneMostellerLARC)
-)
-save(BTResultsWeek3, TMResultsWeek3, file="Week3Results.RData")
+#week3<-dataconfigure(latestRaw, reldate = as.Date("2016-09-18"))
+#save(week3, file="NCAAFWeek3Configured.Rdata")
+#system.time(
+#  BTResultsWeek3<-LARC.Rank(week3)
+#)
+#system.time(
+ # TMResultsWeek3<-LARC.Rank(week3, increment = .01, func=ThurstoneMostellerLARC)
+#)
+#save(BTResultsWeek3, TMResultsWeek3, file="Week3Results.RData")
 
 #WEEK 2
 
