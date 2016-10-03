@@ -51,7 +51,9 @@ NCAAFPredictor<-function(TMStrengths, BTStrengths, schedule, startdate, enddate)
   penalties<-c(sum(weekGames$Penalty[weekGames$DidWorse=="Bradley-Terry"]),
   sum(weekGames$Penalty[weekGames$DidWorse=="Thurstone-Mosteller"]))
   names(penalties)<-c("Bradley-Terry Penalty", "Thurstone-Mosteller Penalty")
-  results<-list(weekGames, table(weekGames$DidBetter), penalties)
+  percentHomeWins<-c(mean(weekGames$BTHomeWin), mean(weekGames$TMHomeWin))
+  names(percentHomeWins)<-c("Bradely-Terry Home Win Percent", "Thurstone-Mosteller Home Win Percent")
+  results<-list(weekGames, table(weekGames$DidBetter), penalties, percentHomeWins)
   results
 }  
 
@@ -76,5 +78,4 @@ plot(BTPenalties, type='l', col="Red", main="Bad Prediction Penalization", ylab=
 lines(TMPenalties, col="Blue", lty=2)
 axis(1,at=1:length(BTPenalties),labels=2:(length(BTPenalties)+1))
 legend(1, 18.5,c("Bradley-Terry", "Thurstone-Mosteller"), col=c("Red", "Blue"), lty=c(1,2))
-
 
