@@ -3,9 +3,19 @@
 load("MasterFunctionFile.RData")
 load("2015FootballData.RData")
 
-all2015data[[1]]<-list(dataconfigure(raw2015, reldate="2015-09-06"))
-all2015data[[1]][[2]]<-LARC.Rank(all2015data[[1]][[1]])
-all2015data[[1]][[3]]<-LARC.Rank(all2015data[[1]][[1]])
+
+library(parallel)
+numCores<-detectCores()-1
+cl <- makeCluster(numCores)
+clusterExport(cl, c("dataconfigure", "raw2015", "all2015data", "dates"))
+dates<-seq(as.Date("2015-09-05"), to=as.Date("2015-12-06"), by=7)
+dates<-c(dates, as.Date("2016-01-12"))
+system.time(
+parLapply(cl, dates, function(date){
+  all2015data[[which(date==dates)]]<-list(dataconfigure(raw2015, reldate=date))
+})
+)
+stopCluster(cl)
 
 save(all2015data, raw2015, file="2015RFootballData.RData")
 
