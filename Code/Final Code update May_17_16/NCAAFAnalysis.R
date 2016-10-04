@@ -1,21 +1,27 @@
 #NCAA week by week
 
 load("MasterFunctionFile.RData")
-load("LatestNCAAF.RData")
+load("2015FootballData.RData")
+
+all2015data[[1]]<-list(dataconfigure(raw2015, reldate="2015-09-06"))
+all2015data[[1]][[2]]<-LARC.Rank(all2015data[[1]][[1]])
+all2015data[[1]][[3]]<-LARC.Rank(all2015data[[1]][[1]])
+
+save(all2015data, raw2015, file="2015RFootballData.RData")
 
 #Week 5
-print("Games analyzed")
-print(nrow(latestRaw)))
-stopifnot(nrow(latestRaw)==350)	
-week5<-dataconfigure(latestRaw, reldate=as.Date("2016-10-02"))
-save(week5, file="NCAAFWeek5Configured.RData")
-system.time(
-  BTResultsWeek5<-LARC.Rank(week5)
-)
-system.time(
-  TMResultsWeek5<-LARC.Rank(week5, increment = .01, func=ThurstoneMostellerLARC)
-)
-save(BTResultsWeek5, TMResultsWeek5, file="Week5Results.RData")
+#print("Games analyzed")
+#print(nrow(latestRaw)))
+#stopifnot(nrow(latestRaw)==350)	
+#week5<-dataconfigure(latestRaw, reldate=as.Date("2016-10-02"))
+#save(week5, file="NCAAFWeek5Configured.RData")
+#system.time(
+#  BTResultsWeek5<-LARC.Rank(week5)
+#)
+#system.time(
+#  TMResultsWeek5<-LARC.Rank(week5, increment = .01, func=ThurstoneMostellerLARC)
+#)
+#save(BTResultsWeek5, TMResultsWeek5, file="Week5Results.RData")
 
 #WEEK 4
 #week4<-dataconfigure(latestRaw, reldate = as.Date("2016-09-25"))
