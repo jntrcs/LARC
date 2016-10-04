@@ -1,10 +1,10 @@
 #!/bin/bash
 
-#SBATCH --time=02:00:00   # walltime
+#SBATCH --time=04:00:00   # walltime
 #SBATCH --ntasks=1   # number of processor cores (i.e. tasks)
-#SBATCH --nodes=1   # number of nodes
+#SBATCH --nodes=15   # number of nodes
 #SBATCH --mem-per-cpu=4096M   # memory per CPU core
-#SBATCH -J "week5"   # job name
+#SBATCH -J "allConfig"   # job name
 #SBATCH --mail-user=jcurtis210@gmail.com   # email address
 #SBATCH --mail-type=BEGIN
 #SBATCH --mail-type=END

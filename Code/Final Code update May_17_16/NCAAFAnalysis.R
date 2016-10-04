@@ -3,11 +3,11 @@
 load("MasterFunctionFile.RData")
 load("2015FootballData.RData")
 
-all2015data[[1]]<-list(dataconfigure(raw2015, reldate="2015-09-06"))
-all2015data[[1]][[2]]<-LARC.Rank(all2015data[[1]][[1]])
-all2015data[[1]][[3]]<-LARC.Rank(all2015data[[1]][[1]])
+all2015data[[3]]<-list(dataconfigure(raw2015, reldate="2015-09-20"))
+all2015data[[3]][[2]]<-LARC.Rank(all2015data[[3]][[1]])
+all2015data[[3]][[3]]<-LARC.Rank(all2015data[3]][[1]])
 
-save(all2015data, raw2015, file="2015RFootballData.RData")
+save(all2015data, raw2015, file="2015FootballData.RData")
 
 #Week 5
 #print("Games analyzed")
