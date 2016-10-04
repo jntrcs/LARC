@@ -5,11 +5,11 @@ load("2015FootballData.RData")
 
 
 library(parallel)
-numCores<-detectCores()-1
+numCores<-15
 cl <- makeCluster(numCores)
-clusterExport(cl, c("dataconfigure", "raw2015", "all2015data", "dates"))
 dates<-seq(as.Date("2015-09-05"), to=as.Date("2015-12-06"), by=7)
 dates<-c(dates, as.Date("2016-01-12"))
+clusterExport(cl, c("dataconfigure", "raw2015", "all2015data", "dates"))
 system.time(
 parLapply(cl, dates, function(date){
   all2015data[[which(date==dates)]]<-list(dataconfigure(raw2015, reldate=date))
