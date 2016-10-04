@@ -14,11 +14,8 @@
 #distance from their prediction to the correct answer. This gives us the desirable property that if Team A
 #beat Team B 95 out of 100 times, and model A predicted team A at 95% and Model B at 99%, 
 #Model B would be penalized more for it's 5 misses then A for it's 95 misses.
-TMStrengths<-TMResultsWeek2
-BTStrengths<-BTResultsWeek2
-schedule<-datascrape("NCAAF")
-startdate<-"2016-09-11" 
-enddate<-"2016-09-18"
+
+
 NCAAFPredictor<-function(TMStrengths, BTStrengths, schedule, startdate, enddate)
 {
   TMStrengths$Team<-as.character(TMStrengths$Team)
@@ -28,18 +25,22 @@ NCAAFPredictor<-function(TMStrengths, BTStrengths, schedule, startdate, enddate)
   
   
   weekGames<-schedule[schedule$Date<enddate&schedule$Date>startdate, c(3,5,8,9)]  
+  
+
   for (i in 1:nrow(weekGames))
   {
+    
+    #This finds the strengths of the teams.
     #The messy if elses are to handle the case where they play a team that has no previously estimated strength
     weekGames$HomeTMStength[i]<-ifelse(weekGames$Home[i]%in%TMStrengths$Team,TMStrengths$Strength[which(TMStrengths$Team==weekGames$Home[i])],0)
     weekGames$AwayTMStrength[i]<-ifelse(weekGames$Visitor[i]%in%TMStrengths$Team,TMStrengths$Strength[which(TMStrengths$Team==weekGames$Visitor[i])],0)
     weekGames$AwayBTStrength[i]<-ifelse(weekGames$Visitor[i]%in%BTStrengths$Team,BTStrengths$Strength[which(BTStrengths$Team==weekGames$Visitor[i])],1)
     weekGames$HomeBTStrength[i]<-ifelse(weekGames$Home[i]%in%BTStrengths$Team,BTStrengths$Strength[which(BTStrengths$Team==weekGames$Home[i])],1)
   }
-  #Right now there is an error in the datascrape where it lists the winner as the away team. 
-  #When I get around to fixing this will work accurately
+
   weekGames$BTHomeWin<-weekGames$HomeBTStrength/(weekGames$HomeBTStrength+weekGames$AwayBTStrength)
   weekGames$TMHomeWin<-pnorm(weekGames$HomeTMStength-weekGames$AwayTMStrength)
+  weekGames$Difference<-abs(weekGames$BTHomeWin-weekGames$TMHomeWin)
   weekGames$HomeTeamWon<-weekGames$Home==weekGames$Winner
   #This line looks at which prediction was closer to the actual value of who won and who lost
   weekGames$DidBetter<-ifelse(abs(ifelse(weekGames$HomeTeamWon, 1, 0)-weekGames$BTHomeWin)<abs(ifelse(weekGames$HomeTeamWon, 1, 0)-weekGames$TMHomeWin), "Bradley-Terry", "Thurstone-Mosteller")
@@ -53,24 +54,29 @@ NCAAFPredictor<-function(TMStrengths, BTStrengths, schedule, startdate, enddate)
   names(penalties)<-c("Bradley-Terry Penalty", "Thurstone-Mosteller Penalty")
   percentHomeWins<-c(mean(weekGames$BTHomeWin), mean(weekGames$TMHomeWin))
   names(percentHomeWins)<-c("Bradely-Terry Home Win Percent", "Thurstone-Mosteller Home Win Percent")
-  results<-list(weekGames, table(weekGames$DidBetter), penalties, percentHomeWins)
+  results<-list(weekGames, table(weekGames$DidBetter), penalties, mean(weekGames$Difference))
   results
 }  
 
-predictWeek2<-NCAAFPredictor(TMResultsWeek1, BTResultsWeek1, latestRaw, "2016-09-05", "2016-09-11")
-predictWeek3<-NCAAFPredictor(TMResultsWeek2, BTResultsWeek2, latestRaw, "2016-09-11", "2016-09-18")
-predictWeek4<-NCAAFPredictor(TMResultsWeek3, BTResultsWeek3, latestRaw, "2016-09-18", "2016-09-25")
-save(predictWeek2, predictWeek3, predictWeek4, file="WeeklyPredictions.RData")
-load("WeeklyPredictions.RData")
+all2016data[[2]][[4]]<-NCAAFPredictor(all2016data[[1]][[3]], all2016data[[1]][[2]], latestRaw, "2016-09-05", "2016-09-11")
+all2016data[[3]][[4]]<-NCAAFPredictor(all2016data[[2]][[3]], all2016data[[2]][[2]], latestRaw, "2016-09-11", "2016-09-18")
+all2016data[[4]][[4]]<-NCAAFPredictor(all2016data[[3]][[3]], all2016data[[3]][[2]], latestRaw, "2016-09-18", "2016-09-25")
+all2016data[[5]][[4]]<-NCAAFPredictor(all2016data[[4]][[3]], all2016data[[4]][[2]], latestRaw, "2016-09-25", "2016-10-02")
 
-performance<-list(predictWeek2[[2]], predictWeek3[[2]], predictWeek4[[2]])
 
-graphic<-sapply(performance, FUN=function(vec){vec[1]/(vec[2]+vec[1])})
-plot(graphic, type='l', main="Bradley-Terry 'Win' Percentage", ylab="Percent BT Model Favored",
+makePerformanceGraph<-function(performance)
+{
+  graphic<-sapply(performance, FUN=function(vec){vec[1]/(vec[2]+vec[1])})
+  plot(graphic, type='l', main="Bradley-Terry 'Win' Percentage", ylab="Percent BT Model Favored",
      xlab="Week", xaxt="n")
-axis(1,at=1:length(graphic),labels=2:(length(graphic)+1))
+  axis(1,at=1:length(graphic),labels=2:(length(graphic)+1))
+}
 
-penalties<-list(predictWeek2[[3]], predictWeek3[[3]], predictWeek4[[3]])
+performance<-lapply(2:length(all2016data), FUN=function(n){all2016data[[n]][[4]][[2]]})
+makePerformanceGraph(performance)
+
+makePenaltyGraph<-function(penatlies)
+{
 BTPenalties<-sapply(penalties, FUN = function(vec){vec[1]})
 TMPenalties<-sapply(penalties, FUN = function(vec){vec[2]})
 plot(BTPenalties, type='l', col="Red", main="Bad Prediction Penalization", ylab="Penatly Score",
@@ -78,4 +84,19 @@ plot(BTPenalties, type='l', col="Red", main="Bad Prediction Penalization", ylab=
 lines(TMPenalties, col="Blue", lty=2)
 axis(1,at=1:length(BTPenalties),labels=2:(length(BTPenalties)+1))
 legend(1, 18.5,c("Bradley-Terry", "Thurstone-Mosteller"), col=c("Red", "Blue"), lty=c(1,2))
+}
 
+penalties<-lapply(2:length(all2016data), FUN=function(n){all2016data[[n]][[4]][[3]]})
+makePenaltyGraph(penalties)
+
+makeDifferenceGraph<-function(meanDifferences)
+{
+  plot(meanDifferences, type="l", main="Average Difference in Prediction (%)", xaxt="n", xlab="Week",
+       ylab="% Different", yaxt="n")
+  yticks<-seq(floor(min(meanDifferences*100))/100,ceiling(max(meanDifferences*100))/100, by=.01)
+  axis(2, at=yticks, label=yticks*100)
+  axis(1,at=1:length(meanDifferences),labels=2:(length(meanDifferences)+1))
+
+}
+meanDifferences<-sapply(2:length(all2016data), FUN=function(n){all2016data[[n]][[4]][[4]]})
+makeDifferenceGraph(meanDifferences)
