@@ -1,10 +1,10 @@
 #!/bin/bash
 
-#SBATCH --time=04:00:00   # walltime
-#SBATCH --ntasks=1   # number of processor cores (i.e. tasks)
-#SBATCH --nodes=15   # number of nodes
+#SBATCH --time=01:00:00   # walltime
+#SBATCH --ntasks=15   # number of processor cores (i.e. tasks)
+#SBATCH --nodes=1   # number of nodes
 #SBATCH --mem-per-cpu=4096M   # memory per CPU core
-#SBATCH -J "allConfig"   # job name
+#SBATCH -J "testcorechecker"   # job name
 #SBATCH --mail-user=jcurtis210@gmail.com   # email address
 #SBATCH --mail-type=BEGIN
 #SBATCH --mail-type=END
@@ -17,4 +17,5 @@ export OMP_NUM_THREADS=$SLURM_CPUS_ON_NODE
 
 # LOAD MODULES, INSERT CODE, AND RUN YOUR PROGRAMS HERE
 module load r/3/3
-Rscript NCAAFAnalysis.R
+Rscript test.R
+#Rscript NCAAFAnalysis.R
