@@ -3,7 +3,7 @@
 #SBATCH --time=01:00:00   # walltime
 #SBATCH --ntasks=15   # number of processor cores (i.e. tasks)
 #SBATCH --nodes=1   # number of nodes
-#SBATCH --mem-per-cpu=4096M   # memory per CPU core
+#SBATCH --mem-per-cpu=1024M   # memory per CPU core
 #SBATCH -J "testcorechecker"   # job name
 #SBATCH --mail-user=jcurtis210@gmail.com   # email address
 #SBATCH --mail-type=BEGIN
