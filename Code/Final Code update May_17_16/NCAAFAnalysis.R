@@ -7,17 +7,17 @@ load("2015FootballData.RData")
 library(parallel)
 numCores<-15
 cl <- makeCluster(numCores)
-dates<-seq(as.Date("2015-09-05"), to=as.Date("2015-12-06"), by=7)
-dates<-c(dates, as.Date("2016-01-12"))
+dates<-seq(as.Date("2015-09-05"), to=as.Date("2015-09-13"), by=7)
+#dates<-c(dates, as.Date("2016-01-12"))
 clusterExport(cl, c("dataconfigure", "raw2015", "all2015data", "dates"))
 system.time(
-parLapply(cl, dates, function(date){
-  all2015data[[which(date==dates)]]<-list(dataconfigure(raw2015, reldate=date))
+all2015data<-parLapply(cl, dates, function(date){
+  list(dataconfigure(raw2015, reldate=date))
 })
 )
 stopCluster(cl)
 
-save(all2015data, raw2015, file="2015RFootballData.RData")
+save(all2015data, raw2015, file="2015FootballData.RData")
 
 #Week 5
 #print("Games analyzed")

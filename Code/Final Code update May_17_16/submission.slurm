@@ -17,5 +17,4 @@ export OMP_NUM_THREADS=$SLURM_CPUS_ON_NODE
 
 # LOAD MODULES, INSERT CODE, AND RUN YOUR PROGRAMS HERE
 module load r/3/3
-Rscript test.R
-#Rscript NCAAFAnalysis.R
+Rscript NCAAFAnalysis.R
