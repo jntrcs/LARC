@@ -7,7 +7,11 @@ getRaw<-function(year=2016)
       load("2016FootballData.RData")
     latestRaw
   }
+<<<<<<< HEAD
   else if (year==2015)
+=======
+  if (year==2015)
+>>>>>>> 538ca07ebb26c645a7735320e4334179d375c34c
   {
     if(!exists("raw2015"))
       load("2015FootballData.RData")
@@ -23,7 +27,11 @@ getConfigured<-function(week, year=2016)
       load("2016FootballData.RData")
     all2016data[[week]][[1]]
   }
+<<<<<<< HEAD
   else if (year==2015)
+=======
+  if (year==2015)
+>>>>>>> 538ca07ebb26c645a7735320e4334179d375c34c
    { if(!exists("all2016data"))
         load("2015FootballData.RData")
       all2015data[[week]][[1]]
@@ -38,7 +46,11 @@ getBTStrengths<-function(week, year=2016)
       load("2016FootballData.RData")
     all2016data[[week]][[2]]
   }
+<<<<<<< HEAD
   else if (year==2015)
+=======
+  if (year==2015)
+>>>>>>> 538ca07ebb26c645a7735320e4334179d375c34c
   { if(!exists("all2016data"))
     load("2015FootballData.RData")
     all2015data[[week]][[2]]
@@ -53,9 +65,15 @@ getTMStrengths<-function(week, year=2016)
       load("2016FootballData.RData")
     all2016data[[week]][[3]]
   }
+<<<<<<< HEAD
   else if (year==2015)
   { if(!exists("all2016data"))
       load("2015FootballData.RData")
+=======
+  if (year==2015)
+  { if(!exists("all2016data"))
+    load("2015FootballData.RData")
+>>>>>>> 538ca07ebb26c645a7735320e4334179d375c34c
     all2015data[[week]][[3]]
   }
 }
@@ -73,7 +91,11 @@ getPredictions<-function(week, year=2016)
       load("2016FootballData.RData")
     all2016data[[week]][[4]]
   }
+<<<<<<< HEAD
   else if (year==2015)
+=======
+  if (year==2015)
+>>>>>>> 538ca07ebb26c645a7735320e4334179d375c34c
   { if(!exists("all2016data"))
     load("2015FootballData.RData")
     all2015data[[week]][[4]]
