@@ -11,9 +11,9 @@ cl <- makeCluster(numCores)
 dates<-seq(as.Date("2015-09-05"), to=as.Date("2015-12-06"), by=7)
 dates<-c(dates, as.Date("2016-01-12"))
 clusterExport(cl, c("dataconfigure", "raw2015", "all2015data", "dates", "ThurstoneMostellerLARC", 
-                    "BradleyTerryLARC", "LARC.Rank", "LARC.Optim"))
+                    "BradleyTerryLARC", "LARC.Rank", "LARC.Optim", "find.mf"))
 system.time(
-bradter<-parLapply(c1, dates, function(date){
+bradter<-parLapply(cl, dates, function(date){
   LARC.Rank(all2015data[[which(dates==date)]][[1]])
 })
 )
