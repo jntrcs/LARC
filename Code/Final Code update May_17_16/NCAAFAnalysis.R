@@ -20,8 +20,9 @@ bradter<-parLapply(c1, dates, function(date){
 for (i in 1:length(bradter))
 {
   all2015data[[i]][[2]]<-bradter[[i]]
+  save(all2015data, raw2015, file="2015FootballData.RData")
+  
 }
-save(all2015data, raw2015, file="2015FootballData.RData")
 
 
 system.time(
@@ -32,6 +33,8 @@ thurs<-parLapply(c1, dates, function(date){
 for (i in 1:length(thurs))
 {
   all2015data[[i]][[3]]<-thurs[[i]]
+  save(all2015data, raw2015, file="2015FootballData.RData")
+  
 }
 #system.time(
 #all2015data<-parLapply(cl, dates, function(date){
