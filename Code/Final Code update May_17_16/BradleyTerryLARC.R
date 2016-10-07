@@ -13,13 +13,13 @@ BradleyTerryLARC <- function(strengths,wins,magnificationfactor=1) {
   PI <- 1
   PIPI <- 1
   W <- vector()
-  x <- 0
+  x <- 0 #Never Used
   for (i in 1:length(strengths)) {
     W[i] <- sum(wins[i,])
     PI <- PI*strengths[i]^(W[i]+1)
     for (j in (i+1):length(strengths)) {
       if (j < length(strengths)+1) {
-        x <- x + 1
+        x <- x + 1 #This is unused so I'm not sure why it's here.
         PIPI <- PIPI*(1/(strengths[i]+strengths[j])^(wins[i,j]+wins[j,i]))*magnificationfactor
       }
     }
@@ -28,7 +28,7 @@ BradleyTerryLARC <- function(strengths,wins,magnificationfactor=1) {
 }
 #
 #an example of the function
-BradleyTerryLARC(NBAdf$Strength,NBAdf$WinsVersus)
+#BradleyTerryLARC(NBAdf$Strength,NBAdf$WinsVersus)
 #the next four lines are to give a comparison of what the preceeding function should return
 # y <- 0
 # for (i in 1:30) {

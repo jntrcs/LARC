@@ -13,7 +13,7 @@ BradleyTerryLARC <- function(strengths,wins,magnificationfactor=1) {
     PI <- PI*strengths[i]^(W[i]+1)
     for (j in (i+1):length(strengths)) {
       if (j < length(strengths)+1) {
-        x <- x + 1
+        x <- x + 1 #Never used
         PIPI <- PIPI*(1/(strengths[i]+strengths[j])^(wins[i,j]+wins[j,i]))*magnificationfactor
       }
     }
@@ -22,13 +22,13 @@ BradleyTerryLARC <- function(strengths,wins,magnificationfactor=1) {
 }
 
 #an example of the function
-BradleyTerryLARC(NBAdf$Strength,NBAdf$WinsVersus)
+#BradleyTerryLARC(NBAdf$Strength,NBAdf$WinsVersus)
 #the next four lines are to give a comparison of what the preceeding function should return
-y <- 0
-for (i in 1:30) {
-  y <- y + sum(NBAdf$Versus[i,i:30])
-}
-exp(-30)*1*(1/2^y)
+#y <- 0
+#for (i in 1:30) {
+#  y <- y + sum(NBAdf$Versus[i,i:30])
+#}
+#exp(-30)*1*(1/2^y)
 
 #ThurstoneMostellerLARC: this function is the Thurstone-Mosteller Model. It takes three arguments
 # the strengths of the teams, the number of wins for each team against each team,
@@ -50,7 +50,7 @@ ThurstoneMostellerLARC <- function(strengths,wins,magnificationfactor=1) {
 }
 
 #an example of the function
-ThurstoneMostellerLARC(NBAdf$Strength,NBAdf$WinsVersus)
+#ThurstoneMostellerLARC(NBAdf$Strength,NBAdf$WinsVersus)
 
 #The following two functions simply generate the probability as dictated by either the
 # Bradley-Terry or Thurstone-Mosteller Models
@@ -98,26 +98,24 @@ TMWP <- function(team1strength,team2strength, statement = TRUE, team1 = NULL, te
 #This function is a tool to be used within other functions to simply find the appropriate 
 # magnification factor, it normally has no use outside of other functions.
 find.mf <- function(df, mf = 1, func = BradleyTerryLARC, adj=1) {
-  if (func(df$Strength,df$WinsVersus,mf) == 0) {
-    while (func(df$Strength,df$WinsVersus,mf) == 0) {
-      mf <- mf + adj
+  d<-func(df$Strength,df$WinsVersus,mf)
+  x<-0
+  while (d==0|d==Inf)
+  {
+    x<-x+1
+    if (d==0) {
+      mf<-mf+adj
+      if (func(df$Strength,df$WinsVersus,mf) == Inf)
+        adj<-adj/10
     }
-    mfo <- round(mf*10)
-    while (func(df$Strength,df$WinsVersus,mfo) == Inf) {
-      mfo <- mfo - adj
+    else if (d==Inf)
+    {
+      mf<-mf-adj
+      if (func(df$Strength,df$WinsVersus,mf) == 0)
+        adj<-adj/10
     }
-    mf <- mean(c(mf,mfo))
-  } else { 
-    if (func(df$Strength,df$WinsVersus,mf) == Inf) {
-      while (func(df$Strength,df$WinsVersus,mf) == Inf) {
-        mf <- mf - adj
-      }
-      mfo <- round(mf/10)
-      while (func(df$Strength,df$WinsVersus,mfo) == 0) {
-        mfo <- mfo + adj
-      }
-      mf <- mean(c(mf,mfo))
-    }
+    d<-func(df$Strength,df$WinsVersus,mf)
+    stopifnot(x<1000)
   }
   return(mf)
 }
