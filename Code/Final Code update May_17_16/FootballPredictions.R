@@ -63,6 +63,21 @@ all2016data[[3]][[4]]<-NCAAFPredictor(all2016data[[2]][[3]], all2016data[[2]][[2
 all2016data[[4]][[4]]<-NCAAFPredictor(all2016data[[3]][[3]], all2016data[[3]][[2]], latestRaw, "2016-09-18", "2016-09-25")
 all2016data[[5]][[4]]<-NCAAFPredictor(all2016data[[4]][[3]], all2016data[[4]][[2]], latestRaw, "2016-09-25", "2016-10-02")
 
+dates<-seq(as.Date("2015-09-06"), to=as.Date("2015-11-25"), by=7)
+temp<-lapply(2:10, FUN=function(i) NCAAFPredictor(all2015data[[i]][[3]],all2015data[[i]][[2]],raw2015,dates[i], dates[i+1]))
+for (i in 2:10)
+{
+  all2015data[[i]][[4]]<-temp[[i-1]]
+}
+performance<-lapply(2:10, FUN=function(n){all2015data[[n]][[4]][[2]]})
+makePerformanceGraph(performance)
+
+penalties<-lapply(2:10, FUN=function(n){all2015data[[n]][[4]][[3]]})
+makePenaltyGraph(penalties)
+
+meanDifferences<-sapply(2:10, FUN=function(n){all2015data[[n]][[4]][[4]]})
+makeDifferenceGraph(meanDifferences)
+
 
 makePerformanceGraph<-function(performance)
 {
@@ -75,15 +90,16 @@ makePerformanceGraph<-function(performance)
 performance<-lapply(2:length(all2016data), FUN=function(n){all2016data[[n]][[4]][[2]]})
 makePerformanceGraph(performance)
 
+
 makePenaltyGraph<-function(penatlies)
 {
 BTPenalties<-sapply(penalties, FUN = function(vec){vec[1]})
 TMPenalties<-sapply(penalties, FUN = function(vec){vec[2]})
-plot(BTPenalties, type='l', col="Red", main="Bad Prediction Penalization", ylab="Penatly Score",
+plot(TMPenalties, type='l', lty=2, col="Blue", main="Bad Prediction Penalization", ylab="Penatly Score",
      xlab="Week Predicted", xaxt="n")
-lines(TMPenalties, col="Blue", lty=2)
+lines(BTPenalties, col="Red")
 axis(1,at=1:length(BTPenalties),labels=2:(length(BTPenalties)+1))
-legend(1, 18.5,c("Bradley-Terry", "Thurstone-Mosteller"), col=c("Red", "Blue"), lty=c(1,2))
+legend(5, 33,c("Bradley-Terry", "Thurstone-Mosteller"), col=c("Red", "Blue"), lty=c(1,2))
 }
 
 penalties<-lapply(2:length(all2016data), FUN=function(n){all2016data[[n]][[4]][[3]]})
@@ -93,7 +109,7 @@ makeDifferenceGraph<-function(meanDifferences)
 {
   plot(meanDifferences, type="l", main="Average Difference in Prediction (%)", xaxt="n", xlab="Week",
        ylab="% Different", yaxt="n")
-  yticks<-seq(floor(min(meanDifferences*100))/100,ceiling(max(meanDifferences*100))/100, by=.01)
+  yticks<-seq(floor(min(meanDifferences*100))/100,ceiling(max(meanDifferences*100))/100, by=.001)
   axis(2, at=yticks, label=yticks*100)
   axis(1,at=1:length(meanDifferences),labels=2:(length(meanDifferences)+1))
 

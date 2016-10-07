@@ -14,3 +14,7 @@ newTMStrengths<-LARC.Rank(all2015data[[5]][[1]], func=ThurstoneMostellerLARC)
 )
 cbind(newTMStrengths, all2015data[[5]][[3]])
 stopifnot(newTMStrengths$Strength==all2015data[[5]][[3]]$Strength)
+
+newBTStrengths<-all2015dataCopy[[5]][[2]]
+newTMStrengths<-all2015dataCopy[[5]][[3]]
+length(all2015dataCopy[[5]])
