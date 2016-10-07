@@ -26,18 +26,18 @@ for (i in 6:length(bradter))
 stopCluster(clust)
 
 clust<-makeCluster(numCores)
-dates<-seq(as.Date("2015-09-05"), to=as.Date("2015-12-06"), by=7)
-dates<-c(dates, as.Date("2016-01-12"))
+#dates<-seq(as.Date("2015-09-05"), to=as.Date("2015-12-06"), by=7)
+#dates<-c(dates, as.Date("2016-01-12"))
 clusterExport(clust, neededFunc)
 
 system.time(
 thurs<-parLapply(clust, dates, function(date){
-  LARC.Rank(all2015data[[which(dates==date)]][[1]], func=ThurstoneMostellerLARC, dgt=2)
+  LARC.Rank(all2015data[[which(dates==date)+5]][[1]], func=ThurstoneMostellerLARC, dgt=2)
 })
 )
-for (i in 1:length(thurs))
+for (i in 6:length(thurs))
 {
- all2015data[[i]][[3]]<-thurs[[i]]
+ all2015data[[i]][[3]]<-thurs[[i-5]]
 }
   save(all2015data, raw2015, file="2015FootballData.RData")
 #system.time(
