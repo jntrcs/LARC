@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --time=10:00:00   # walltime
-#SBATCH --ntasks=15   # number of processor cores (i.e. tasks)
+#SBATCH --ntasks=1   # number of processor cores (i.e. tasks)
 #SBATCH --nodes=1   # number of nodes
 #SBATCH --mem-per-cpu=1024M   # memory per CPU core
 #SBATCH -J "Try 2"   # job name
@@ -17,4 +17,4 @@ export OMP_NUM_THREADS=$SLURM_CPUS_ON_NODE
 
 # LOAD MODULES, INSERT CODE, AND RUN YOUR PROGRAMS HERE
 module load r/3/3
-Rscript NCAAFAnalysis.R
+Rscript Consistency.R
