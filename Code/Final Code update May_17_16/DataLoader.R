@@ -35,3 +35,5 @@ raw2015Copy<-raw2015
 save(all2015dataCopy, raw2015Copy, file="2015Copy.Rdata")
 
 rm(all2015dataCopy, all2016dataCopy, raw2015Copy, latestRawCopy)
+
+
