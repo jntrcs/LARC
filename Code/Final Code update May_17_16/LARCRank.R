@@ -42,19 +42,19 @@ LARC.Rank.Football<-function(df, func=BradleyTerryLARC, increment = 0.001,
   else
     df$Strength<-df$BTLast
   
-  LARC.Rank(df, func, increment, iterations, dgt, magnificationfactor, adj)
+  LARC.Rank(df, func, increment, iterations, dgt, magnificationfactor, adj, football=TRUE)
 }
 # 
 LARC.Rank <- function(df, func=BradleyTerryLARC, increment = 0.001, 
-                      iterations = Inf, dgt=3, magnificationfactor=1, adj=1) {
+                      iterations = Inf, dgt=3, magnificationfactor=1, adj=1, football=FALSE) {
   options(digits=dgt)
   tt <- nrow(df)
   length_strength <- length(df$Strength) # Get the length of strength
   if_mosteller <- identical(func,ThurstoneMostellerLARC) # Check if MostellerLARC function is used
-  #if (if_mosteller == TRUE){
-  #  for (i in 1:length_strength){
-  #    df$Strength[i] <- 0}# if MostellerLARC then change the initial strength to be Zero
-  #}
+  if (if_mosteller == TRUE && !football){
+    for (i in 1:length_strength){
+      df$Strength[i] <- 0}# if MostellerLARC then change the initial strength to be Zero
+  }
   
   if (is.null(df$WinsTotal)) {
     for (i in 1:tt) {
