@@ -30,6 +30,20 @@
 #
 # functions invoked by LARC.Rank
 #  LARC.Optim
+
+
+#A small abstraction so that the last strengths are used when trying to find the new strengths.
+#Should speed things considerably
+LARC.Rank.Football<-function(df, func=BradleyTerryLARC, increment = 0.001, 
+                             iterations = Inf, dgt=3, magnificationfactor=1, adj=1)
+{
+  if (identical(func, ThurstoneMostellerLARC))
+    df$Strength<-df$TMLast
+  else
+    df$Strength<-df$BTLast
+  
+  LARC.Rank(df, func, increment, iterations, dgt, magnificationfactor, adj)
+}
 # 
 LARC.Rank <- function(df, func=BradleyTerryLARC, increment = 0.001, 
                       iterations = Inf, dgt=3, magnificationfactor=1, adj=1) {
@@ -37,10 +51,10 @@ LARC.Rank <- function(df, func=BradleyTerryLARC, increment = 0.001,
   tt <- nrow(df)
   length_strength <- length(df$Strength) # Get the length of strength
   if_mosteller <- identical(func,ThurstoneMostellerLARC) # Check if MostellerLARC function is used
-  if (if_mosteller == TRUE){
-    for (i in 1:length_strength){
-      df$Strength[i] <- 0}# if MostellerLARC then change the initial strength to be Zero
-  }
+  #if (if_mosteller == TRUE){
+  #  for (i in 1:length_strength){
+  #    df$Strength[i] <- 0}# if MostellerLARC then change the initial strength to be Zero
+  #}
   
   if (is.null(df$WinsTotal)) {
     for (i in 1:tt) {

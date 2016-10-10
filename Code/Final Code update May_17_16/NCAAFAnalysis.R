@@ -14,7 +14,7 @@ neededFunc<- c("dataconfigure", "raw2015", "all2015data", "dates", "ThurstoneMos
 clusterExport(clust, neededFunc)
 system.time(
 bradter<-parLapply(clust, dates, function(date){
-  LARC.Rank(all2015data[[which(dates==date)+5]][[1]])
+  LARC.Rank.Football(all2015data[[which(dates==date)+5]][[1]])
 })
 )
 for (i in 6:length(bradter))
@@ -32,7 +32,7 @@ clusterExport(clust, neededFunc)
 
 system.time(
 thurs<-parLapply(clust, dates, function(date){
-  LARC.Rank(all2015data[[which(dates==date)+5]][[1]], func=ThurstoneMostellerLARC, dgt=2)
+  LARC.Rank.Football(all2015data[[which(dates==date)+5]][[1]], func=ThurstoneMostellerLARC, dgt=2)
 })
 )
 for (i in 6:length(thurs))
@@ -114,3 +114,19 @@ stopCluster(clust)
 #cbind(BTResultsWeek1, TMResultsWeek1)
 
 
+##This is going to configure the data so that it contains the strengths for the last week in data configure
+#all2015data[[1]][[1]]$BTLast<-rep(1, nrow(all2015data[[1]][[1]]))
+#all2015data[[1]][[1]]$TMLast<-rep(0, nrow(all2015data[[1]][[1]]))
+
+#for (i in 2:length(all2015data))
+#{
+ # for (j in 1:length(all2015data[[i]][[1]]$Team))
+  #{
+#    all2015data[[i]][[1]]$BTLast[j]<-ifelse(all2015data[[i]][[1]]$Team[j] %in% all2015data[[i-1]][[2]]$Team,
+ #                   all2015data[[i-1]][[2]]$Strength[all2015data[[i-1]][[2]]$Team ==all2015data[[i]][[1]]$Team[j]],
+  #                                                   1)
+   # all2015data[[i]][[1]]$TMLast[j]<-ifelse(all2015data[[i]][[1]]$Team[j] %in% all2015data[[i-1]][[2]]$Team,
+     #                                       all2015data[[i-1]][[3]]$Strength[all2015data[[i-1]][[3]]$Team ==all2015data[[i]][[1]]$Team[j]],
+    #                                        0)
+#  }
+#}
