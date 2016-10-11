@@ -6,7 +6,8 @@ save(BradleyTerryLARC, BTWP, dataconfigure, datascrape, find.mf, full.sim.gen, L
      scrapeNCAAB, scrapeNCAAF, scrapeNFL, scrapeNHL, sim.gen, simulate, simulation, ThurstoneMostellerLARC,
      TMWP, VS.matrix, NCAAFPredictor, makePenaltyGraph, makePerformanceGraph,
      makeDifferenceGraph, getConfigured, getRaw, getBTStrengths, getTMStrengths,
-     getStrengths, getPredictions, LARC.Rank.Football, file="MasterFunctionFile.RData")
+     getStrengths, getPredictions, LARC.Rank.Football,
+     attachMostRecentStrengths, file="MasterFunctionFile.RData")
 
 
 #Whenevere you need to load functions, call this command

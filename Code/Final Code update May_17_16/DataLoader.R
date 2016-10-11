@@ -26,7 +26,6 @@ all2016data<-list(list(week1, BTResultsWeek1, TMResultsWeek1),
                      list(week5, BTResultsWeek5, TMResultsWeek5))
 
 #2015 Football
-all2015data<-list()
 raw2015<-datascrape("NCAAF", year=2015)
 save(all2015data, raw2015, file="2015FootballData.RData")
 

@@ -7,14 +7,13 @@ BradleyTerryLARC <- function(strengths,wins,magnificationfactor=1) {
   PI <- 1
   PIPI <- 1
   W <- vector()
-  x <- 0
   for (i in 1:length(strengths)) {
     W[i] <- sum(wins[i,])
     PI <- PI*strengths[i]^(W[i]+1)
     for (j in (i+1):length(strengths)) {
       if (j < length(strengths)+1) {
-        x <- x + 1 #Never used
-        PIPI <- PIPI*(1/(strengths[i]+strengths[j])^(wins[i,j]+wins[j,i]))*magnificationfactor
+        if ((wins[i,j]+wins[j,i])>0)
+          PIPI <- PIPI*(1/(strengths[i]+strengths[j])^(wins[i,j]+wins[j,i]))*magnificationfactor
       }
     }
   }
@@ -41,7 +40,8 @@ ThurstoneMostellerLARC <- function(strengths,wins,magnificationfactor=1) {
   cond <- 1
   for (i in 1:length(strengths)) {
     for (j in 1:length(strengths)) {
-      cond <- cond*pnorm(strengths[i]-strengths[j])^wins[i,j]*magnificationfactor
+      if (wins[i,j]!=0)
+        cond <- cond*pnorm(strengths[i]-strengths[j])^wins[i,j]*magnificationfactor
     }
   }
   # Now put the two together 

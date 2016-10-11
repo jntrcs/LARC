@@ -92,4 +92,21 @@ dataconfigure <- function(df, reldate=Sys.Date()-1, forsim=FALSE) {
   return(data)
 }
 
+#This function accepts the data.frame with the versus matrix and a data.frame with bradley terry strengths
+#and with Thurstone mosteller strengths, and attaches them to the matrix DF
+attachMostRecentStrengths<-function(matrix, BTstrengths, TMStrengths)
+{
+
+   for (j in 1:length(matrix$Team))
+  {
+      matrix$BTLast[j]<-ifelse(matrix$Team[j] %in% BTstrengths$Team,
+                     BTstrengths$Strength[BTstrengths$Team ==matrix$Team[j]],
+                                                     1)
+   matrix$TMLast[j]<-ifelse(matrix$Team[j] %in% TMStrengths$Team,
+                                        TMStrengths$Strength[TMStrengths$Team ==matrix$Team[j]],
+                                          0)
+   }
+  matrix
+}
+
 
