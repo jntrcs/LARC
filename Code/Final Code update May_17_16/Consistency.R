@@ -13,9 +13,9 @@ system.time(
 newTMStrengths<-LARC.Rank.Football(all2015data[[5]][[1]], func=ThurstoneMostellerLARC, inc=.01)
 )
 cbind(newTMStrengths, all2015data[[5]][[3]][,1:3])
-#stopifnot(newTMStrengths$Strength==all2015data[[5]][[3]]$Strength)
+stopifnot(newTMStrengths$Strength==all2015data[[5]][[3]]$Strength)
 
-
+newBTStrengths$Strength==all2015data[[5]][[2]]$Strength
 #OrigTime<-system.time(
  # EmployeeRankOriginal <- LARC.Rank(Employeedf)
 #)
