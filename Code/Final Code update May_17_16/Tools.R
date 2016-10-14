@@ -95,30 +95,7 @@ TMWP <- function(team1strength,team2strength, statement = TRUE, team1 = NULL, te
   }
 }
 
-#This function is a tool to be used within other functions to simply find the appropriate 
-# magnification factor, it normally has no use outside of other functions.
-find.mf <- function(df, mf = 1, func = BradleyTerryLARC, adj=1) {
-  d<-func(df$Strength,df$WinsVersus,mf)
-  x<-0
-  while (d==0|d==Inf)
-  {
-    x<-x+1
-    if (d==0) {
-      mf<-mf+adj
-      if (func(df$Strength,df$WinsVersus,mf) == Inf)
-        adj<-adj/10
-    }
-    else if (d==Inf)
-    {
-      mf<-mf-adj
-      if (func(df$Strength,df$WinsVersus,mf) == 0)
-        adj<-adj/10
-    }
-    d<-func(df$Strength,df$WinsVersus,mf)
-    stopifnot(x<1000)
-  }
-  return(mf)
-}
+
 
 #This is a version of the first two functions listed in this file, but it will find the 
 # magnification factor of either one while calculating the value of the posterior. By using the

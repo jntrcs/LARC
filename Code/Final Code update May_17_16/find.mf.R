@@ -13,27 +13,27 @@
 #  when the posterior estimates get very small, essentially zero, this function keeps increasing the mf.
 #  when the posterior estimates get too large, this function decreases the mf
 # 
+#This function is a tool to be used within other functions to simply find the appropriate 
+# magnification factor, it normally has no use outside of other functions.
 find.mf <- function(df, mf = 1, func = BradleyTerryLARC, adj=1) {
-  if (func(df$Strength,df$WinsVersus,mf) == 0) {
-    while (func(df$Strength,df$WinsVersus,mf) == 0) {
-      mf <- mf + adj
+  d<-func(df$Strength,df$WinsVersus,mf)
+  x<-0
+  while (d==0|d==Inf)
+  {
+    x<-x+1
+    if (d==0) {
+      mf<-mf+adj
+      if (func(df$Strength,df$WinsVersus,mf) == Inf)
+        adj<-adj/10
     }
-    mfo <- round(mf*10)
-    while (func(df$Strength,df$WinsVersus,mfo) == Inf) {
-      mfo <- mfo - adj
+    else if (d==Inf)
+    {
+      mf<-mf-adj
+      if (func(df$Strength,df$WinsVersus,mf) == 0)
+        adj<-adj/10
     }
-    mf <- mean(c(mf,mfo))
-  } else { 
-    if (func(df$Strength,df$WinsVersus,mf) == Inf) {
-      while (func(df$Strength,df$WinsVersus,mf) == Inf) {
-        mf <- mf - adj
-      }
-      mfo <- round(mf/10)
-      while (func(df$Strength,df$WinsVersus,mfo) == 0) {
-        mfo <- mfo + adj
-      }
-      mf <- mean(c(mf,mfo))
-    }
+    d<-func(df$Strength,df$WinsVersus,mf)
+    stopifnot(x<1000)
   }
   return(mf)
 }
