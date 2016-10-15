@@ -13,26 +13,28 @@ system.time(
 newTMStrengths<-LARC.Rank.Football(all2015data[[5]][[1]], func=ThurstoneMostellerLARC, inc=.01)
 )
 cbind(newTMStrengths, all2015data[[5]][[3]][,1:3])
-#stopifnot(newTMStrengths$Strength==all2015data[[5]][[3]]$Strength)
+stopifnot(newTMStrengths$Strength==all2015data[[5]][[3]]$Strength)
 
-
+newBTStrengths$Strength==all2015data[[5]][[2]]$Strength
 #OrigTime<-system.time(
-#  EmployeeRankOriginal <- LARC.Rank(Employeedf)
+ # EmployeeRankOriginal <- LARC.Rank(Employeedf)
 #)
 #OrigTimeTM<-system.time(
-#  EmployeeRankOriginalTM <- LARC.Rank(Employeedf, func=ThurstoneMostellerLARC)
+ # EmployeeRankOriginalTM <- LARC.Rank(Employeedf, func=ThurstoneMostellerLARC)
 #)
 #OrigTime
 #EmployeeRankOriginal
 #EmployeeRankOriginalTM
+#save(Employeedf, OrigTime, EmployeeRankOriginal, EmployeeRankOriginalTM, OrigTimeTM, file="EmployeeOriginals.RData")
 
+load("EmployeeOriginals.RData")
 newTime<-system.time(
   EmployeeRankNew <- LARC.Rank(Employeedf)
 )
 newTimeTM<-system.time(
   EmployeeRankNewTM <- LARC.Rank(Employeedf, func=ThurstoneMostellerLARC)
 )
-
+cbind(EmployeeRankOriginal, EmployeeRankNew)
 stopifnot(EmployeeRankOriginal$Team==EmployeeRankNew$Team)
 stopifnot(EmployeeRankOriginal$Strength==EmployeeRankNew$Strength)
 stopifnot(EmployeeRankOriginalTM$Team==EmployeeRankNewTM$Team)

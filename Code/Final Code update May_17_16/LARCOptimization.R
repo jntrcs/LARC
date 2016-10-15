@@ -46,19 +46,19 @@ LARC.Optim <- function(df, func = BradleyTerryLARC, increment = 0.001,
     last <- comp
     #the for loop adjusts each strength either up or down by inc until func is maxed
     for (i in 1:nrow(df)) {
-      df$Strength[i] <- df$Strength[i] + inc
-      new <- func(df$Strength,df$WinsVersus,mf)# <- LARC.Posterior(df, func, mf = magnificationfactor,adj=adj)
-      if (comp > new) {
-        df$Strength[i] <- df$Strength[i] - 2*inc
+        df$Strength[i] <- df$Strength[i] + inc
         new <- func(df$Strength,df$WinsVersus,mf)# <- LARC.Posterior(df, func, mf = magnificationfactor,adj=adj)
         if (comp > new) {
-          df$Strength[i] <- df$Strength[i] + inc
+          df$Strength[i] <- df$Strength[i] - 2*inc
+          new <- func(df$Strength,df$WinsVersus,mf)# <- LARC.Posterior(df, func, mf = magnificationfactor,adj=adj)
+          if (comp > new) {
+            df$Strength[i] <- df$Strength[i] + inc
+          } else {
+            comp <- new
+          }
         } else {
           comp <- new
         }
-      } else {
-        comp <- new
-      }
     }
     #if func returned the same value it changes to a smaller inc
     if (comp == last) {
