@@ -8,7 +8,7 @@ system.time(
 newBTStrengths<-LARC.Rank.Football(all2015data[[5]][[1]])
 )
 cbind(newBTStrengths, all2015data[[5]][[2]][, 1:3])
-newBTStrengths$Strength==all2015data[[5]][[2]]$Strength
+#newBTStrengths$Strength==all2015data[[5]][[2]]$Strength
 system.time(
 newTMStrengths<-LARC.Rank.Football(all2015data[[5]][[1]], func=ThurstoneMostellerLARC, inc=.01)
 )
