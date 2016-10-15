@@ -10,7 +10,7 @@ clust <- makeCluster(numCores)
 
 dates<-seq(as.Date("2015-11-14"), to=as.Date("2015-12-06"), by=7)
 dates<-c(dates, as.Date("2016-01-12"))
-neededFunc<- c("dataconfigure", "raw2015", "all2015data", "dates", "ThurstoneMostellerLARC",   "BradleyTerryLARC", "LARC.Rank", "LARC.Optim", "find.mf")
+neededFunc<- c("dataconfigure", "raw2015", "LARC.Rank.Football", "all2015data", "dates", "ThurstoneMostellerLARC",   "BradleyTerryLARC", "LARC.Rank", "LARC.Optim", "find.mf")
 clusterExport(clust, neededFunc)
 system.time(
 bradter<-parLapply(clust, dates, function(date){
