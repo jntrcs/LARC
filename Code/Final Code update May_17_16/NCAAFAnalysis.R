@@ -5,7 +5,7 @@ load("2015FootballData.RData")
 
 
 library(parallel)
-numCores<-4
+numCores<-5
 clust <- makeCluster(numCores)
 
 dates<-seq(as.Date("2015-11-14"), to=as.Date("2015-12-06"), by=7)
@@ -17,7 +17,7 @@ bradter<-parLapply(clust, dates, function(date){
   LARC.Rank.Football(all2015data[[which(dates==date)+10]][[1]])
 })
 )
-for (i in 11:length(bradter))
+for (i in 11:15)
 {
   all2015data[[i]][[2]]<-bradter[[i-10]]
 }
@@ -35,7 +35,7 @@ thurs<-parLapply(clust, dates, function(date){
   LARC.Rank.Football(all2015data[[which(dates==date)+10]][[1]], func=ThurstoneMostellerLARC)
 })
 )
-for (i in 11:length(thurs))
+for (i in 11:15)
 {
  all2015data[[i]][[3]]<-thurs[[i-10]]
 }
