@@ -109,4 +109,5 @@ attachMostRecentStrengths<-function(matrix, BTstrengths, TMStrengths)
   matrix
 }
 
-
+for (i in 12:17)
+all2015data[[i]][[1]]<-attachMostRecentStrengths(all2015data[[i]][[1]], all2015data[[11]][[2]], all2015data[[11]][[3]])
