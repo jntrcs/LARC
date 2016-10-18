@@ -5,12 +5,12 @@ load("2015FootballData.RData")
 
 
 library(parallel)
-numCores<-7
+numCores<-2
 clust <- makeCluster(numCores)
 
 dates<-seq(as.Date("2015-09-06"), to=as.Date("2015-12-20"), by=7)
 dates<-c(dates, as.Date("2016-01-12"))
-dates<-dates[12:17]
+dates<-dates[16:17]
 neededFunc<- c("dataconfigure", "raw2015", "LARC.Rank.Football", "all2015data", "dates", "ThurstoneMostellerLARC",   "BradleyTerryLARC", "LARC.Rank", "LARC.Optim", "find.mf")
 clusterExport(clust, neededFunc)
 #system.time(
@@ -34,12 +34,12 @@ clusterExport(clust, neededFunc)
 
 system.time(
 thurs<-parLapply(clust, dates, function(date){
-  LARC.Rank.Football(all2015data[[which(dates==date)+11]][[1]], func=ThurstoneMostellerLARC)
+  LARC.Rank.Football(all2015data[[which(dates==date)+15]][[1]], func=ThurstoneMostellerLARC)
 })
 )
-for (i in 12:15)
+for (i in 16:17)
 {
- all2015data[[i]][[3]]<-thurs[[i-11]]
+ all2015data[[i]][[3]]<-thurs[[i-15]]
 }
   save(all2015data, raw2015, file="2015FootballData.RData")
 #system.time(
