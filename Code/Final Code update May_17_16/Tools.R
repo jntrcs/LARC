@@ -10,11 +10,14 @@ BradleyTerryLARC <- function(strengths,wins,magnificationfactor=1) {
   for (i in 1:length(strengths)) {
     W[i] <- sum(wins[i,])
     PI <- PI*strengths[i]^(W[i]+1)
+    if (i<length(strengths)){
     for (j in (i+1):length(strengths)) {
-      if (j < length(strengths)+1) {
+      print(j)
         if ((wins[i,j]+wins[j,i])>0)
           PIPI <- PIPI*(1/(strengths[i]+strengths[j])^(wins[i,j]+wins[j,i]))*magnificationfactor
-      }
+
+      
+    }
     }
   }
   return(exp(-sum(strengths))*PI*PIPI)
