@@ -14,11 +14,10 @@ BradleyTerryLARC <- function(strengths,wins,magnificationfactor=1) {
     for (j in (i+1):length(strengths)) {
         if ((wins[i,j]+wins[j,i])>0)
           PIPI <- PIPI*(1/(strengths[i]+strengths[j])^(wins[i,j]+wins[j,i]))*magnificationfactor
-
-      
     }
     }
   }
+
   return(exp(-sum(strengths))*PI*PIPI)
 }
 
