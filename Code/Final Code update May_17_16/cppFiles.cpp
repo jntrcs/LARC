@@ -56,24 +56,24 @@ double TMDensity(NumericVector strengths, IntegerMatrix wins, NumericVector magF
 {
   long double prior = 1;
   double oneoversqrt = 0.39894228040143267793994605993;
+  double mf = magFac.at(0);
   for (int i = 0; i<strengths.size(); i++)
   {
-    prior=prior*magFac.at(0)*oneoversqrt*exp(-1* pow(strengths.at(i),2) / 2);
+    prior=prior*mf*oneoversqrt*exp(-1* pow(strengths.at(i),2) / 2);
   }
   long double cond = 1;
-  for (int i =0; i<strengths.size(), ++i)
+  for (int i =0; i<strengths.size(); ++i)
   {
     for (int j = 0; j<strengths.size(); ++j)
     {
       if (wins.row(i)[j]!=0)
-        cond = cond * magFac.at(0) * pow(  ,wins.row(i)[j])
+        cond = cond * mf * pow(phi(strengths.at(i)-strengths.at(j)),wins.row(i)[j]);
     }
   }
 }
 
 
 #include <cmath>
-
 double phi(double x)
 {
   // constants
@@ -121,4 +121,5 @@ double phi(double x)
 
 /*** R
 BTDensity(all2015data[[16]][[1]]$Strength,all2015data[[16]][[1]]$WinsVersus, 2 )
+
 */
