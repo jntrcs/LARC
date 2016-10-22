@@ -25,7 +25,7 @@
 # LARC.Optim invokes the following functions
 #     find.mf
 #     func
-LARC.Optim <- function(df, func = BradleyTerryLARC, increment = 0.001,
+LARC.Optim <- function(df, func = BTDensity, increment = 0.001,
                        iterations = Inf, magnificationfactor=1, adj=1) {
   st <- df$Strength
   wv <- df$WinsVersus

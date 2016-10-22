@@ -13,15 +13,13 @@ using namespace Rcpp;
 //   http://gallery.rcpp.org/
 //
 
-// [[Rcpp::export]]
-NumericVector timesTwo(NumericVector x) {
-  return x * 2;
-}
+
 //[[Rcpp::export]]
-double BTDensity(IntegerMatrix wins, NumericVector strengths)
+double BTDensity(NumericVector strengths, IntegerMatrix wins, NumericVector magFac=1)
 {
+  double mf=magFac.at(0);
   double pi = 1;
-  double pipi=1;
+  long double pipi=1;
   NumericVector w;
   for (int i = 0; i<strengths.size(); ++i)
   {
@@ -38,7 +36,7 @@ double BTDensity(IntegerMatrix wins, NumericVector strengths)
         //std::cout<<"I: "<<i<<" J: "<<j<<std::endl;
         if (wins.row(j)[i]+wins.row(i)[j]!=0)
         {
-          pipi =pipi*(1/pow(strengths.at(i)+strengths.at(j), wins.row(j)[i]+wins.row(i)[j]));
+          pipi =pipi*(1/pow(strengths.at(i)+strengths.at(j), wins.row(j)[i]+wins.row(i)[j]))*mf;
         }
         }
     }
@@ -48,7 +46,8 @@ double BTDensity(IntegerMatrix wins, NumericVector strengths)
   {
     strengthsum+=strengths.at(j); 
   }
-  
+  //std::cout<<"Pi: "<<pi<<" Pipi: "<<pipi<<" Strengthsummed: "<< strengthsum<<std::endl; 
+  //std::cout<<exp(-1*strengthsum)*pi*pipi;
   return exp(-1*strengthsum)*pi*pipi;
 }
 
@@ -76,6 +75,5 @@ return(exp(-sum(strengths))*PI*PIPI)
 //
 
 /*** R
-timesTwo(99)
-BTDensity(Employeedf$WinsVersus, Employeedf$Strength)
+BTDensity(all2015data[[16]][[1]]$Strength,all2015data[[16]][[1]]$WinsVersus, 2 )
 */
