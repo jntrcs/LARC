@@ -18,18 +18,18 @@
 find.mf <- function(df, mf = 1, func = BradleyTerryLARC, adj=1) {
   d<-func(df$Strength,df$WinsVersus,mf)
   x<-0
-  while (d==0|d==Inf)
+  while (d<1e-100|d>1e100)
   {
     x<-x+1
-    if (d==0) {
+    if (d<1e-100) {
       mf<-mf+adj
-      if (func(df$Strength,df$WinsVersus,mf) == Inf)
+      if (func(df$Strength,df$WinsVersus,mf) >1e100)
         adj<-adj/10
     }
-    else if (d==Inf)
+    else if (d>1e100)
     {
       mf<-mf-adj
-      if (func(df$Strength,df$WinsVersus,mf) == 0)
+      if (func(df$Strength,df$WinsVersus,mf) <1e-100)
         adj<-adj/10
     }
     d<-func(df$Strength,df$WinsVersus,mf)
