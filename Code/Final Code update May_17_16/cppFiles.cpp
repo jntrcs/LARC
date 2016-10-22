@@ -51,23 +51,68 @@ double BTDensity(NumericVector strengths, IntegerMatrix wins, NumericVector magF
   return exp(-1*strengthsum)*pi*pipi;
 }
 
-/*BradleyTerryLARC <- function(strengths,wins,magnificationfactor=1) {
- PI <- 1
-PIPI <- 1
-W <- vector()
-for (i in 1:length(strengths)) {
-W[i] <- sum(wins[i,])
-PI <- PI*strengths[i]^(W[i]+1)
-for (j in (i+1):length(strengths)) {
-if (j < length(strengths)+1) {
-if ((wins[i,j]+wins[j,i])>0)
-PIPI <- PIPI*(1/(strengths[i]+strengths[j])^(wins[i,j]+wins[j,i]))*magnificationfactor
+//[[Rcpp::export]]
+double TMDensity(NumericVector strengths, IntegerMatrix wins, NumericVector magFac=1)
+{
+  long double prior = 1;
+  double oneoversqrt = 0.39894228040143267793994605993;
+  for (int i = 0; i<strengths.size(); i++)
+  {
+    prior=prior*magFac.at(0)*oneoversqrt*exp(-1* pow(strengths.at(i),2) / 2);
+  }
+  long double cond = 1;
+  for (int i =0; i<strengths.size(), ++i)
+  {
+    for (int j = 0; j<strengths.size(); ++j)
+    {
+      if (wins.row(i)[j]!=0)
+        cond = cond * magFac.at(0) * pow(  ,wins.row(i)[j])
+    }
+  }
 }
-}
-}
-return(exp(-sum(strengths))*PI*PIPI)
-}*/
 
+
+#include <cmath>
+
+double phi(double x)
+{
+  // constants
+  double a1 =  0.254829592;
+  double a2 = -0.284496736;
+  double a3 =  1.421413741;
+  double a4 = -1.453152027;
+  double a5 =  1.061405429;
+  double p  =  0.3275911;
+  
+  // Save the sign of x
+  int sign = 1;
+  if (x < 0)
+    sign = -1;
+  x = fabs(x)/sqrt(2.0);
+  
+  // A&S formula 7.1.26
+  double t = 1.0/(1.0 + p*x);
+  double y = 1.0 - (((((a5*t + a4)*t) + a3)*t + a2)*t + a1)*t*exp(-x*x);
+  
+  return 0.5*(1.0 + sign*y);
+}
+
+/*ThurstoneMostellerLARC <- function(strengths,wins,magnificationfactor=1) {
+# First we compute the Prior
+  prior <- 1
+  for (i in 1: length(strengths)) { prior = prior * dnorm( strengths[i])*magnificationfactor}
+# Now we compute the conditional
+  cond <- 1
+  for (i in 1:length(strengths)) {
+    for (j in 1:length(strengths)) {
+      if (wins[i,j]!=0)
+        cond <- cond*pnorm(strengths[i]-strengths[j])^wins[i,j]*magnificationfactor
+    }
+  }
+# Now put the two together 
+  post = prior * cond
+    return(post)
+}*/
 
 // You can include R code blocks in C++ files processed with sourceCpp
 // (useful for testing and development). The R code will be automatically 
