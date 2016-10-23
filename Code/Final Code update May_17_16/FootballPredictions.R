@@ -58,24 +58,20 @@ NCAAFPredictor<-function(TMStrengths, BTStrengths, schedule, startdate, enddate)
   results
 }  
 
-all2016data[[2]][[4]]<-NCAAFPredictor(all2016data[[1]][[3]], all2016data[[1]][[2]], latestRaw, "2016-09-05", "2016-09-11")
-all2016data[[3]][[4]]<-NCAAFPredictor(all2016data[[2]][[3]], all2016data[[2]][[2]], latestRaw, "2016-09-11", "2016-09-18")
-all2016data[[4]][[4]]<-NCAAFPredictor(all2016data[[3]][[3]], all2016data[[3]][[2]], latestRaw, "2016-09-18", "2016-09-25")
-all2016data[[5]][[4]]<-NCAAFPredictor(all2016data[[4]][[3]], all2016data[[4]][[2]], latestRaw, "2016-09-25", "2016-10-02")
 
-dates<-seq(as.Date("2015-09-06"), to=as.Date("2015-11-25"), by=7)
-temp<-lapply(2:10, FUN=function(i) NCAAFPredictor(all2015data[[i]][[3]],all2015data[[i]][[2]],raw2015,dates[i], dates[i+1]))
-for (i in 2:10)
+temp<-lapply(11:16, FUN=function(i) NCAAFPredictor(all2015data[[i]][[3]],all2015data[[i]][[2]],raw2015,all2015data[[i]][[5]][1], all2015data[[i]][[5]][2]))
+for (i in 11:16)
 {
-  all2015data[[i]][[4]]<-temp[[i-1]]
+  all2015data[[i]][[4]]<-temp[[i-10]]
 }
-performance<-lapply(2:10, FUN=function(n){all2015data[[n]][[4]][[2]]})
+
+performance<-lapply(1:16, FUN=function(n){all2015data[[n]][[4]][[2]]})
 makePerformanceGraph(performance)
 
-penalties<-lapply(2:10, FUN=function(n){all2015data[[n]][[4]][[3]]})
+penalties<-lapply(2:16, FUN=function(n){all2015data[[n]][[4]][[3]]})
 makePenaltyGraph(penalties)
 
-meanDifferences<-sapply(2:10, FUN=function(n){all2015data[[n]][[4]][[4]]})
+meanDifferences<-sapply(2:16, FUN=function(n){all2015data[[n]][[4]][[4]]})
 makeDifferenceGraph(meanDifferences)
 
 
@@ -99,7 +95,7 @@ plot(TMPenalties, type='l', lty=2, col="Blue", main="Bad Prediction Penalization
      xlab="Week Predicted", xaxt="n")
 lines(BTPenalties, col="Red")
 axis(1,at=1:length(BTPenalties),labels=2:(length(BTPenalties)+1))
-legend(5, 33,c("Bradley-Terry", "Thurstone-Mosteller"), col=c("Red", "Blue"), lty=c(1,2))
+legend(1, 10,c("Bradley-Terry", "Thurstone-Mosteller"), col=c("Red", "Blue"), lty=c(1,2))
 }
 
 penalties<-lapply(2:length(all2016data), FUN=function(n){all2016data[[n]][[4]][[3]]})
