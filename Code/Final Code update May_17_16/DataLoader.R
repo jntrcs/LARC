@@ -18,12 +18,24 @@ save(all2016data, latestRaw, file="2016copy.RData")
 #2: The calculated Bradley Terry strengths for that week--DF
 #3: The calculated Thurstone Mosteller strengths for that week--DF
 #4: The prediction information for the games for that week (which is itself a list)
+#5: The starting date and ending date of that week (note: bowl games are lumped together so not every week is 7 days)
 #eg. all2016data[[3]][[2]] is the TM and BT strengths for week 3
-all2016data<-list(list(week1, BTResultsWeek1, TMResultsWeek1), 
-                     list(week2, BTResultsWeek2, TMResultsWeek2, predictWeek2),
-                     list(week3, BTResultsWeek3, TMResultsWeek3, predictWeek3),
-                     list(week4, BTResultsWeek4, TMResultsWeek4, predictWeek4),
-                     list(week5, BTResultsWeek5, TMResultsWeek5))
+dates2016<-c(seq(as.Date("2016-09-04"), as.Date("2016-10-23"), by=7))
+
+all2016data[[1]][[5]]<-c(as.Date("2016-08-20"),dates2016[1])
+names(all2016data[[1]][[5]])<-c("Start date", "End Date")
+
+for (i in 2:7)
+{
+  all2016data[[i]][[5]]<-c(dates2016[i-1],dates2016[i])
+  names(all2016data[[i]][[5]])<-c("Start date", "End Date")
+}
+
+
+#Configure
+all2016data[[7]]<-list()
+all2016data[[7]][[1]]<-dataconfigure(latestRaw, reldate="2016-10-16")
+
 
 #2015 Football
 raw2015<-datascrape("NCAAF", year=2015)

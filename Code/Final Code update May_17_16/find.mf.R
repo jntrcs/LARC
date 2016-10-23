@@ -15,6 +15,7 @@
 # 
 #This function is a tool to be used within other functions to simply find the appropriate 
 # magnification factor, it normally has no use outside of other functions.
+#there is a bug such that mf=0, x=2, d = inf, line 33 doesn't get true or false
 find.mf <- function(df, mf = 1, func = BradleyTerryLARC, adj=1) {
   d<-func(df$Strength,df$WinsVersus,mf)
   x<-0
