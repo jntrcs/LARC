@@ -36,10 +36,17 @@ newTimeTM<-system.time(
 )
 cbind(EmployeeRankOriginal, EmployeeRankNew)
 stopifnot(EmployeeRankOriginal$Team==EmployeeRankNew$Team)
-stopifnot(EmployeeRankOriginal$Strength==EmployeeRankNew$Strength)
+stopifnot(EmployeeRankOriginal$Strength==EmployeeRankNesw$Strength)
 stopifnot(EmployeeRankOriginalTM$Team==EmployeeRankNewTM$Team)
 stopifnot(EmployeeRankOriginalTM$Strength==EmployeeRankNewTM$Strength)
 print ("New    Old")
 print(c(newTime[3], OrigTime[3]))
 print(c(newTimeTM[3], OrigTimeTM[3]))
 
+
+system.time(
+  new<-LARC.Rank.Football(all2015data[[3]][[1]], func=TMDensity)
+)
+system.time(
+  old<-LARC.Rank.Football(all2015data[[3]][[1]], func=ThurstoneMostellerLARC)
+)

@@ -14,7 +14,6 @@ using namespace Rcpp;
 //
 
 #include <cmath>
-
 double phi(double x)
 {
   // constants
