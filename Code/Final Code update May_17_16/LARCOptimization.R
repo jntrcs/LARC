@@ -27,8 +27,6 @@
 #     func
 LARC.Optim <- function(df, func = BTDensity, increment = 0.001,
                        iterations = Inf, magnificationfactor=1, adj=1) {
-  if (!exists("BTDensity")|!exists("TMDensity"))
-      Rcpp::sourceCpp('cppFiles.cpp')
   st <- df$Strength
   wv <- df$WinsVersus
   

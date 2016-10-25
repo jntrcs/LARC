@@ -34,7 +34,7 @@
 
 #A small abstraction so that the last strengths are used when trying to find the new strengths.
 #Should speed things considerably
-LARC.Rank.Football<-function(df, func=BradleyTerryLARC, increment = 0.001, 
+LARC.Rank.Football<-function(df, func=BTDensity, increment = 0.001, 
                              iterations = Inf, dgt=3, magnificationfactor=1, adj=1)
 {
   if (identical(func, ThurstoneMostellerLARC))
@@ -45,7 +45,7 @@ LARC.Rank.Football<-function(df, func=BradleyTerryLARC, increment = 0.001,
   LARC.Rank(df, func, increment, iterations, dgt, magnificationfactor, adj, football=TRUE)
 }
 # 
-LARC.Rank <- function(df, func=BradleyTerryLARC, increment = 0.001, 
+LARC.Rank <- function(df, func=BTDensity, increment = 0.001, 
                       iterations = Inf, dgt=3, magnificationfactor=1, adj=1, football=FALSE) {
   options(digits=dgt)
   tt <- nrow(df)

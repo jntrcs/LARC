@@ -14,32 +14,12 @@ using namespace Rcpp;
 //
 
 #include <cmath>
-double phi(double x)
-{
-  // constants
-  double a1 =  0.254829592;
-  double a2 = -0.284496736;
-  double a3 =  1.421413741;
-  double a4 = -1.453152027;
-  double a5 =  1.061405429;
-  double p  =  0.3275911;
-  
-  // Save the sign of x
-  int sign = 1;
-  if (x < 0)
-    sign = -1;
-  x = fabs(x)/sqrt(2.0);
-  
-  // A&S formula 7.1.26
-  double t = 1.0/(1.0 + p*x);
-  double y = 1.0 - (((((a5*t + a4)*t) + a3)*t + a2)*t + a1)*t*exp(-x*x);
-  
-  return 0.5*(1.0 + sign*y);
-}
+
 
 //[[Rcpp::export]]
 double BTDensity(NumericVector strengths, IntegerMatrix wins, NumericVector magnificationfactor=1)
 {
+  
   double mf=magnificationfactor.at(0);
   double pi = 1;
   long double pipi=1;
@@ -77,8 +57,15 @@ double BTDensity(NumericVector strengths, IntegerMatrix wins, NumericVector magn
 //[[Rcpp::export]]
 double TMDensity(NumericVector strengths, IntegerMatrix wins, NumericVector magFac=1)
 {
+  //I need to cite the author of the phi function which I am copying in here. 
   long double prior = 1;
   double oneoversqrt = 0.39894228040143267793994605993;
+  double a1 =  0.254829592;
+  double a2 = -0.284496736;
+  double a3 =  1.421413741;
+  double a4 = -1.453152027;
+  double a5 =  1.061405429;
+  double p  =  0.3275911;
   double mf = magFac.at(0);
   for (int i = 0; i<strengths.size(); i++)
   {
@@ -90,7 +77,19 @@ double TMDensity(NumericVector strengths, IntegerMatrix wins, NumericVector magF
     for (int j = 0; j<strengths.size(); ++j)
     {
       if (wins.row(i)[j]!=0)
-        cond = cond * mf * pow(phi(strengths.at(i)-strengths.at(j)),wins.row(i)[j]);
+      {
+        int sign = 1;
+        double x=strengths.at(i)-strengths(j);
+        if (x < 0)
+          sign = -1;
+        x = fabs(x)/sqrt(2.0);
+        
+        // A&S formula 7.1.26
+        double t = 1.0/(1.0 + p*x);
+        double y = 1.0 - (((((a5*t + a4)*t) + a3)*t + a2)*t + a1)*t*exp(-x*x);
+        double phi= 0.5*(1.0 + sign*y);
+        cond = cond * mf * pow(phi,wins.row(i)[j]);
+      }
     }
   }
   return prior*cond;
