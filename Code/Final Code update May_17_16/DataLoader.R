@@ -25,7 +25,7 @@ dates2016<-c(seq(as.Date("2016-09-04"), as.Date("2016-10-23"), by=7))
 all2016data[[1]][[5]]<-c(as.Date("2016-08-20"),dates2016[1])
 names(all2016data[[1]][[5]])<-c("Start date", "End Date")
 
-for (i in 2:7)
+for (i in 8)
 {
   all2016data[[i]][[5]]<-c(dates2016[i-1],dates2016[i])
   names(all2016data[[i]][[5]])<-c("Start date", "End Date")
@@ -41,9 +41,11 @@ for (i in 2:16)
 }
 
 #Configure
-all2016data[[7]]<-list()
-all2016data[[7]][[1]]<-dataconfigure(latestRaw, reldate="2016-10-16")
-
+all2016data[[8]]<-list()
+all2016data[[8]][[5]]
+all2016data[[8]][[1]]<-dataconfigure(latestRaw, reldate=all2016data[[8]][[5]][2])
+all2016data[[8]][[2]]<-LARC.Rank.Football(all2016data[[8]][[1]])
+all2016data[[8]][[3]]<-LARC.Rank.Football(all2016data[[8]][[1]], func=ThurstoneMostellerLARC
 
 #2015 Football
 raw2015<-datascrape("NCAAF", year=2015)

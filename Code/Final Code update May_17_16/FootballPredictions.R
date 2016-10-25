@@ -65,7 +65,7 @@ for (i in 11:16)
   all2015data[[i]][[4]]<-temp[[i-10]]
 }
 
-performance<-lapply(1:16, FUN=function(n){all2015data[[n]][[4]][[2]]})
+performance<-lapply(2:16, FUN=function(n){all2015data[[n]][[4]][[2]]})
 makePerformanceGraph(performance)
 
 penalties<-lapply(2:16, FUN=function(n){all2015data[[n]][[4]][[3]]})
