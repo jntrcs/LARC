@@ -16,12 +16,12 @@
 #Model B would be penalized more for it's 5 misses then A for it's 95 misses.
 
 
-NCAAFPredictor<-function(TMStrengths, BTStrengths, schedule, startdate, enddate)
+NCAAFPredictor<-function(BTStrengths,TMStrengths, schedule, dateVector)
 {
   TMStrengths$Team<-as.character(TMStrengths$Team)
   BTStrengths$Team<-as.character(BTStrengths$Team)
-  startdate<-as.Date(startdate)
-  enddate<-as.Date(enddate)
+  startdate<-as.Date(dateVector[1])
+  enddate<-as.Date(dateVector[2])
   
   
   weekGames<-schedule[schedule$Date<enddate&schedule$Date>startdate, c(3,5,8,9)]  
