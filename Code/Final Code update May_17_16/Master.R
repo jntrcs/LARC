@@ -6,7 +6,7 @@ save(BradleyTerryLARC, BTWP, dataconfigure, datascrape, find.mf, full.sim.gen, L
      scrapeNCAAB, scrapeNCAAF, scrapeNFL, scrapeNHL, sim.gen, simulate, simulation, ThurstoneMostellerLARC,
      TMWP, VS.matrix, NCAAFPredictor, makePenaltyGraph, makePerformanceGraph,
      makeDifferenceGraph, getConfigured, getRaw, getBTStrengths, getTMStrengths,
-     getStrengths, getPredictions, LARC.Rank.Football, BTDensity,
+     getStrengths, getPredictions, LARC.Rank.Football, BTDensity, TMDensity,
      attachMostRecentStrengths, file="MasterFunctionFile.RData")
 
 
