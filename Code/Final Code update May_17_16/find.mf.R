@@ -31,12 +31,6 @@ find.mf <- function(df, mf = 1, func, adj=1) {
     else if (d>1e100)
     {
       mf<-mf-adj
-      if (mf==0)
-        {
-        save(df, mf, adj, x, file="Debug.rdata")
-        a<-func(df$Strength, df$WinVersus,1)
-      }
-        print("oh wait")
       if (func(df$Strength,df$WinsVersus,mf) <1e-100)
         adj<-adj/10
     }

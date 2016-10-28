@@ -32,11 +32,10 @@ double BTDensity(NumericVector strengths, IntegerMatrix wins, NumericVector magn
       sum+=wins.row(i)[j]; //I think we could save serious computation time by not recomputing this constantly
     }
     w.push_back(sum);
-    pi = pi * pow(strengths.at(i), w.at(i)+1);
+    pi = pi * pow(strengths.at(i), w.at(i)+1)*exp(-strengths.at(i));
     if (i<strengths.size())
     {
       for (int j = i+1; j<strengths.size(); ++j){
-        //std::cout<<"I: "<<i<<" J: "<<j<<std::endl;
         if (wins.row(j)[i]+wins.row(i)[j]!=0)
         {
           pipi =pipi*(1/pow(strengths.at(i)+strengths.at(j), wins.row(j)[i]+wins.row(i)[j]))*mf;
@@ -44,13 +43,8 @@ double BTDensity(NumericVector strengths, IntegerMatrix wins, NumericVector magn
         }
     }
   }
-  int strengthsum=0;
-  for (int j = 0; j<strengths.size(); ++j)
-  {
-    strengthsum+=strengths.at(j); 
-  }
 
-  return exp(-1*strengthsum)*pi*pipi;
+  return pi*pipi;
 }
 
 //[[Rcpp::export]]

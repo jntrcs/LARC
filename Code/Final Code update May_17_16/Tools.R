@@ -9,7 +9,7 @@ BradleyTerryLARC <- function(strengths,wins,magnificationfactor=1) {
   W <- vector()
   for (i in 1:length(strengths)) {
     W[i] <- sum(wins[i,])
-    PI <- PI*strengths[i]^(W[i]+1)
+    PI <- PI*strengths[i]^(W[i]+1)*exp(-strengths[i])
     if (i<length(strengths)){
     for (j in (i+1):length(strengths)) {
         if ((wins[i,j]+wins[j,i])>0)
@@ -18,7 +18,7 @@ BradleyTerryLARC <- function(strengths,wins,magnificationfactor=1) {
     }
   }
 
-  return(exp(-sum(strengths))*PI*PIPI)
+  return(PI*PIPI)
 }
 
 #an example of the function
