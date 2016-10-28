@@ -52,5 +52,5 @@ system.time(
 )
 
 system.time(
-  week15<-LARC.Rank.Football(all2015data[[15]][[1]])
+  week17<-LARC.Rank.Football(all2015data[[17]][[1]])
 )

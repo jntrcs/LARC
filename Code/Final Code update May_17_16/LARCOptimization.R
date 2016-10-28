@@ -27,6 +27,7 @@
 #     func
 LARC.Optim <- function(df, func = BTDensity, increment = 0.001,
                        iterations = Inf, magnificationfactor=1, adj=1) {
+  BT<-identical(func, BTDensity)|identical(func, BradleyTerryLARC)
   st <- df$Strength
   wv <- df$WinsVersus
   
@@ -50,6 +51,8 @@ LARC.Optim <- function(df, func = BTDensity, increment = 0.001,
         new <- func(df$Strength,df$WinsVersus,mf)# <- LARC.Posterior(df, func, mf = magnificationfactor,adj=adj)
         if (comp > new) {
           df$Strength[i] <- df$Strength[i] - 2*inc
+          if (BT & df$Strength[i]<0)
+            df$Strength[i]<-0
           new <- func(df$Strength,df$WinsVersus,mf)# <- LARC.Posterior(df, func, mf = magnificationfactor,adj=adj)
           if (comp > new) {
             df$Strength[i] <- df$Strength[i] + inc

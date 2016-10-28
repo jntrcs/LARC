@@ -15,8 +15,8 @@ neededFunc<- c("dataconfigure", "raw2015", "LARC.Rank.Football", "BTDensity", "T
   "all2015data", "dates", "ThurstoneMostellerLARC",   "BradleyTerryLARC", "LARC.Rank", "LARC.Optim", "find.mf")
 clusterExport(clust, neededFunc)
 system.time(
-allTM<-parLapply(clust, dates, function(date){
-  LARC.Rank.Football(all2015data[[which(date==dates)]][[1]], func=TMDensity)
+allBT<-parLapply(clust, dates, function(date){
+  LARC.Rank.Football(all2015data[[which(date==dates)]][[1]])
 })
 
 )
@@ -24,7 +24,7 @@ allTM<-parLapply(clust, dates, function(date){
 #{
 #  all2015data[[i]][[2]]<-bradter[[i-11]]
 #}
-  save(allTM, file="new2015.RData")
+  save(allBT, file="new2015.RData")
 
 stopCluster(clust)
 
