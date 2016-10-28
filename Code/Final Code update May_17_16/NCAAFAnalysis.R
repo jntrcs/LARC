@@ -2,28 +2,29 @@
 
 load("MasterFunctionFile.RData")
 load("2015FootballData.RData")
-
+Rcpp::sourceCpp("cppFiles.cpp")
 
 library(parallel)
-numCores<-5
+numCores<-17
 clust <- makeCluster(numCores)
 
 dates<-seq(as.Date("2015-09-06"), to=as.Date("2015-12-20"), by=7)
 dates<-c(dates, as.Date("2016-01-12"))
-dates<-dates[12:16]
-neededFunc<- c("dataconfigure", "raw2015", "LARC.Rank.Football", "BTDensity", "all2015data", "dates", "ThurstoneMostellerLARC",   "BradleyTerryLARC", "LARC.Rank", "LARC.Optim", "find.mf")
+dates<-dates[1:17]
+neededFunc<- c("dataconfigure", "raw2015", "LARC.Rank.Football", "BTDensity", "TMDensity",
+  "all2015data", "dates", "ThurstoneMostellerLARC",   "BradleyTerryLARC", "LARC.Rank", "LARC.Optim", "find.mf")
 clusterExport(clust, neededFunc)
 system.time(
-bradter<-parLapply(clust, dates, function(date){
-  LARC.Rank.Football(all2015data[[which(date==dates)+11]][[1]])
+allTM<-parLapply(clust, dates, function(date){
+  LARC.Rank.Football(all2015data[[which(date==dates)]][[1]])
 })
 
 )
-for (i in 12:16)
-{
-  all2015data[[i]][[2]]<-bradter[[i-11]]
-}
-  save(all2015data, raw2015, file="2015FootballData.RData")
+#for (i in 12:16)
+#{
+#  all2015data[[i]][[2]]<-bradter[[i-11]]
+#}
+  save(allTM, file="new2015.RData")
 
 stopCluster(clust)
 

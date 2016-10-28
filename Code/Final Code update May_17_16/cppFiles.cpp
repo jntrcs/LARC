@@ -49,8 +49,7 @@ double BTDensity(NumericVector strengths, IntegerMatrix wins, NumericVector magn
   {
     strengthsum+=strengths.at(j); 
   }
-  //std::cout<<"Pi: "<<pi<<" Pipi: "<<pipi<<" Strengthsummed: "<< strengthsum<<std::endl; 
-  //std::cout<<exp(-1*strengthsum)*pi*pipi;
+
   return exp(-1*strengthsum)*pi*pipi;
 }
 
@@ -96,31 +95,3 @@ double TMDensity(NumericVector strengths, IntegerMatrix wins, NumericVector magF
 }
 
 
-
-
-/*ThurstoneMostellerLARC <- function(strengths,wins,magnificationfactor=1) {
-# First we compute the Prior
-  prior <- 1
-  for (i in 1: length(strengths)) { prior = prior * dnorm( strengths[i])*magnificationfactor}
-# Now we compute the conditional
-  cond <- 1
-  for (i in 1:length(strengths)) {
-    for (j in 1:length(strengths)) {
-      if (wins[i,j]!=0)
-        cond <- cond*pnorm(strengths[i]-strengths[j])^wins[i,j]*magnificationfactor
-    }
-  }
-# Now put the two together 
-  post = prior * cond
-    return(post)
-}*/
-
-// You can include R code blocks in C++ files processed with sourceCpp
-// (useful for testing and development). The R code will be automatically 
-// run after the compilation.
-//
-
-/*** R
-#BTDensity(all2015data[[16]][[1]]$Strength,all2015data[[16]][[1]]$WinsVersus, 2 )
-TMDensity(Employeedf$Strength, Employeedf$WinsVersus)
-*/

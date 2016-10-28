@@ -50,3 +50,7 @@ system.time(
 system.time(
   old<-LARC.Rank.Football(all2015data[[3]][[1]], func=ThurstoneMostellerLARC)
 )
+
+system.time(
+  week15<-LARC.Rank.Football(all2015data[[15]][[1]])
+)

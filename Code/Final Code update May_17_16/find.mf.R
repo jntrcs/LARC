@@ -16,8 +16,9 @@
 #This function is a tool to be used within other functions to simply find the appropriate 
 # magnification factor, it normally has no use outside of other functions.
 #there is a bug such that mf=0, x=2, d = inf, line 33 doesn't get true or false
-find.mf <- function(df, mf = 1, func = BradleyTerryLARC, adj=1) {
-  d<-func(df$Strength,df$WinsVersus,mf)
+find.mf <- function(df, mf = 1, func, adj=1) {
+  mf<-1
+  d<-func(df$Strength,df$WinsVersus, mf)
   x<-0
   while (d<1e-100|d>1e100)
   {
@@ -30,11 +31,18 @@ find.mf <- function(df, mf = 1, func = BradleyTerryLARC, adj=1) {
     else if (d>1e100)
     {
       mf<-mf-adj
+      if (mf==0)
+        {
+        save(df, mf, adj, x, file="Debug.rdata")
+        a<-func(df$Strength, df$WinVersus,1)
+      }
+        print("oh wait")
       if (func(df$Strength,df$WinsVersus,mf) <1e-100)
         adj<-adj/10
     }
     d<-func(df$Strength,df$WinsVersus,mf)
     stopifnot(x<1000)
+   
   }
   return(mf)
 }
