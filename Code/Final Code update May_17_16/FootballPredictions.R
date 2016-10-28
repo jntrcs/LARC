@@ -4,8 +4,7 @@
 
 #TMStrengths and BTStrengths are the Thurston-Mosteller and Bradley-Terry strengths produced by LARC.Rank
 #Schedule is the df produced by datascrape
-#start date is the beginning of the games we want predictions for (Note, these games must appear in the DF 
-#and be already played. Enddate is the last day to predict games for)
+#Datevector is length two, beginning with the day to start and the day to end predictions for.
 
 #The return value is a list. The first item is a dataframe containing all games predicted and info on predictions
 #The second value is a table of which model more confidently predicted the winner
@@ -14,6 +13,8 @@
 #distance from their prediction to the correct answer. This gives us the desirable property that if Team A
 #beat Team B 95 out of 100 times, and model A predicted team A at 95% and Model B at 99%, 
 #Model B would be penalized more for it's 5 misses then A for it's 95 misses.
+#The fourth item is the average difference (absolute value) between the two prediction methods
+#The fifth item is number of games predicted
 
 
 NCAAFPredictor<-function(BTStrengths,TMStrengths, schedule, dateVector)
@@ -54,15 +55,15 @@ NCAAFPredictor<-function(BTStrengths,TMStrengths, schedule, dateVector)
   names(penalties)<-c("Bradley-Terry Penalty", "Thurstone-Mosteller Penalty")
   percentHomeWins<-c(mean(weekGames$BTHomeWin), mean(weekGames$TMHomeWin))
   names(percentHomeWins)<-c("Bradely-Terry Home Win Percent", "Thurstone-Mosteller Home Win Percent")
-  results<-list(weekGames, table(weekGames$DidBetter), penalties, mean(weekGames$Difference))
+  results<-list(weekGames, table(weekGames$DidBetter), penalties, mean(weekGames$Difference), nrow(weekGames))
   results
 }  
 
 
-temp<-lapply(11:16, FUN=function(i) NCAAFPredictor(all2015data[[i]][[3]],all2015data[[i]][[2]],raw2015,all2015data[[i]][[5]][1], all2015data[[i]][[5]][2]))
-for (i in 11:16)
+temp<-lapply(2:17, FUN=function(i) NCAAFPredictor(all2015data[[i-1]][[2]],all2015data[[i-1]][[2]],raw2015,all2015data[[i]][[5]]))
+for (i in 2:17)
 {
-  all2015data[[i]][[4]]<-temp[[i-10]]
+  all2015data[[i]][[4]]<-temp[[i-1]]
 }
 
 performance<-lapply(2:16, FUN=function(n){all2015data[[n]][[4]][[2]]})

@@ -34,7 +34,7 @@ for (i in 8)
 dates<-seq(as.Date("2015-09-06"), to=as.Date("2015-12-20"), by=7)
 dates<-c(dates, as.Date("2016-01-12"))
 all2015data[[1]][[5]]<-c(as.Date("2015-08-20"), dates[1])
-for (i in 2:16)
+for (i in 2:17)
 {
   all2015data[[i]][[5]]<-c(dates[i-1], dates[i])
   names(all2015data[[i]][[5]])<-c("Start Date", "End Date")

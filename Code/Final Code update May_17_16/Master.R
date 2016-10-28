@@ -13,3 +13,5 @@ save(BradleyTerryLARC, BTWP, dataconfigure, datascrape, find.mf, full.sim.gen, L
 
 #Whenevere you need to load functions, call this command
 load("MasterFunctionFile.RData")
+
+
