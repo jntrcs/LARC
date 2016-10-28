@@ -1,10 +1,10 @@
 #!/bin/bash
 
-#SBATCH --time=6:00:00   # walltime
-#SBATCH --ntasks=6   # number of processor cores (i.e. tasks)
+#SBATCH --time=0:10:00   # walltime
+#SBATCH --ntasks=17   # number of processor cores (i.e. tasks)
 #SBATCH --nodes=1   # number of nodes
 #SBATCH --mem-per-cpu=2048M   # memory per CPU core
-#SBATCH -J "Retry end of 2015"   # job name
+#SBATCH -J "do all of 2015"   # job name
 #SBATCH --mail-user=jcurtis210@gmail.com   # email address
 #SBATCH --mail-type=BEGIN
 #SBATCH --mail-type=END

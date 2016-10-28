@@ -1,5 +1,5 @@
 #NCAA week by week
-
+library(Rcpp)
 load("MasterFunctionFile.RData")
 load("2015FootballData.RData")
 Rcpp::sourceCpp("cppFiles.cpp")
@@ -16,7 +16,7 @@ neededFunc<- c("dataconfigure", "raw2015", "LARC.Rank.Football", "BTDensity", "T
 clusterExport(clust, neededFunc)
 system.time(
 allTM<-parLapply(clust, dates, function(date){
-  LARC.Rank.Football(all2015data[[which(date==dates)]][[1]])
+  LARC.Rank.Football(all2015data[[which(date==dates)]][[1]], func=TMDensity)
 })
 
 )
