@@ -37,6 +37,7 @@
 LARC.Rank.Football<-function(df, func=BTDensity, increment = 0.001, 
                              iterations = Inf, dgt=3, magnificationfactor=1, adj=1)
 {
+  Rcpp::sourceCpp("cppFiles.cpp")
   if (identical(func, ThurstoneMostellerLARC)|identical(func, TMDensity))
     df$Strength<-df$TMLast
   else
