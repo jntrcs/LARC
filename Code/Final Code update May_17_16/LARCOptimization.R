@@ -32,7 +32,7 @@ LARC.Optim <- function(df, func = BTDensity, increment = 0.001,
   wv <- df$WinsVersus
   
   mf <- find.mf(df,func=func)
-  comp <- func(df$Strength,df$WinsVersus,mf)
+  comp <- func(df$Strength,df$WinsVersus, df$WinsTotal, mf)
   #LARC.Posterior(df, func, mf = magnificationfactor, adj = adj)
   #tells function to round results to the decimal place indicated by increment
   options(digits = min(which( increment*10^(0:20)==floor(increment*10^(0:20)) )) - 1)
@@ -43,17 +43,17 @@ LARC.Optim <- function(df, func = BTDensity, increment = 0.001,
   # or when the incrament is too small.
   while ((comp != last & x < iterations) | inc >= increment) {
     mf <- find.mf(df,func=func)
-    comp <- func(df$Strength,df$WinsVersus,mf)
+    comp <- func(df$Strength,df$WinsVersus,df$WinsTotal,mf)
     last <- comp
     #the for loop adjusts each strength either up or down by inc until func is maxed
     for (i in 1:nrow(df)) {
         df$Strength[i] <- df$Strength[i] + inc
-        new <- func(df$Strength,df$WinsVersus,mf)# <- LARC.Posterior(df, func, mf = magnificationfactor,adj=adj)
+        new <- func(df$Strength,df$WinsVersus, df$WinsTotal, mf)# <- LARC.Posterior(df, func, mf = magnificationfactor,adj=adj)
         if (comp > new) {
           df$Strength[i] <- df$Strength[i] - 2*inc
           if (BT & df$Strength[i]<0)
             df$Strength[i]<-0
-          new <- func(df$Strength,df$WinsVersus,mf)# <- LARC.Posterior(df, func, mf = magnificationfactor,adj=adj)
+          new <- func(df$Strength,df$WinsVersus, df$WinsTotal, mf)# <- LARC.Posterior(df, func, mf = magnificationfactor,adj=adj)
           if (comp > new) {
             df$Strength[i] <- df$Strength[i] + inc
           } else {

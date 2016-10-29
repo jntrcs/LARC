@@ -17,22 +17,22 @@ using namespace Rcpp;
 
 
 //[[Rcpp::export]]
-double BTDensity(NumericVector strengths, IntegerMatrix wins, NumericVector magnificationfactor=1)
+double BTDensity(NumericVector strengths, IntegerMatrix wins, NumericVector winsTotal, NumericVector magnificationfactor=1)
 {
   
   double mf=magnificationfactor.at(0);
   double pi = 1;
   long double pipi=1;
-  NumericVector w;
+  //NumericVector w;
   for (int i = 0; i<strengths.size(); ++i)
   {
-    int sum=0;
-    for (int j = 0; j<wins.ncol(); ++j)
-    {
-      sum+=wins.row(i)[j]; //I think we could save serious computation time by not recomputing this constantly
-    }
-    w.push_back(sum);
-    pi = pi * pow(strengths.at(i), w.at(i)+1)*exp(-strengths.at(i));
+    //int sum=0;
+    //for (int j = 0; j<wins.ncol(); ++j)
+    //{
+    //  sum+=wins.row(i)[j]; //I think we could save serious computation time by not recomputing this constantly
+    //}
+    //w.push_back(sum);
+    pi = pi * pow(strengths.at(i), winsTotal.at(i)+1)*exp(-strengths.at(i));
     if (i<strengths.size())
     {
       for (int j = i+1; j<strengths.size(); ++j){
@@ -48,7 +48,7 @@ double BTDensity(NumericVector strengths, IntegerMatrix wins, NumericVector magn
 }
 
 //[[Rcpp::export]]
-double TMDensity(NumericVector strengths, IntegerMatrix wins, NumericVector magFac=1)
+double TMDensity(NumericVector strengths, IntegerMatrix wins, NumericVector winsTotal=0, NumericVector magFac=1)
 {
   //I need to cite the author of the phi function which I am copying in here. 
   long double prior = 1;
