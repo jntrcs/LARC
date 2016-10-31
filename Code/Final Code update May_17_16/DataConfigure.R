@@ -5,9 +5,9 @@
 #    Game Number -- Int -- 1, 2, 3, ..., number of games in the data base
 #    Team Names  -- Factor w/t levels (t is the number of teams) -- names of the teams followed by a team number 
 #    Winner -- chr -- the winning team for each of the games
-#    HPTS   -- num -- TBL (To be Defined Later)
+#    HPTS   -- num -- Home Points
 #    Loser  -- chr -- the losing team for each of the games
-#    VPTS   -- num -- TBL
+#    VPTS   -- num -- Visitor Points
 #    Date   -- Date-- One can limit the data for NBA, NCAA football, etc. only up to a certain point 
 #    Home   -- chr -- name of the winning team
 #    Visitor-- chr -- name of the losing team 
@@ -109,5 +109,5 @@ attachMostRecentStrengths<-function(matrix, BTstrengths, TMStrengths)
   matrix
 }
 
-for (i in 12:17)
-all2015data[[i]][[1]]<-attachMostRecentStrengths(all2015data[[i]][[1]], all2015data[[11]][[2]], all2015data[[11]][[3]])
+#for (i in 12:17)
+#all2015data[[i]][[1]]<-attachMostRecentStrengths(all2015data[[i]][[1]], all2015data[[11]][[2]], all2015data[[11]][[3]])

@@ -41,12 +41,16 @@ for (i in 2:17)
 }
 
 #Configure
-all2016data[[8]]<-list()
-all2016data[[8]][[5]]
-all2016data[[8]][[1]]<-dataconfigure(latestRaw, reldate=all2016data[[8]][[5]][2])
-all2016data[[8]][[2]]<-LARC.Rank.Football(all2016data[[8]][[1]])
-all2016data[[8]][[3]]<-LARC.Rank.Football(all2016data[[8]][[1]], func=ThurstoneMostellerLARC
-
+all2016data[[9]]<-list()
+all2016data[[9]][[5]]<-as.Date(c("2016-10-23", "2016-10-30"))
+all2016data[[9]][[1]]<-dataconfigure(latestRaw, reldate=all2016data[[9]][[5]][2])
+all2016data[[9]][[1]]<-attachMostRecentStrengths(all2016data[[9]][[1]], all2016data[[8]][[2]], all2016data[[8]][[3]])
+system.time(
+all2016data[[9]][[2]]<-LARC.Rank.Football(all2016data[[9]][[1]]))
+system.time(
+all2016data[[9]][[3]]<-LARC.Rank.Football(all2016data[[9]][[1]], func=TMDensity)
+)
+all2016data[[9]][[4]]<-NCAAFPredictor(all2016data[[9]][[2]], all2016data[[9]][[3]],latestRaw, all2016data[[9]][[5]])
 #2015 Football
 raw2015<-datascrape("NCAAF", year=2015)
 save(all2015data, raw2015, file="2015FootballData.RData")
