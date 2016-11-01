@@ -25,9 +25,11 @@
 # WinsVersus -- num -- t x t matrix of the number of times each team beats each team
 #
 #
-df<-raw
-reldate<-"2016-09-18"
-dataconfigure <- function(df, reldate=Sys.Date()-1, forsim=FALSE) {
+#df<-latestRaw
+#reldate<-"2016-10-31"
+
+#DEPRECATED
+olddataconfigure <- function(df, reldate=Sys.Date()-1, forsim=FALSE) {
   df$Date <-as.Date(df$Date)
   df<-df[df$Date<=reldate,]
   tt <- length(unique(c(df$Home,df$Visitor)))
@@ -48,7 +50,7 @@ dataconfigure <- function(df, reldate=Sys.Date()-1, forsim=FALSE) {
 #  
 #these first lines create a new dataframe with Team, Strength, and Wins
   data <- data.frame(sort(unique(c(df$Home,df$Visitor))),rep(1,tt),
-                     table(c(df$Winner[df$Date <= reldate],unique(c(df$Home,df$Visitor))))-1)
+                     table(c(df$Winner,unique(c(df$Home,df$Visitor))))-1)
   names(data) <- c("Team","Strength","Temp","WinsTotal")
   data$Temp <- NULL
 #the rest of the lines within the function create the versus matrix by first creating
@@ -61,7 +63,7 @@ dataconfigure <- function(df, reldate=Sys.Date()-1, forsim=FALSE) {
       pstn <- pstn + 1
       x <- 0
       z <- 0
-      for (y in 1:length(which(df$Date <= reldate))){
+      for (y in 1:length(df$Date)){
         if(df$Home[y]==i && df$Visitor[y]==n){
           x <- x + 1
           if((df$HPTS[y] < df$VPTS[y]) && forsim == FALSE){
@@ -91,6 +93,62 @@ dataconfigure <- function(df, reldate=Sys.Date()-1, forsim=FALSE) {
   }
   return(data)
 }
+
+dataconfigure <- function(df, reldate=Sys.Date()-1, forsim=FALSE) {
+  df$Date <-as.Date(df$Date)
+  df<-df[df$Date<=reldate,]
+  tt <- length(unique(c(df$Home,df$Visitor)))
+  
+  if (forsim == TRUE) {
+    reldate <- Sys.Date() + 365
+    # All future comments were added by Ala'a    
+    # These commented out lines may need to be readded, I cannot figure out the purpose they serve
+    # but they were causing issues with some datasets and I don't think omitting them causes any issues
+  } 
+  # else {
+  # LD <- length(which(df$Date <= reldate))
+  # while (is.na(df$HPTS[LD+1])) {
+  #  reldate <- reldate - 1
+  #  LD <- length(which(df$Date <= reldate))
+  #}
+  #}
+  #  
+  #these first lines create a new dataframe with Team, Strength, and Wins
+  data <- data.frame(sort(unique(c(df$Home,df$Visitor))),rep(1,tt),
+                     table(c(df$Winner,unique(c(df$Home,df$Visitor))))-1)
+  names(data) <- c("Team","Strength","Temp","WinsTotal")
+  data$Temp <- NULL
+  #the rest of the lines within the function create the versus matrix by first creating
+  # an empty ttxtt matrix and then filling it via a for loops.
+  mm <- matrix(0, tt, tt)
+  ww <- matrix(0, tt, tt)
+
+  for (i in 1:nrow(df))
+  {
+    indexTeam1<-which(df$Home[i]==data$Team, arr.ind = TRUE)
+    indexTeam2<-which(df$Visitor[i]==data$Team, arr.ind = TRUE)
+    team1Won<-df$Home[i]==df$Winner[i]
+    mm[indexTeam1,indexTeam2]<-mm[indexTeam1,indexTeam2]+1
+    mm[indexTeam2,indexTeam1]<-mm[indexTeam2,indexTeam1]+1
+    if (team1Won)
+    {
+      ww[indexTeam1,indexTeam2]<-ww[indexTeam1,indexTeam2]+1
+    }
+    else{
+      ww[indexTeam2,indexTeam1]<-ww[indexTeam2,indexTeam1]+1
+    }
+  }
+    data$Versus <- mm
+    data$WinsVersus <- ww
+    data$Team <- as.character(data$Team)
+    
+    if (forsim == TRUE) {
+      data$WinsVersus <- NULL
+      data$WinsTotal <- NULL
+    }
+    return(data)
+}
+
 
 #This function accepts the data.frame with the versus matrix and a data.frame with bradley terry strengths
 #and with Thurstone mosteller strengths, and attaches them to the matrix DF
