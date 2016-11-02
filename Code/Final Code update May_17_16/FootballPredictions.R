@@ -60,7 +60,7 @@ NCAAFPredictor<-function(BTStrengths,TMStrengths, schedule, dateVector)
 }  
 
 
-temp<-lapply(2:17, FUN=function(i) NCAAFPredictor(all2015data[[i-1]][[2]],all2015data[[i-1]][[2]],raw2015,all2015data[[i]][[5]]))
+temp<-lapply(2:17, FUN=function(i) NCAAFPredictor(all2015data[[i-1]][[2]],all2015data[[i-1]][[3]],raw2015,all2015data[[i]][[5]]))
 for (i in 2:17)
 {
   all2015data[[i]][[4]]<-temp[[i-1]]
@@ -69,7 +69,7 @@ for (i in 2:17)
 performance<-lapply(2:16, FUN=function(n){all2015data[[n]][[4]][[2]]})
 makePerformanceGraph(performance)
 
-penalties<-lapply(2:16, FUN=function(n){all2015data[[n]][[4]][[3]]})
+penalties<-lapply(2:13, FUN=function(n){all2015data[[n]][[4]][[3]]/all2015data[[n]][[4]][[5]]})
 makePenaltyGraph(penalties)
 
 meanDifferences<-sapply(2:16, FUN=function(n){all2015data[[n]][[4]][[4]]})
@@ -92,11 +92,11 @@ makePenaltyGraph<-function(penatlies)
 {
 BTPenalties<-sapply(penalties, FUN = function(vec){vec[1]})
 TMPenalties<-sapply(penalties, FUN = function(vec){vec[2]})
-plot(TMPenalties, type='l', lty=2, col="Blue", main="Bad Prediction Penalization", ylab="Penatly Score",
+plot(TMPenalties, type='l', lty=2, col="Blue", main="Bad Prediction Penalization", ylab="Penalty Score",
      xlab="Week Predicted", xaxt="n")
 lines(BTPenalties, col="Red")
 axis(1,at=1:length(BTPenalties),labels=2:(length(BTPenalties)+1))
-legend(1, 10,c("Bradley-Terry", "Thurstone-Mosteller"), col=c("Red", "Blue"), lty=c(1,2))
+legend(x="bottomleft",c("Bradley-Terry", "Thurstone-Mosteller"), col=c("Red", "Blue"), lty=c(1,2))
 }
 
 penalties<-lapply(2:length(all2016data), FUN=function(n){all2016data[[n]][[4]][[3]]})
@@ -113,3 +113,9 @@ makeDifferenceGraph<-function(meanDifferences)
 }
 meanDifferences<-sapply(2:length(all2016data), FUN=function(n){all2016data[[n]][[4]][[4]]})
 makeDifferenceGraph(meanDifferences)
+
+games<-sapply(2:17, FUN=function(i){all2015data[[i]][[4]][[5]]})
+plot(games)
+games
+all2015data[[2]][[4]][[5]]
+
