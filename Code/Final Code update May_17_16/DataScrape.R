@@ -110,8 +110,8 @@ scrapeNCAAF<-function(year="2016")
   site<-""
   skip<-0
   if (year=="2016")
-    {site<-"http://www.masseyratings.com/scores.php?s=286577&sub=11604&all=1"
-    skip<-25
+    {site<-"http://www.masseyratings.com/scores.php?s=286577&sub=11590&all=1"
+    skip<-10
     }
   else if (year=="2015")
   { 

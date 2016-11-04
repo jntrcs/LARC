@@ -1,9 +1,14 @@
 ##2016 Football 
 
 latestRaw<-datascrape("NCAAF")
-
+numGames<-table(c(latestRaw$Home, latestRaw$Visitor))
+numGames<-data.frame(numGames)
+takeOut<-as.character(numGames[numGames$Freq<5, 1])
+strippedRaw<-latestRaw[!(latestRaw$Home %in% takeOut | latestRaw$Visitor %in% takeOut),]
 
 save(all2016data,latestRaw,file="2016FootballData.RData") 
+save(stripped2016data, strippedRaw, file="Stripped2016FootballData.RData")
+#save(all2016data,latestRaw,file="Old2016FootballData.RData") 
 
 #This exists because the supercomputer could quite easily overwrite my existing work and I want to 
 #keep this easily available, also will be able to use for before and after comparisons

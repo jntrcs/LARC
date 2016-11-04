@@ -1,3 +1,12 @@
+##FBS vs. FCS
+
+##2015 includes all FCS games--305 teams, only 50 played less than 3
+##2016 includes FBS games--213 teams, but 80 played less than 3 
+
+nrow(all2015data[[17]][[1]])
+nrow(all2016data[[9]][[1]])
+
+
 games2015<-sapply(1:nrow(all2015data[[17]][[1]]), FUN = function(n){
   sum(all2015data[[17]][[1]][n, 4])
 })
@@ -38,3 +47,11 @@ for (i in 1:nrow(all2016data[[9]][[1]]))
 teams2016
 
 teams2016[!teams2016%in%teams2015]
+
+library("XML")
+doc<-readHTMLTable(doc="http://www.mikedesimone.com/top25.htm")[[3]]
+teams<-na.exclude(doc$V4)
+teams<-as.character(teams)
+substr(teams, 1, )
+?split
+split(teams, " ")
