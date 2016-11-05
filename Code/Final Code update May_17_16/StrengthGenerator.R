@@ -2,12 +2,12 @@
 
 pickTMStrength<-function(mean = 0)
 {
-  rnorm(1,mean=mean)
+  rnorm(length(mean),mean=mean)
 }
 
 pickBTStrength<-function(shape)
 {
-  rgamma(1, shape=shape)
+  rgamma(length(shape), shape=shape)
 }
 
 simHomeWin<-function(homeStrength, awayStrength, type)
