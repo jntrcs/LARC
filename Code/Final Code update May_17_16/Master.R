@@ -8,6 +8,7 @@ save(BradleyTerryLARC, BTWP, dataconfigure, datascrape, find.mf, full.sim.gen, L
      TMWP, VS.matrix, NCAAFPredictor, makePenaltyGraph, makePerformanceGraph,
      makeDifferenceGraph, getConfigured, getRaw, getBTStrengths, getTMStrengths,
      getStrengths, getPredictions, LARC.Rank.Football,attachMostRecentStrengths, TMDensity, BTDensity,
+     pickTMStrength, pickBTStrength, simHomeWin,
      file="MasterFunctionFile.RData")
 
 
