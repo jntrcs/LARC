@@ -110,8 +110,8 @@ scrapeNCAAF<-function(year="2016")
   site<-""
   skip<-0
   if (year=="2016")
-    {site<-"http://www.masseyratings.com/scores.php?s=286577&sub=11590&all=1"
-    skip<-10
+    {site<-"http://www.masseyratings.com/scores.php?s=286577&sub=11604&all=1"
+    skip<-25
     }
   else if (year=="2015")
   { 
@@ -220,7 +220,6 @@ datascrape <- function(datatype,playoffs=FALSE,year=substr(Sys.Date(),1,4), date
 
 raw2015<-datascrape("NCAAF", year=2015)
 latestRaw<-datascrape("NCAAF")
-save(latestRaw, file="LatestNCAAF.RData")
 ###TODO: fix parameters to require what is needed and respect choices. 
 #Fix NFL and NHL (I don't think I broke those)
 #Get rid of NCAAF warning message

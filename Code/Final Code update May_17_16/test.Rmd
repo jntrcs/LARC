@@ -1,0 +1,58 @@
+---
+title: "Penalty Scoring"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+This document will explain how we measure the penalty score in our model and give some theoretical justification for doing so.
+
+Before each game, each model is asked to give a probabilistic statement on the percent chance of the home team winning. 
+
+The Bradley Terry model:
+$$
+P(H)=\frac{S_H}{S_H+S_A}
+$$
+
+The Thurstone-Mosteller model:
+$$
+P(H) = NormCDF(S_H-S_A)
+$$
+Our model then uses the actual result and assigns the actual result a 1 if the home team won and a 0 if it lost. The penalty is assessed against the team that
+$$
+max(\mid{P(H)-Result}\mid)
+$$
+
+
+
+Thurstone Mosteller will predict home team wins with 99% chance. Bradley-Terry will do 95%. The true probability of winning will be 95%. A for loop will generate the accrual of penalties as we simulate 1000 games.
+```{r}
+BTpenalty<-0
+TMpenalty<-0
+BTtrack<-NULL
+TMtrack<-NULL
+for (i in 1:1000)
+{
+  homeTeamWon <- rbinom(1,1,.95)==1
+  if (homeTeamWon)
+  {
+    #TMpenalty=TMpenalty+.01
+    BTpenalty=BTpenalty+.05
+  }
+  else
+  {
+    #BTpenalty=BTpenalty+.95
+    TMpenalty=TMpenalty+.99
+  }
+  BTtrack[i]<-BTpenalty
+  TMtrack[i]<-TMpenalty
+}
+plot(1:1000,BTtrack, type='l')
+lines(TMtrack, col="Red")
+legend("topleft", c("Bad Model", "Good Model"), lty=c(1,1), col=c('Red', 'Black'))
+
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
