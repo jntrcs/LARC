@@ -17,3 +17,4 @@ save(BradleyTerryLARC, BTWP, dataconfigure, datascrape, find.mf, full.sim.gen, L
 load("MasterFunctionFile.RData")
 
 
+#d
