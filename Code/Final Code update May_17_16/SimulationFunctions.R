@@ -14,14 +14,34 @@ generateTeams<-function()
   teams
 }
 
-generateSchedule<-function()
+generateSchedule<-function(teams)
 {
-  rbind(generateNonConference(), generateConference())
+  
+  cbind(generateNonConference(teams), generateConference(teams))
 }
 
-generateNonConference<-function()
+generateNonConference<-function(teams)
 {
- 
+  schedule<-data.frame(teams$Conference, teams$Team, matrix(0, nrow=nrow(teams), ncol=4))
+  names(schedule)<-c("Conference", "Team", "Week1", "Week2", "Week3", "Week4")
+  for (i in 1:4)
+  {
+    for (j in 1:nrow(schedule))
+    {
+      if (schedule[j,i+2]==0) #If it's already filled, skip it.
+      {
+        opposingTeam<-0
+        while((opposingTeam %in% schedule[j, 3:6])){
+          opposingTeam<-sample(1:sum(schedule[,i+2]==0 & schedule$Conference[j]!=schedule$Conference), 1) #This will sample from how many teams there are left to be filled
+          if (opposingTeam>=(schedule$Conference[j]-1)*9) #This prevents a team from playing within their own conference
+            opposingTeam<-opposingTeam+9
+        } 
+        schedule[j, i+2]<-opposingTeam
+        schedule[opposingTeam, i+2]<-j
+      }
+    }
+  }
+  schedule
 }
 
 generateConference<-function()
