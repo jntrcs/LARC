@@ -57,7 +57,31 @@ generateNonConference<-function(teams)
   schedule
 }
 
-generateConference<-function()
+generateConference<-function(teams)
 {
+  schedule<-data.frame(teams$Conference, teams$Team, matrix(0, nrow=nrow(teams), ncol=9))
+  names(schedule)<-c("Conference", "Team", rep(paste("Week",5:13,sep="")))
+  arrangement<-matrix(c(9,8,7,6,0,4,3,2,1,
+                       4,3,2,1,9,8,0,6,5,
+                       8,7,6,5,4,3,2,1,0,
+                       3,0,1,9,8,7,6,5,4,
+                       7,6,5,0,3,2,1,9,8,
+                       2,1,9,8,7,0,5,4,3,
+                       6,5,4,3,2,1,9,0,7,
+                       0,9,8,7,6,5,4,3,2,
+                       5,4,0,2,1,9,8,7,6), nrow=9, ncol=9)
   
+  for (i in 1:length(unique(schedule$Conference)))
+  {
+    weekOrder<-sample(1:9)
+    schedule[schedule$Conference==i, 3:11]<-arrangement[,weekOrder]
+    zeroes<-which(as.vector(arrangement[,weekOrder])==0)
+    schedule[schedule$Conference==i, 3:11]<-schedule[schedule$Conference==i, 3:11]+(sum(schedule$Conference==i)*(i-1))
+    m<-as.vector(as.matrix(schedule[schedule$Conference==i, 3:11]))
+    m[zeroes]<-0
+    schedule[schedule$Conference==i, 3:11]<-matrix(m, nrow=9,ncol=9)
+  }
+
+  schedule[,3:11]
 }
+
