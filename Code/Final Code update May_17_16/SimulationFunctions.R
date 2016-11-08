@@ -24,20 +24,33 @@ generateNonConference<-function(teams)
 {
   schedule<-data.frame(teams$Conference, teams$Team, matrix(0, nrow=nrow(teams), ncol=4))
   names(schedule)<-c("Conference", "Team", "Week1", "Week2", "Week3", "Week4")
-  for (i in 1:4)
+  for (i in 3:6)
   {
-    for (j in 1:nrow(schedule))
+    randomize<-sample(1:90)
+    for (j in 1:90)
     {
-      if (schedule[j,i+2]==0) #If it's already filled, skip it.
+      if (schedule[j,i]==0){
+      possibilities<-randomize[which(schedule$Conference[randomize]!=schedule$Conference[j] & 
+                                       !randomize %in% schedule[j, 3:6]
+                                     & schedule[randomize,i]==0)]
+      if (length(possibilities)>0)
       {
-        opposingTeam<-0
-        while((opposingTeam %in% schedule[j, 3:6])){
-          opposingTeam<-sample(1:sum(schedule[,i+2]==0 & schedule$Conference[j]!=schedule$Conference), 1) #This will sample from how many teams there are left to be filled
-          if (opposingTeam>=(schedule$Conference[j]-1)*9) #This prevents a team from playing within their own conference
-            opposingTeam<-opposingTeam+9
-        } 
-        schedule[j, i+2]<-opposingTeam
-        schedule[opposingTeam, i+2]<-j
+        opposingTeam<-possibilities[1]
+        schedule[j,i]<-opposingTeam
+        schedule[opposingTeam, i]<-j
+      }
+      else
+      {
+       possibilities <-sample((1:90)[schedule$Conference[j]!=schedule$Conference&!(1:90 %in% schedule[j, 3:6])])
+       replaceTeam<-sample(possibilities, 1)
+       otherTeam<-schedule[replaceTeam,i]
+       schedule[j,i]<-replaceTeam
+       schedule[replaceTeam,i]<-j
+       lastTeam<-which(schedule[,i]==0)[1]
+       schedule[otherTeam, i]<-lastTeam
+       schedule[lastTeam,i]<-otherTeam
+   
+      }
       }
     }
   }
