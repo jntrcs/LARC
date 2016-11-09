@@ -8,10 +8,10 @@ for (i in 1:numSim)
   ##idea: change all of these to not store in i so that it doesn't save all info for 1000 sims
  simulation[[i]]<-list()
   simulation[[i]]$Teams<-generateTeams()
-  simulation[[i]]$Schedule<-generateSchedule()
+  simulation[[i]]$Schedule<-generateSchedule(simulation[[i]]$Teams)
   
 }
 
 
-generateTeams()
-save(simulation, "Simulation.RData")
+save(simulation, file="Simulation.RData")
+View(simulation[[i]]$Teams)
