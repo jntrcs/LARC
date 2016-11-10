@@ -14,6 +14,12 @@ generateTeams<-function()
   teams
 }
 
+generateTeamSchedule<-function()
+{
+  teams<-generateTeams()
+  generateSchedule(teams)
+}
+
 generateSchedule<-function(teams)
 {
   
@@ -22,16 +28,16 @@ generateSchedule<-function(teams)
 
 generateNonConference<-function(teams)
 {
-  schedule<-data.frame(teams$Conference, teams$Team, matrix(0, nrow=nrow(teams), ncol=4))
-  names(schedule)<-c("Conference", "Team", "Week1", "Week2", "Week3", "Week4")
-  for (i in 3:6)
+  schedule<-data.frame(teams, matrix(0, nrow=nrow(teams), ncol=4))
+  names(schedule)<-c("Conference", "Team", "TrueStrengthBT", "TrueStrengthTM", "Week1", "Week2", "Week3", "Week4")
+  for (i in 5:8)
   {
     randomize<-sample(1:90)
     for (j in 1:90)
     {
       if (schedule[j,i]==0){
       possibilities<-randomize[which(schedule$Conference[randomize]!=schedule$Conference[j] & 
-                                       !randomize %in% schedule[j, 3:6]
+                                       !randomize %in% schedule[j, 5:8]
                                      & schedule[randomize,i]==0)]
       if (length(possibilities)>0)
       {
@@ -41,7 +47,7 @@ generateNonConference<-function(teams)
       }
       else
       {
-       possibilities <-sample((1:90)[schedule$Conference[j]!=schedule$Conference&!(1:90 %in% schedule[j, 3:6])])
+       possibilities <-sample((1:90)[schedule$Conference[j]!=schedule$Conference&!(1:90 %in% schedule[j, 5:8])])
        replaceTeam<-sample(possibilities, 1)
        otherTeam<-schedule[replaceTeam,i]
        schedule[j,i]<-replaceTeam
