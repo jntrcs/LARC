@@ -91,3 +91,36 @@ generateConference<-function(teams)
   schedule[,3:11]
 }
 
+generateSeasonResults<-function(season, useBT)
+{
+  numGames<-nrow(season)/2*12
+  seasonGames<-data.frame(matrix(0, nrow=numGames, 5))
+  names(seasonGames)<-c("Date", "Home", "Visitor", "Winner", "HomeWinPerecent")
+  game<-0
+  for (i in 1:13)
+  {
+    for (j in 1:nrow(season))
+    {
+      if (season[j, i+4]>j)
+      {
+        game<-game+1
+        seasonGames$Date[game]<-i
+        seasonGames$Home[game]<-j
+        visitor<-season[j, i+4]
+        seasonGames$Visitor[game]<-visitor
+        seasonGames$HomeWinPerecent[game]<-ifelse(useBT, season$TrueStrengthBT[j]/(season$TrueStrengthBT[j]+season$TrueStrengthBT[visitor]),
+                                          pnorm(season$TrueStrengthTM[j]-season$TrueStrengthTM[visitor]))
+        seasonGames$Winner[game]<-ifelse(rbinom(1,1,seasonGames$HomeWinPerecent[game]), j, visitor)
+      }
+    }
+  }
+    seasonGames
+}
+
+a<-generateSeasonResults(season, TRUE)
+b<-generateSeasonResults(season, FALSE)
+hist(b$HomeWinPerecent)
+hist(a$HomeWinPerecent)
+mean(a$Visitor)
+mean(b$Home)
+mean(b$Winner)

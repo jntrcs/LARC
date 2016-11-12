@@ -101,25 +101,14 @@ dataconfigure <- function(df, reldate=Sys.Date()-1, forsim=FALSE) {
   
   if (forsim == TRUE) {
     reldate <- Sys.Date() + 365
-    # All future comments were added by Ala'a    
-    # These commented out lines may need to be readded, I cannot figure out the purpose they serve
-    # but they were causing issues with some datasets and I don't think omitting them causes any issues
-  } 
-  # else {
-  # LD <- length(which(df$Date <= reldate))
-  # while (is.na(df$HPTS[LD+1])) {
-  #  reldate <- reldate - 1
-  #  LD <- length(which(df$Date <= reldate))
-  #}
-  #}
-  #  
+
   #these first lines create a new dataframe with Team, Strength, and Wins
   data <- data.frame(sort(unique(c(df$Home,df$Visitor))),rep(1,tt),
                      table(c(df$Winner,unique(c(df$Home,df$Visitor))))-1)
   names(data) <- c("Team","Strength","Temp","WinsTotal")
   data$Temp <- NULL
   #the rest of the lines within the function create the versus matrix by first creating
-  # an empty ttxtt matrix and then filling it via a for loops.
+  # an empty ttxtt matrix and then filling it via a for loop.
   mm <- matrix(0, tt, tt)
   ww <- matrix(0, tt, tt)
 
