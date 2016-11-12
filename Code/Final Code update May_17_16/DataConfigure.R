@@ -95,12 +95,12 @@ olddataconfigure <- function(df, reldate=Sys.Date()-1, forsim=FALSE) {
 }
 
 dataconfigure <- function(df, reldate=Sys.Date()-1, forsim=FALSE) {
-  df$Date <-as.Date(df$Date)
+  if (class(reldate)=="Date") 
+    df$Date <-as.Date(df$Date)
   df<-df[df$Date<=reldate,]
   tt <- length(unique(c(df$Home,df$Visitor)))
   
-  if (forsim == TRUE) {
-    reldate <- Sys.Date() + 365
+
 
   #these first lines create a new dataframe with Team, Strength, and Wins
   data <- data.frame(sort(unique(c(df$Home,df$Visitor))),rep(1,tt),
@@ -109,7 +109,7 @@ dataconfigure <- function(df, reldate=Sys.Date()-1, forsim=FALSE) {
   data$Temp <- NULL
   #the rest of the lines within the function create the versus matrix by first creating
   # an empty ttxtt matrix and then filling it via a for loop.
-  mm <- matrix(0, tt, tt)
+#  mm <- matrix(0, tt, tt)
   ww <- matrix(0, tt, tt)
 
   for (i in 1:nrow(df))
@@ -117,8 +117,8 @@ dataconfigure <- function(df, reldate=Sys.Date()-1, forsim=FALSE) {
     indexTeam1<-which(df$Home[i]==data$Team, arr.ind = TRUE)
     indexTeam2<-which(df$Visitor[i]==data$Team, arr.ind = TRUE)
     team1Won<-df$Home[i]==df$Winner[i]
-    mm[indexTeam1,indexTeam2]<-mm[indexTeam1,indexTeam2]+1
-    mm[indexTeam2,indexTeam1]<-mm[indexTeam2,indexTeam1]+1
+    #mm[indexTeam1,indexTeam2]<-mm[indexTeam1,indexTeam2]+1
+    #mm[indexTeam2,indexTeam1]<-mm[indexTeam2,indexTeam1]+1
     if (team1Won)
     {
       ww[indexTeam1,indexTeam2]<-ww[indexTeam1,indexTeam2]+1
@@ -127,7 +127,7 @@ dataconfigure <- function(df, reldate=Sys.Date()-1, forsim=FALSE) {
       ww[indexTeam2,indexTeam1]<-ww[indexTeam2,indexTeam1]+1
     }
   }
-    data$Versus <- mm
+    #data$Versus <- mm
     data$WinsVersus <- ww
     data$Team <- as.character(data$Team)
     
