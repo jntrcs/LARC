@@ -1,4 +1,7 @@
 ##Season analysis 
+load("2016FootballData.RData")
+load("Stripped2016FootballData.RData")
+
 latestRaw<-datascrape("NCAAF")
 numGames<-table(c(latestRaw$Home, latestRaw$Visitor))
 numGames<-data.frame(numGames)
