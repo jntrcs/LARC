@@ -14,5 +14,6 @@ neededFunc<- c("dataconfigure", "LARC.Rank.Football", "BTDensity", "TMDensity",
                "generateConference","generateNonConference", "generateTeamSchedule", "generateSeasonResults")
 clusterExport(clust, neededFunc)
 
-output<- parLapply(clust, 1:10, fun = function(i){simulate1()})
+output<- parLapply(clust, 1:10, fun = function(i){Rcpp::sourceCpp("cppFiles.cpp")
+  simulate1()})
 save(output, file="Simulation.RData")

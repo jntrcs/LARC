@@ -1,10 +1,10 @@
 #!/bin/bash
 
-#SBATCH --time=0:10:00   # walltime
-#SBATCH --ntasks=17   # number of processor cores (i.e. tasks)
+#SBATCH --time=0:02:00   # walltime
+#SBATCH --ntasks=10   # number of processor cores (i.e. tasks)
 #SBATCH --nodes=1   # number of nodes
 #SBATCH --mem-per-cpu=2048M   # memory per CPU core
-#SBATCH -J "do all of 2015"   # job name
+#SBATCH -J "InitialSimulationTest"   # job name
 #SBATCH --mail-user=jcurtis210@gmail.com   # email address
 #SBATCH --mail-type=BEGIN
 #SBATCH --mail-type=END
@@ -17,4 +17,4 @@ export OMP_NUM_THREADS=$SLURM_CPUS_ON_NODE
 
 # LOAD MODULES, INSERT CODE, AND RUN YOUR PROGRAMS HERE
 module load r/3/3
-Rscript NCAAFAnalysis.R
+Rscript SuperComputerSim.R
