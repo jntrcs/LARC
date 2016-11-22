@@ -86,9 +86,10 @@ makePerformanceGraph<-function(performance)
 
 performance<-lapply(2:length(stripped2016data), FUN=function(n){stripped2016data[[n]][[4]][[2]]})
 makePerformanceGraph(performance)
+performance<-lapply(2:length(all2016data), FUN=function(n){all2016data[[n]][[4]][[2]]})
+makePerformanceGraph(performance)
 
-
-makePenaltyGraph<-function(penatlies)
+makePenaltyGraph<-function(penalties)
 {
 BTPenalties<-sapply(penalties, FUN = function(vec){vec[1]})
 TMPenalties<-sapply(penalties, FUN = function(vec){vec[2]})
@@ -114,6 +115,8 @@ makeDifferenceGraph<-function(meanDifferences)
 
 }
 meanDifferences<-sapply(2:length(stripped2016data), FUN=function(n){stripped2016data[[n]][[4]][[4]]})
+makeDifferenceGraph(meanDifferences)
+meanDifferences<-sapply(2:length(all2016data), FUN=function(n){all2016data[[n]][[4]][[4]]})
 makeDifferenceGraph(meanDifferences)
 
 games<-sapply(2:17, FUN=function(i){all2015data[[i]][[4]][[5]]})

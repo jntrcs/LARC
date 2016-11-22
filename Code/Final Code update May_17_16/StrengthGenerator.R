@@ -2,7 +2,7 @@
 
 pickTMStrength<-function(mean = 0)
 {
-  rnorm(length(mean),mean=mean)
+  rnorm(length(mean),mean=mean, sd=3/4)
 }
 
 pickBTStrength<-function(shape)

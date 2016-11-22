@@ -17,6 +17,7 @@ simulate1<-function(useBT)
     strengths[[i]]$BT<-LARC.Rank.Football(configured, func=BTDensity, sort=FALSE)
     strengths[[i]]$TM<-LARC.Rank.Football(configured, func=TMDensity, sort=FALSE)
   }
+  
   normTrueStrengths<-normalizeSample(simulation$teamSchedule$TrueStrength)
   #Should the mean strength be the sample or the population
   #Same with SD
@@ -26,12 +27,12 @@ simulate1<-function(useBT)
     summaryOfResults[[i]]<-list()
     weekBT<-normalizeSample(strengths[[i]]$BT$Strength)
     weekTM<-normalizeSample(strengths[[i]]$TM$Strength)
-    summaryOfResults[[i]]$BTBias<-mean(sqrt((normTrueStrengths-weekBT)^2))
+    summaryOfResults[[i]]$BTBias<-mean(abs(normTrueStrengths-weekBT))
     summaryOfResults[[i]]$TMBias<-mean(sqrt((normTrueStrengths-weekTM)^2))
     
   }
 }
-
+#variance of estimates  + bias^2
 normalizeSample<-function(strengths)
 {
   meanStrength<-mean(strengths)
@@ -45,5 +46,10 @@ plot(weekTM, normTrueStrengths)
 summaryOfResults
 
 
-mean(.4<(abs(.5-simulation$seasonGames$HomeWinPerecent)))
+mean(.4<(abs(.5-simulation$seasonGames$HomeWinPerecent[simulation$seasonGames$Date>4])))
+mean(.4<(abs(.5-simulation$seasonGames$HomeWinPerecent[simulation$seasonGames$Date<=4])))
+
 hist(abs(.5-simulation$seasonGames$HomeWinPerecent))
+hist(simulation$seasonGames$HomeWinPerecent)
+hist(simulation$seasonGames$HomeWinPerecent[simulation$seasonGames$Date>4])
+hist(simulation$seasonGames$HomeWinPerecent[simulation$seasonGames$Date<=4])

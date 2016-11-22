@@ -7,7 +7,7 @@ generateTeams<-function(useBT)
       func <-pickBTStrength
   }
   else{
-    params<-c(0,1,-.5,.5,-1,0,2,-1.5,-.75, -1.25)
+    params<-c(0,.5,-.25,.25,-.5,0,.75,-.75,-.25, -.5)
     func<-pickTMStrength
   }
   
