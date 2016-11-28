@@ -4,7 +4,6 @@ Rcpp::sourceCpp("cppFiles.cpp")
 simulate1<-function(useBT)
 {
   simulation<-list()
-  simulation$TrueStrengthType<-ifelse(useBT, "Bradley-Terry Gamma", "Thurstone-Mosteller Normal")
   simulation$teamSchedule<-generateTeamSchedule(useBT)
   simulation$seasonGames<-generateSeasonResults(simulation$teamSchedule, useBT)
   strengths<-list()
@@ -22,6 +21,11 @@ simulate1<-function(useBT)
   #Should the mean strength be the sample or the population
   #Same with SD
   summaryOfResults<-list()
+  summaryOfResults$TrueStrengthType<-ifelse(useBT, "Bradley-Terry Gamma", "Thurstone-Mosteller Normal")
+  summaryOfResults$TrueStrengths<-simulation$teamSchedule$TrueStrength
+  nrow<-1170
+  df<-data.frame(matrix(0, nrow=0, ncol=8))
+  names(df)<-c("Week", "Team", "BTPred", "TMPred", "BTBias", "TMBias", "RawBTBias", "RawTMBias")
   for (i in 1:13)
   {
     summaryOfResults[[i]]<-list()

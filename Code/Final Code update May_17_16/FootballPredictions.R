@@ -102,8 +102,10 @@ legend(x="bottomleft",c("Bradley-Terry", "Thurstone-Mosteller"), col=c("Red", "B
 
 penalties<-lapply(2:length(stripped2016data), FUN=function(n){stripped2016data[[n]][[4]][[3]]})
 makePenaltyGraph(penalties)
+rowSums(sapply(1:12, FUN= function(i){penalties[[i]]}))
 penaltiesAll<-lapply(2:length(all2016data), FUN=function(n){all2016data[[n]][[4]][[3]]})
 makePenaltyGraph(penaltiesAll)
+rowSums(sapply(1:12, FUN= function(i){penaltiesAll[[i]]}))
 
 makeDifferenceGraph<-function(meanDifferences)
 {
