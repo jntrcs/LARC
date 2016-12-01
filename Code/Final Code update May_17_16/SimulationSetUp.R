@@ -79,4 +79,4 @@ lines(season2$TMBias, col='red')
 v<-var(season1$Dataframe$BTBias)
 bt<-season1$Dataframe$BTBias
 #formula for variance mean((bt-mean(bt))^2)
-#Now walk me through bias.
+#Now walk me through bias.###.??????????????????

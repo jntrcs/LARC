@@ -79,8 +79,10 @@ makeDifferenceGraph(meanDifferences)
 makePerformanceGraph<-function(performance)
 {
   graphic<-sapply(performance, FUN=function(vec){vec[1]/(vec[2]+vec[1])})
-  plot(graphic, type='l', main="Bradley-Terry 'Win' Percentage", ylab="Percent BT Model Favored",
-     xlab="Week", xaxt="n")
+  plot(1-graphic, type='l', main="More Accuracy Comparison", ylab="Model Favored Proportion",
+     xlab="Week", xaxt="n", ylim=c(.1,.9))
+  lines(graphic, col="red")
+  legend(x="topleft",c("Bradley-Terry", "Thurstone-Mosteller"), col=c("Red", "black"), lty=c(1,1))
   axis(1,at=1:length(graphic),labels=2:(length(graphic)+1))
 }
 
@@ -125,4 +127,18 @@ games<-sapply(2:17, FUN=function(i){all2015data[[i]][[4]][[5]]})
 plot(games)
 games
 all2015data[[2]][[4]][[5]]
+
+lapply(2:13, FUN=function(i){
+  dat<-stripped2016data[[i]][[4]][[1]]
+  dat<-dat[(dat$BTHomeWin>.5&dat$TMHomeWin<.5)|(dat$BTHomeWin<.5&dat$TMHomeWin>.5),]
+  dat
+})
+
+d<-lapply(2:13, FUN=function(i){
+dat<-stripped2016data[[i]][[4]][[1]]
+dat<-dat[(dat$DidWorse=="Thurstone-Mosteller"&dat$Penalty>.5),]
+dat
+})
+
+sum(sapply(d, FUN=nrow))
 
