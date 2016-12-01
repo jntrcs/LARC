@@ -23,18 +23,25 @@ simulate1<-function(useBT)
   summaryOfResults<-list()
   summaryOfResults$TrueStrengthType<-ifelse(useBT, "Bradley-Terry Gamma", "Thurstone-Mosteller Normal")
   summaryOfResults$TrueStrengths<-simulation$teamSchedule$TrueStrength
-  nrow<-1170
   df<-data.frame(matrix(0, nrow=0, ncol=8))
-  names(df)<-c("Week", "Team", "BTPred", "TMPred", "BTBias", "TMBias", "RawBTBias", "RawTMBias")
+  summaryOfResults$BTBias<-rep(0, 13)
+  summaryOfResults$TMBias<-rep(0, 13)
+  
+    #names(df)<-c("Week", "Team", "BTPred", "TMPred", "BTBias", "TMBias", "RawBTBias", "RawTMBias")
   for (i in 1:13)
   {
-    summaryOfResults[[i]]<-list()
-    weekBT<-normalizeSample(strengths[[i]]$BT$Strength)
-    weekTM<-normalizeSample(strengths[[i]]$TM$Strength)
-    summaryOfResults[[i]]$BTBias<-mean(abs(normTrueStrengths-weekBT))
-    summaryOfResults[[i]]$TMBias<-mean(sqrt((normTrueStrengths-weekTM)^2))
+    weekBT<-normalizeSample(strengths[[i]]$BT$Strength) - normTrueStrengths
+    weekTM<-normalizeSample(strengths[[i]]$TM$Strength) - normTrueStrengths
+    summaryOfResults$BTBias[i]<-mean(abs(weekBT))
+    summaryOfResults$TMBias[i]<-mean(abs(weekTM))
+    df<-rbind(df, data.frame(rep(i, 90), 1:90, strengths[[i]]$BT$Strength, strengths[[i]]$TM$Strength,
+                         weekBT, weekTM, strengths[[i]]$BT$Strength - summaryOfResults$TrueStrengths,
+                         strengths[[i]]$TM$Strength - summaryOfResults$TrueStrengths))
     
   }
+  names(df)<-c("Week", "Team", "BTPred", "TMPred", "BTBias", "TMBias", "RawBTBias", "RawTMBias")
+  summaryOfResults$Dataframe<-df
+  summaryOfResults
 }
 #variance of estimates  + bias^2
 normalizeSample<-function(strengths)
@@ -57,3 +64,19 @@ hist(abs(.5-simulation$seasonGames$HomeWinPerecent))
 hist(simulation$seasonGames$HomeWinPerecent)
 hist(simulation$seasonGames$HomeWinPerecent[simulation$seasonGames$Date>4])
 hist(simulation$seasonGames$HomeWinPerecent[simulation$seasonGames$Date<=4])
+
+system.time(season1<-simulate1(TRUE))
+system.time(season2<-simulate1(FALSE))
+sum(abs(season1$Dataframe$BTBias))
+sum(abs(season1$Dataframe$TMBias))
+
+plot(season1$BTBias, type='l')
+lines(season1$TMBias, col='red')
+
+plot(season2$BTBias, type='l')
+lines(season2$TMBias, col='red')
+
+v<-var(season1$Dataframe$BTBias)
+bt<-season1$Dataframe$BTBias
+#formula for variance mean((bt-mean(bt))^2)
+#Now walk me through bias.
