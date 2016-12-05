@@ -13,8 +13,8 @@ simulate1<-function(useBT)
     if (i!=1)
       configured<-attachMostRecentStrengths(configured, strengths[[i-1]]$BT, strengths[[i-1]]$TM)
     strengths[[i]]<-list()
-    strengths[[i]]$BT<-LARC.Rank.Football(configured, func=BTDensity, sort=FALSE)
-    strengths[[i]]$TM<-LARC.Rank.Football(configured, func=TMDensity, sort=FALSE)
+    strengths[[i]]$BT<-LARC.Rank.Football(configured, func=BTDensity, sorted=FALSE)
+    strengths[[i]]$TM<-LARC.Rank.Football(configured, func=TMDensity, sorted=FALSE)
   }
   
   normTrueStrengths<-normalizeSample(simulation$teamSchedule$TrueStrength)
@@ -31,6 +31,19 @@ simulate1<-function(useBT)
   {
     weekBT<-normalizeSample(strengths[[i]]$BT$Strength) - normTrueStrengths
     weekTM<-normalizeSample(strengths[[i]]$TM$Strength) - normTrueStrengths
+    if (i!=13)
+    {
+      nextOpponent<-simulation$teamSchedule[,3+i]
+      nextOpponent[nextOpponent==0]<-NA
+      oppPredStrengthBT<-strengths[[i]]$BT$Strength[nextOpponent]
+      oppPredStrengthTM<-strengths[[i]]$TM$Strength[nextOpponent]
+      winPredBT<-predictionPercentage(strengths[[i]]$BT$Strength, oppPredStrengthBT, "BT")
+      winPredTM<-predictionPercentage(strengths[[i]]$TM$Strength, oppPredStrengthTM, "TM")
+      
+    }
+    else {
+      
+    }
     summaryOfResults$BTBias[i]<-mean(abs(weekBT))
     summaryOfResults$TMBias[i]<-mean(abs(weekTM))
     df<-rbind(df, data.frame(rep(i, 90), 1:90, strengths[[i]]$BT$Strength, strengths[[i]]$TM$Strength,
@@ -38,7 +51,7 @@ simulate1<-function(useBT)
                          strengths[[i]]$TM$Strength - summaryOfResults$TrueStrengths))
     
   }
-  names(df)<-c("Week", "Team", "BTPred", "TMPred", "BTBias", "TMBias", "RawBTBias", "RawTMBias")
+  names(df)<-c("Week", "Team", "BTPred", "TMPred", "BTBias", "TMBias", "RawBTBias", "RawTMBias", "BTGamePredOff", "TMGamePredOff")
   summaryOfResults$Dataframe<-df
   summaryOfResults
 }
