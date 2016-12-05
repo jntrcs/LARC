@@ -11,7 +11,7 @@ takeOut<-as.character(numGames[numGames$Freq<5, 1])
 strippedRaw<-latestRaw[!(latestRaw$Home %in% takeOut | latestRaw$Visitor %in% takeOut),]
 
 dates<-seq(as.Date("2016-09-04"), to=Sys.Date(), by=7)
-range<-13
+range<-14
 
 for (i in range)
 {

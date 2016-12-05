@@ -50,8 +50,8 @@ NCAAFPredictor<-function(BTStrengths,TMStrengths, schedule, dateVector)
   weekGames$DidWorse[weekGames$DidBetter=="Tie"]<-"Tie"
   weekGames$Penalty <- ifelse(weekGames$DidWorse =="Bradley-Terry", abs(ifelse(weekGames$HomeTeamWon, 1, 0)-weekGames$BTHomeWin), abs(ifelse(weekGames$HomeTeamWon, 1, 0)-weekGames$TMHomeWin))
   
-  penalties<-c(sum(weekGames$Penalty[weekGames$DidWorse=="Bradley-Terry"]),
-  sum(weekGames$Penalty[weekGames$DidWorse=="Thurstone-Mosteller"]))
+  penalties<-c(sum(weekGames$Penalty[weekGames$DidWorse=="Bradley-Terry"]/nrow(weekGames)),
+  sum(weekGames$Penalty[weekGames$DidWorse=="Thurstone-Mosteller"])/nrow(weekGames))
   names(penalties)<-c("Bradley-Terry Penalty", "Thurstone-Mosteller Penalty")
   percentHomeWins<-c(mean(weekGames$BTHomeWin), mean(weekGames$TMHomeWin))
   names(percentHomeWins)<-c("Bradely-Terry Home Win Percent", "Thurstone-Mosteller Home Win Percent")

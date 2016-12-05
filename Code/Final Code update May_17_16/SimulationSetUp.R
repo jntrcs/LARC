@@ -27,7 +27,6 @@ simulate1<-function(useBT)
   summaryOfResults$BTBias<-rep(0, 13)
   summaryOfResults$TMBias<-rep(0, 13)
   
-    #names(df)<-c("Week", "Team", "BTPred", "TMPred", "BTBias", "TMBias", "RawBTBias", "RawTMBias")
   for (i in 1:13)
   {
     weekBT<-normalizeSample(strengths[[i]]$BT$Strength) - normTrueStrengths
@@ -76,7 +75,7 @@ lines(season1$TMBias, col='red')
 plot(season2$BTBias, type='l')
 lines(season2$TMBias, col='red')
 
-v<-var(season1$Dataframe$BTBias)
+v<-aggregate(season1$Dataframe$BTPred~season1$Dataframe$Week, FUN=var)
+v
 bt<-season1$Dataframe$BTBias
-#formula for variance mean((bt-mean(bt))^2)
-#Now walk me through bias.###.??????????????????
+
