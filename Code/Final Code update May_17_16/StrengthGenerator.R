@@ -13,7 +13,17 @@ pickBTStrength<-function(shape)
 simHomeWin<-function(homeStrength, awayStrength, type)
 {
   if (type=="BT")
-   rbinom(1,1, homeStrength/(homeStrength+awayStrength))
+   rbinom(1,1, predictionPercentage(homeStrength, awayStrength, type))
   else
-    rbinom(1,1, pnorm(homeStrength-awayStrength))
+    rbinom(1,1, predictionPercentage(homeStrength, awayStrength, type))
 }
+
+
+predictionPercentage<-function(homeStrength, awayStrength, type)
+{
+  if (type=="BT")
+     homeStrength/(homeStrength+awayStrength)
+  else
+    pnorm(homeStrength-awayStrength)
+}
+
