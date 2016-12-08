@@ -39,7 +39,7 @@ simulate1<-function(useBT)
     summaryOfResults$TMBias[i]<-mean(abs(weekTM))
     df<-rbind(df, data.frame(rep(i, 90), 1:90, strengths[[i]]$BT$Strength, strengths[[i]]$TM$Strength,
                          weekBT, weekTM, strengths[[i]]$BT$Strength - summaryOfResults$TrueStrengths,
-                         strengths[[i]]$TM$Strength - summaryOfResults$TrueStrengths, winPredOffBT, winPredOffTM))
+                         strengths[[i]]$TM$Strength - summaryOfResults$TrueStrengths))
     
   }
   names(df)<-c("Week", "Team", "BTPred", "TMPred", "BTBias", "TMBias", "RawBTBias", "RawTMBias")
@@ -74,9 +74,9 @@ simulate1<-function(useBT)
   favoredRealPred[simulation$seasonGames$HomeWinPerecent<.5]<-1-simulation$seasonGames$HomeWinPerecent[simulation$seasonGames$HomeWinPerecent<.5]
   TMGamePred[simulation$seasonGames$HomeWinPerecent<.5]<-1-TMGamePred[simulation$seasonGames$HomeWinPerecent<.5]
   
-  summaryOfResults$GameBias<-data.frame(week[46:540],(BTGamePred-favoredRealPred)[46:540], 
-                                        (TMGamePred-favoredRealPred)[46:540])
-  names(summaryOfResults$GameBias)<-c("Week","BTGamePredictionBias", "TMGamePredictionBias")
+  summaryOfResults$GameBias<-data.frame(week[46:540],(BTGamePred)[46:540], 
+                                        (TMGamePred)[46:540], favoredRealPred[46:540])
+  names(summaryOfResults$GameBias)<-c("Week","BTGamePrediction", "TMGamePrediction", "ActualGame")
   summaryOfResults
 }
 #variance of estimates  + bias^2
@@ -88,10 +88,14 @@ normalizeSample<-function(strengths)
   norm
 }
 
+calcMSE<-function(pred, actual)
+{
+  dif<-pred-actual
+  sum(i^2)/length(i)
+}
+
 plot(weekBT, normTrueStrengths)
 plot(weekTM, normTrueStrengths)
-summaryOfResults
-
 
 mean(.4<(abs(.5-simulation$seasonGames$HomeWinPerecent[simulation$seasonGames$Date>4])))
 mean(.4<(abs(.5-simulation$seasonGames$HomeWinPerecent[simulation$seasonGames$Date<=4])))
@@ -103,27 +107,18 @@ hist(simulation$seasonGames$HomeWinPerecent[simulation$seasonGames$Date<=4])
 
 system.time(season1<-simulate1(TRUE))
 system.time(season2<-simulate1(FALSE))
-sum(abs(season1$Dataframe$BTBias))
-sum(abs(season1$Dataframe$TMBias))
 
-plot(season1$BTBias, type='l')
-lines(season1$TMBias, col='red')
+btVar<-aggregate(BTGamePrediction~Week, FUN=var, data=season1$GameBias)
+dif<-season1$GameBias$BTGamePrediction-season1$GameBias$ActualGame
+mseBT<-aggregate(dif~season1$GameBias$Week, FUN=function(i){sum(i^2)/length(i)})
+mseBT$Bias<-mseBT$dif-btVar$BTGamePrediction
+mseTM<-aggregate(season1$GameBias$TMGamePredictionBias~season1$GameBias$Week, FUN=function(i){sum(i^2)/length(i)})
+mseBT2<-aggregate(season2$GameBias$BTGamePredictionBias~season2$GameBias$Week, FUN=function(i){sum(i^2)/length(i)})
+mseTM2<-aggregate(season2$GameBias$TMGamePredictionBias~season2$GameBias$Week, FUN=function(i){sum(i^2)/length(i)})
 
-plot(season2$BTBias, type='l')
-lines(season2$TMBias, col='red')
 
-v<-aggregate(season1$Dataframe$BTPred~season1$Dataframe$Week, FUN=var)
-v
-bt<-season1$Dataframe$BTBias
-season1$GameBias
+plot(mseBT$`season1$GameBias$Week`, mseBT$`season1$GameBias$BTGamePredictionBias`, ylim=c(0,.12))
+points(mseTM$`season1$GameBias$Week`, mseTM$`season1$GameBias$TMGamePredictionBias`,col="Red")
 
-a<-summaryOfResults$GameBias
-d<-aggregate(a$BTGamePredictionBias~a$Week, FUN=mean)
-plot(d$`a$BTGamePredictionBias`)
-e<-aggregate(a$TMGamePredictionBias~a$Week, FUN=mean)
-plot(e$`a$TMGamePredictionBias`)
-e
-hist(a$BTGamePredictionBias)
-hist(a$BTGamePredictionBias[a$Week==13])
-hist(a$TMGamePredictionBias)
-hist(a$TMGamePredictionBias[a$Week==13])
+plot(mseBT2$`season2$GameBias$Week`, mseBT2$`season2$GameBias$BTGamePredictionBias`, ylim=c(0,.12))
+points(mseTM2$`season2$GameBias$Week`, mseTM2$`season2$GameBias$TMGamePredictionBias`,col="Red")
