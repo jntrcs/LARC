@@ -108,13 +108,29 @@ hist(simulation$seasonGames$HomeWinPerecent[simulation$seasonGames$Date<=4])
 system.time(season1<-simulate1(TRUE))
 system.time(season2<-simulate1(FALSE))
 
+findMSE<-function(weeks, gamePred, actual)
+{
+  MSE <- gamePred-actual
+  aggregate(MSE~weeks, FUN=function(i){sum(i^2)/length(i)})
+}
+
+mseBT<-findMSE(season1$GameBias$Week, season1$GameBias$BTGamePrediction, season1$GameBias$ActualGame)
+mseTM<-findMSE(season1$GameBias$Week, season1$GameBias$TMGamePrediction, season1$GameBias$ActualGame)
+plot(mseBT$MSE~mseBT$weeks, main="With Bradley Terry Strengths")
+points(mseTM$MSE~mseTM$weeks, col="Red")
+legend("topright", c("BT", "TM"), lty=c(1,1), col=c("Black", "red"))
+
+##with the BT strengths
+mseBT2<-findMSE(season2$GameBias$Week, season2$GameBias$BTGamePrediction, season2$GameBias$ActualGame)
+mseTM2<-findMSE(season2$GameBias$Week, season2$GameBias$TMGamePrediction, season2$GameBias$ActualGame)
+plot(mseBT2$MSE~mseBT2$weeks, main="With TM Strengths")
+points(mseTM2$MSE~mseTM2$weeks, col="Red")
+legend("topright", c("BT", "TM"), lty=c(1,1), col=c("Black", "red"))
+
 btVar<-aggregate(BTGamePrediction~Week, FUN=var, data=season1$GameBias)
-dif<-season1$GameBias$BTGamePrediction-season1$GameBias$ActualGame
-mseBT<-aggregate(dif~season1$GameBias$Week, FUN=function(i){sum(i^2)/length(i)})
-mseBT$Bias<-mseBT$dif-btVar$BTGamePrediction
-mseTM<-aggregate(season1$GameBias$TMGamePredictionBias~season1$GameBias$Week, FUN=function(i){sum(i^2)/length(i)})
-mseBT2<-aggregate(season2$GameBias$BTGamePredictionBias~season2$GameBias$Week, FUN=function(i){sum(i^2)/length(i)})
-mseTM2<-aggregate(season2$GameBias$TMGamePredictionBias~season2$GameBias$Week, FUN=function(i){sum(i^2)/length(i)})
+difBT<-season1$GameBias$BTGamePrediction-season1$GameBias$ActualGame
+mseBT$Bias<-sqrt(mseBT$difBT-btVar$BTGamePrediction) ##Not sure how I'd end up with an imaginary bias
+
 
 
 plot(mseBT$`season1$GameBias$Week`, mseBT$`season1$GameBias$BTGamePredictionBias`, ylim=c(0,.12))
