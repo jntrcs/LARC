@@ -9,7 +9,8 @@ save(BradleyTerryLARC, BTWP, dataconfigure, datascrape, find.mf, full.sim.gen, L
      makeDifferenceGraph, getConfigured, getRaw, getBTStrengths, getTMStrengths,
      getStrengths, getPredictions, LARC.Rank.Football,attachMostRecentStrengths, TMDensity, BTDensity,
      pickTMStrength, pickBTStrength, simHomeWin, generateTeams, generateSchedule, generateConference,
-     generateNonConference, generateTeamSchedule, generateSeasonResults, simulate1,
+     generateNonConference, generateTeamSchedule, generateSeasonResults, simulate1, normalizeSample,
+     predictionPercentage, findMSE,
      file="MasterFunctionFile.RData")
 #Removed: simulate, simulation,
 

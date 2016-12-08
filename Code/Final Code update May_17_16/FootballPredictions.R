@@ -50,8 +50,8 @@ NCAAFPredictor<-function(BTStrengths,TMStrengths, schedule, dateVector)
   weekGames$DidWorse[weekGames$DidBetter=="Tie"]<-"Tie"
   weekGames$Penalty <- ifelse(weekGames$DidWorse =="Bradley-Terry", abs(ifelse(weekGames$HomeTeamWon, 1, 0)-weekGames$BTHomeWin), abs(ifelse(weekGames$HomeTeamWon, 1, 0)-weekGames$TMHomeWin))
   
-  penalties<-c(sum(weekGames$Penalty[weekGames$DidWorse=="Bradley-Terry"]),
-  sum(weekGames$Penalty[weekGames$DidWorse=="Thurstone-Mosteller"]))
+  penalties<-c(sum(weekGames$Penalty[weekGames$DidWorse=="Bradley-Terry"]/nrow(weekGames)),
+  sum(weekGames$Penalty[weekGames$DidWorse=="Thurstone-Mosteller"])/nrow(weekGames))
   names(penalties)<-c("Bradley-Terry Penalty", "Thurstone-Mosteller Penalty")
   percentHomeWins<-c(mean(weekGames$BTHomeWin), mean(weekGames$TMHomeWin))
   names(percentHomeWins)<-c("Bradely-Terry Home Win Percent", "Thurstone-Mosteller Home Win Percent")
@@ -79,16 +79,19 @@ makeDifferenceGraph(meanDifferences)
 makePerformanceGraph<-function(performance)
 {
   graphic<-sapply(performance, FUN=function(vec){vec[1]/(vec[2]+vec[1])})
-  plot(graphic, type='l', main="Bradley-Terry 'Win' Percentage", ylab="Percent BT Model Favored",
-     xlab="Week", xaxt="n")
+  plot(1-graphic, type='l', main="More Accuracy Comparison", ylab="Model Favored Proportion",
+     xlab="Week", xaxt="n", ylim=c(.1,.9))
+  lines(graphic, col="red")
+  legend(x="topleft",c("Bradley-Terry", "Thurstone-Mosteller"), col=c("Red", "black"), lty=c(1,1))
   axis(1,at=1:length(graphic),labels=2:(length(graphic)+1))
 }
 
 performance<-lapply(2:length(stripped2016data), FUN=function(n){stripped2016data[[n]][[4]][[2]]})
 makePerformanceGraph(performance)
+performance<-lapply(2:length(all2016data), FUN=function(n){all2016data[[n]][[4]][[2]]})
+makePerformanceGraph(performance)
 
-
-makePenaltyGraph<-function(penatlies)
+makePenaltyGraph<-function(penalties)
 {
 BTPenalties<-sapply(penalties, FUN = function(vec){vec[1]})
 TMPenalties<-sapply(penalties, FUN = function(vec){vec[2]})
@@ -101,8 +104,10 @@ legend(x="bottomleft",c("Bradley-Terry", "Thurstone-Mosteller"), col=c("Red", "B
 
 penalties<-lapply(2:length(stripped2016data), FUN=function(n){stripped2016data[[n]][[4]][[3]]})
 makePenaltyGraph(penalties)
+rowSums(sapply(1:12, FUN= function(i){penalties[[i]]}))
 penaltiesAll<-lapply(2:length(all2016data), FUN=function(n){all2016data[[n]][[4]][[3]]})
 makePenaltyGraph(penaltiesAll)
+rowSums(sapply(1:12, FUN= function(i){penaltiesAll[[i]]}))
 
 makeDifferenceGraph<-function(meanDifferences)
 {
@@ -115,9 +120,25 @@ makeDifferenceGraph<-function(meanDifferences)
 }
 meanDifferences<-sapply(2:length(stripped2016data), FUN=function(n){stripped2016data[[n]][[4]][[4]]})
 makeDifferenceGraph(meanDifferences)
+meanDifferences<-sapply(2:length(all2016data), FUN=function(n){all2016data[[n]][[4]][[4]]})
+makeDifferenceGraph(meanDifferences)
 
 games<-sapply(2:17, FUN=function(i){all2015data[[i]][[4]][[5]]})
 plot(games)
 games
 all2015data[[2]][[4]][[5]]
+
+lapply(2:13, FUN=function(i){
+  dat<-stripped2016data[[i]][[4]][[1]]
+  dat<-dat[(dat$BTHomeWin>.5&dat$TMHomeWin<.5)|(dat$BTHomeWin<.5&dat$TMHomeWin>.5),]
+  dat
+})
+
+d<-lapply(2:13, FUN=function(i){
+dat<-stripped2016data[[i]][[4]][[1]]
+dat<-dat[(dat$DidWorse=="Thurstone-Mosteller"&dat$Penalty>.5),]
+dat
+})
+
+sum(sapply(d, FUN=nrow))
 

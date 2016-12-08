@@ -1,22 +1,25 @@
 #Simulation Functions
 
-generateTeams<-function()
+generateTeams<-function(useBT)
 {
-  BTparams<-c(2,3,1.5,2.5,1,2,4,.5,1.25,.75)
-  
-  TMparams<-c(0,1,-.5,.5,-1,0,2,-1.5,-.75, -1.25)
-  
+  if(useBT) {
+      params<-c(2,3,1.5,2.5,1,2,4,.5,1.25,.75)
+      func <-pickBTStrength
+  }
+  else{
+    params<-c(0,.5,-.25,.25,-.5,0,.75,-.75,-.25, -.5)
+    func<-pickTMStrength
+  }
   
   teams<-data.frame(rep(1:10, each=9), 1:90)
   names(teams)<-c("Conference", "Team")
-  teams$TrueStrengthBT<-pickBTStrength(BTparams[teams$Conference])
-  teams$TrueStrengthTM<-pickTMStrength(TMparams[teams$Conference])
+  teams$TrueStrength<-func(params[teams$Conference])
   teams
 }
 
-generateTeamSchedule<-function()
+generateTeamSchedule<-function(useBT)
 {
-  teams<-generateTeams()
+  teams<-generateTeams(useBT)
   generateSchedule(teams)
 }
 
@@ -29,15 +32,17 @@ generateSchedule<-function(teams)
 generateNonConference<-function(teams)
 {
   schedule<-data.frame(teams, matrix(0, nrow=nrow(teams), ncol=4))
-  names(schedule)<-c("Conference", "Team", "TrueStrengthBT", "TrueStrengthTM", "Week1", "Week2", "Week3", "Week4")
-  for (i in 5:8)
+  names(schedule)<-c("Conference", "Team", "TrueStrength",  "Week1", "Week2", "Week3", "Week4")
+  w1index<-which(names(schedule)=="Week1")
+  lastIndex<-  ncol(schedule)            
+  for (i in w1index:lastIndex)
   {
     randomize<-sample(1:90)
     for (j in 1:90)
     {
       if (schedule[j,i]==0){
       possibilities<-randomize[which(schedule$Conference[randomize]!=schedule$Conference[j] & 
-                                       !randomize %in% schedule[j, 5:8]
+                                       !randomize %in% schedule[j, w1index:lastIndex]
                                      & schedule[randomize,i]==0)]
       if (length(possibilities)>0)
       {
@@ -47,7 +52,7 @@ generateNonConference<-function(teams)
       }
       else
       {
-       possibilities <-sample((1:90)[schedule$Conference[j]!=schedule$Conference&!(1:90 %in% schedule[j, 5:8])])
+       possibilities <-sample((1:90)[schedule$Conference[j]!=schedule$Conference&!(1:90 %in% schedule[j, w1index:lastIndex])])
        replaceTeam<-sample(possibilities, 1)
        otherTeam<-schedule[replaceTeam,i]
        schedule[j,i]<-replaceTeam
@@ -97,19 +102,20 @@ generateSeasonResults<-function(season, useBT)
   seasonGames<-data.frame(matrix(0, nrow=numGames, 5))
   names(seasonGames)<-c("Date", "Home", "Visitor", "Winner", "HomeWinPerecent")
   game<-0
+  week0Index<-which(names(season)=="Week1")-1
   for (i in 1:13)
   {
     for (j in 1:nrow(season))
     {
-      if (season[j, i+4]>j)
+      if (season[j, i+week0Index]>j)
       {
         game<-game+1
         seasonGames$Date[game]<-i
         seasonGames$Home[game]<-j
-        visitor<-season[j, i+4]
+        visitor<-season[j, i+week0Index]
         seasonGames$Visitor[game]<-visitor
-        seasonGames$HomeWinPerecent[game]<-ifelse(useBT, season$TrueStrengthBT[j]/(season$TrueStrengthBT[j]+season$TrueStrengthBT[visitor]),
-                                          pnorm(season$TrueStrengthTM[j]-season$TrueStrengthTM[visitor]))
+        seasonGames$HomeWinPerecent[game]<-ifelse(useBT, season$TrueStrength[j]/(season$TrueStrength[j]+season$TrueStrength[visitor]),
+                                          pnorm(season$TrueStrength[j]-season$TrueStrength[visitor]))
         seasonGames$Winner[game]<-ifelse(rbinom(1,1,seasonGames$HomeWinPerecent[game]), j, visitor)
       }
     }
