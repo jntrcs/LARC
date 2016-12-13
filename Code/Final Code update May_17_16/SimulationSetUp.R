@@ -77,6 +77,12 @@ calcMSE<-function(pred, actual)
   sum(i^2)/length(i)
 }
 
+findMSE<-function(weeks, gamePred, actual)
+{
+  MSE <- gamePred-actual
+  aggregate(MSE~weeks, FUN=function(i){sum(i^2)/length(i)})
+}
+
 plot(weekBT, normTrueStrengths)
 plot(weekTM, normTrueStrengths)
 
@@ -91,11 +97,7 @@ hist(simulation$seasonGames$HomeWinPerecent[simulation$seasonGames$Date<=4])
 system.time(season1<-simulate1(TRUE))
 system.time(season2<-simulate1(FALSE))
 
-findMSE<-function(weeks, gamePred, actual)
-{
-  MSE <- gamePred-actual
-  aggregate(MSE~weeks, FUN=function(i){sum(i^2)/length(i)})
-}
+
 
 mseBT<-findMSE(season1$GameBias$Week, season1$GameBias$BTGamePrediction, season1$GameBias$ActualGame)
 mseTM<-findMSE(season1$GameBias$Week, season1$GameBias$TMGamePrediction, season1$GameBias$ActualGame)
@@ -122,7 +124,13 @@ points(mseTM$`season1$GameBias$Week`, mseTM$`season1$GameBias$TMGamePredictionBi
 plot(mseBT2$`season2$GameBias$Week`, mseBT2$`season2$GameBias$BTGamePredictionBias`, ylim=c(0,.12))
 points(mseTM2$`season2$GameBias$Week`, mseTM2$`season2$GameBias$TMGamePredictionBias`,col="Red")
 
-
+week<-13
+a<-season1$GameBias$BTGamePrediction[season1$GameBias$Week==week] - season1$GameBias$ActualGame[season1$GameBias$Week==week]
+b<-season1$GameBias$TMGamePrediction[season1$GameBias$Week==week] - season1$GameBias$ActualGame[season1$GameBias$Week==week]
+hist(a)
+hist(b)
+mean(a)
+mean(b)
 
 ####OLD CODE
 normTrueStrengths<-normalizeSample(simulation$teamSchedule$TrueStrength)
