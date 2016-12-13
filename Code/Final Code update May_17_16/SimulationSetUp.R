@@ -9,6 +9,8 @@ simulate1<-function(useBT)
   simulation$teamSchedule<-generateTeamSchedule(useBT)
   simulation$seasonGames<-generateSeasonResults(simulation$teamSchedule, useBT)
   strengths<-list()
+  normTrueStrengths<-simulation$teamSchedule$TrueStrength-simulation$teamSchedule$ConferenceMeans
+  
   for (i in 1:13)
   {
     configured<-dataconfigure(simulation$seasonGames,reldate = i)
@@ -19,31 +21,12 @@ simulate1<-function(useBT)
     strengths[[i]]$TM<-LARC.Rank.Football(configured, func=TMDensity, sorted=FALSE)
   }
   
-  normTrueStrengths<-normalizeSample(simulation$teamSchedule$TrueStrength)
-  #Should the mean strength be the sample or the population
-  #Same with SD
   summaryOfResults<-list()
   summaryOfResults$TrueStrengthType<-ifelse(useBT, "Bradley-Terry Gamma", "Thurstone-Mosteller Normal")
   summaryOfResults$TrueStrengths<-simulation$teamSchedule$TrueStrength
-  df<-data.frame(matrix(0, nrow=0, ncol=8))
-  summaryOfResults$BTBias<-rep(0, 13)
-  summaryOfResults$TMBias<-rep(0, 13)
   
   
-  for (i in 1:13)
-  {
-    weekBT<-normalizeSample(strengths[[i]]$BT$Strength) - normTrueStrengths
-    weekTM<-normalizeSample(strengths[[i]]$TM$Strength) - normTrueStrengths
 
-    summaryOfResults$BTBias[i]<-mean(abs(weekBT))
-    summaryOfResults$TMBias[i]<-mean(abs(weekTM))
-    df<-rbind(df, data.frame(rep(i, 90), 1:90, strengths[[i]]$BT$Strength, strengths[[i]]$TM$Strength,
-                         weekBT, weekTM, strengths[[i]]$BT$Strength - summaryOfResults$TrueStrengths,
-                         strengths[[i]]$TM$Strength - summaryOfResults$TrueStrengths))
-    
-  }
-  names(df)<-c("Week", "Team", "BTPred", "TMPred", "BTBias", "TMBias", "RawBTBias", "RawTMBias")
-  summaryOfResults$Dataframe<-df
   BTGamePred<-rep(0, 540)
   TMGamePred<-rep(0,540)
   week<-numeric()
@@ -116,15 +99,15 @@ findMSE<-function(weeks, gamePred, actual)
 
 mseBT<-findMSE(season1$GameBias$Week, season1$GameBias$BTGamePrediction, season1$GameBias$ActualGame)
 mseTM<-findMSE(season1$GameBias$Week, season1$GameBias$TMGamePrediction, season1$GameBias$ActualGame)
-plot(mseBT$MSE~mseBT$weeks, main="With Bradley Terry Strengths")
+plot(mseBT$MSE~mseBT$weeks, main="With Bradley Terry Strengths", xlab="Week", ylab="MSE")
 points(mseTM$MSE~mseTM$weeks, col="Red")
 legend("topright", c("BT", "TM"), lty=c(1,1), col=c("Black", "red"))
 
-##with the BT strengths
+##with the TM strengths
 mseBT2<-findMSE(season2$GameBias$Week, season2$GameBias$BTGamePrediction, season2$GameBias$ActualGame)
 mseTM2<-findMSE(season2$GameBias$Week, season2$GameBias$TMGamePrediction, season2$GameBias$ActualGame)
-plot(mseBT2$MSE~mseBT2$weeks, main="With TM Strengths")
-points(mseTM2$MSE~mseTM2$weeks, col="Red")
+plot(mseBT2$MSE~mseTM2$weeks, main="With TM Strengths", ylim=c(0,.13), type='l')
+lines(mseTM2$MSE~mseTM2$weeks, col="Red")
 legend("topright", c("BT", "TM"), lty=c(1,1), col=c("Black", "red"))
 
 btVar<-aggregate(BTGamePrediction~Week, FUN=var, data=season1$GameBias)
@@ -138,3 +121,30 @@ points(mseTM$`season1$GameBias$Week`, mseTM$`season1$GameBias$TMGamePredictionBi
 
 plot(mseBT2$`season2$GameBias$Week`, mseBT2$`season2$GameBias$BTGamePredictionBias`, ylim=c(0,.12))
 points(mseTM2$`season2$GameBias$Week`, mseTM2$`season2$GameBias$TMGamePredictionBias`,col="Red")
+
+
+
+####OLD CODE
+normTrueStrengths<-normalizeSample(simulation$teamSchedule$TrueStrength)
+#Should the mean strength be the sample or the population
+#Same with SD
+
+df<-data.frame(matrix(0, nrow=0, ncol=8))
+summaryOfResults$BTBias<-rep(0, 13)
+summaryOfResults$TMBias<-rep(0, 13)
+
+
+for (i in 1:13)
+{
+  weekBT<-normalizeSample(strengths[[i]]$BT$Strength) - normTrueStrengths
+  weekTM<-normalizeSample(strengths[[i]]$TM$Strength) - normTrueStrengths
+  
+  summaryOfResults$BTBias[i]<-mean(abs(weekBT))
+  summaryOfResults$TMBias[i]<-mean(abs(weekTM))
+  df<-rbind(df, data.frame(rep(i, 90), 1:90, strengths[[i]]$BT$Strength, strengths[[i]]$TM$Strength,
+                           weekBT, weekTM, strengths[[i]]$BT$Strength - summaryOfResults$TrueStrengths,
+                           strengths[[i]]$TM$Strength - summaryOfResults$TrueStrengths))
+  
+}
+names(df)<-c("Week", "Team", "BTPred", "TMPred", "BTBias", "TMBias", "RawBTBias", "RawTMBias")
+summaryOfResults$Dataframe<-df

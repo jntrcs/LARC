@@ -14,6 +14,7 @@ generateTeams<-function(useBT)
   teams<-data.frame(rep(1:10, each=9), 1:90)
   names(teams)<-c("Conference", "Team")
   teams$TrueStrength<-func(params[teams$Conference])
+  teams$ConferenceMeans<-getConferenceMeans(useBT, params)
   teams
 }
 
@@ -32,7 +33,7 @@ generateSchedule<-function(teams)
 generateNonConference<-function(teams)
 {
   schedule<-data.frame(teams, matrix(0, nrow=nrow(teams), ncol=4))
-  names(schedule)<-c("Conference", "Team", "TrueStrength",  "Week1", "Week2", "Week3", "Week4")
+  names(schedule)<-c("Conference", "Team", "TrueStrength", "ConferenceMeans", "Week1", "Week2", "Week3", "Week4")
   w1index<-which(names(schedule)=="Week1")
   lastIndex<-  ncol(schedule)            
   for (i in w1index:lastIndex)
