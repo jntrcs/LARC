@@ -14,6 +14,11 @@ getConferenceMeans<-function(useBT, params)
     
 }
 
+pickUnifStrength<-function(upper)
+{
+  runif(length(upper), upper-.2, upper)
+}
+
 pickBTStrength<-function(shape)
 {
   rgamma(length(shape), shape=shape)
@@ -23,6 +28,8 @@ simHomeWin<-function(homeStrength, awayStrength, type)
 {
   if (type=="BT")
    rbinom(1,1, predictionPercentage(homeStrength, awayStrength, type))
+  else if (type=="TM")
+    rbinom(1,1, predictionPercentage(homeStrength, awayStrength, type))
   else
     rbinom(1,1, predictionPercentage(homeStrength, awayStrength, type))
 }
@@ -32,7 +39,10 @@ predictionPercentage<-function(homeStrength, awayStrength, type)
 {
   if (type=="BT")
      homeStrength/(homeStrength+awayStrength)
-  else
+  else if (type=="TM")
     pnorm(homeStrength-awayStrength)
+  else
+    .5+(homeStrength-awayStrength)/2
 }
+
 

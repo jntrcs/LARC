@@ -3,10 +3,11 @@ useBT<-TRUE
 load("MasterFunctionFile.RData")
 Rcpp::sourceCpp("cppFiles.cpp")
 
-simulate1<-function(useBT)
+simulate1<-function(useBT, useUnif = FALSE)
 {
+  uniform <-!useBT & useUnif
   simulation<-list()
-  simulation$teamSchedule<-generateTeamSchedule(useBT)
+  simulation$teamSchedule<-generateTeamSchedule(useBT, uniform)
   simulation$seasonGames<-generateSeasonResults(simulation$teamSchedule, useBT)
   strengths<-list()
   normTrueStrengths<-simulation$teamSchedule$TrueStrength-simulation$teamSchedule$ConferenceMeans

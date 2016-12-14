@@ -17,8 +17,9 @@ clusterExport(clust, neededFunc)
 
 parLapply(clust, 1:10, fun = function(i){
   Rcpp::sourceCpp("cppFiles.cpp")
-  useBT <- i%%2==0
-  dat<-simulate1(useBT)
+  useBT <- i<4
+  useUniform<-i>7
+  dat<-simulate1(useBT, useUniform)
   save(dat, file=paste0("~/season",i, ".rdata"))
   i})
 

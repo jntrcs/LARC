@@ -1,10 +1,16 @@
 #Simulation Functions
 
-generateTeams<-function(useBT)
+generateTeams<-function(useBT, uniform)
 {
   if(useBT) {
       params<-c(2,3,1.5,2.5,1,2,4,.5,1.25,.75)
       func <-pickBTStrength
+  }
+  else if (uniform)
+  {
+    params<-c(.2,.2,.4,.4,.6,.6,.8,.8,1,1)
+    func <-pickUnifStrength
+    
   }
   else{
     params<-c(0,.5,-.25,.25,-.5,0,.75,-.75,-.25, -.5)
@@ -18,9 +24,9 @@ generateTeams<-function(useBT)
   teams
 }
 
-generateTeamSchedule<-function(useBT)
+generateTeamSchedule<-function(useBT, uniform)
 {
-  teams<-generateTeams(useBT)
+  teams<-generateTeams(useBT, uniform)
   generateSchedule(teams)
 }
 
