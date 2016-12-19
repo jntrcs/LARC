@@ -1,5 +1,6 @@
 ##Simulation function
 useBT<-TRUE
+useUnif<-FALSE
 load("MasterFunctionFile.RData")
 Rcpp::sourceCpp("cppFiles.cpp")
 
@@ -23,11 +24,20 @@ simulate1<-function(useBT, useUnif = FALSE)
   }
   
   summaryOfResults<-list()
-  summaryOfResults$TrueStrengthType<-ifelse(useBT, "Bradley-Terry Gamma", "Thurstone-Mosteller Normal")
+  summaryOfResults$TrueStrengthType<-ifelse(useBT, "Bradley-Terry Gamma", ifelse(uniform,"Uniform","Thurstone-Mosteller Normal"))
   summaryOfResults$TrueStrengths<-simulation$teamSchedule$TrueStrength
+  summaryOfResults$SpearmanCorrelation<-list()
+  summaryOfResults$SpearmanCorrelation$BT<-rep(0,13)
+  summaryOfResults$SpearmanCorrelation$TM<-rep(0,13)
   
+  for (i in 1:13)
+  {
+    summaryOfResults$SpearmanCorrelation$BT[i]<-cor(summaryOfResults$TrueStrengths, strengths[[i]]$BT$Strength, method="spearman")
+    summaryOfResults$SpearmanCorrelation$TM[i]<-cor(summaryOfResults$TrueStrengths, strengths[[i]]$TM$Strength, method="spearman")
+  }
+  #plot(summaryOfResults$SpearmanCorrelation$BT, main="BT True", xlab="week", ylab="Spearmans Correlation", ylim=c(.2,.9))
+  #points(summaryOfResults$SpearmanCorrelation$TM, col="red")
   
-
   BTGamePred<-rep(0, 540)
   TMGamePred<-rep(0,540)
   week<-numeric()

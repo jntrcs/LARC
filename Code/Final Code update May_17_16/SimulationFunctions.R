@@ -1,6 +1,6 @@
 #Simulation Functions
 
-generateTeams<-function(useBT, uniform)
+generateTeams<-function(useBT, uniform=FALSE)
 {
   if(useBT) {
       params<-c(2,3,1.5,2.5,1,2,4,.5,1.25,.75)

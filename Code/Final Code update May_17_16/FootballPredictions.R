@@ -142,3 +142,8 @@ dat
 
 sum(sapply(d, FUN=nrow))
 
+endStrengthBT<-stripped2016data[[13]][[2]]$Strength[order(stripped2016data[[13]][[2]]$Team)]
+endStrengthTM<-stripped2016data[[13]][[3]]$Strength[order(stripped2016data[[13]][[3]]$Team)]
+plot(endStrengthBT, endStrengthTM)
+cor(endStrengthBT, endStrengthTM, method="spearman")
+?cor
