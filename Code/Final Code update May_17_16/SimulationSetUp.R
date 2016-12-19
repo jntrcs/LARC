@@ -9,7 +9,7 @@ simulate1<-function(useBT, useUnif = FALSE)
   uniform <-!useBT & useUnif
   simulation<-list()
   simulation$teamSchedule<-generateTeamSchedule(useBT, uniform)
-  simulation$seasonGames<-generateSeasonResults(simulation$teamSchedule, useBT)
+  simulation$seasonGames<-generateSeasonResults(simulation$teamSchedule, useBT, uniform)
   strengths<-list()
   normTrueStrengths<-simulation$teamSchedule$TrueStrength-simulation$teamSchedule$ConferenceMeans
   
@@ -37,6 +37,7 @@ simulate1<-function(useBT, useUnif = FALSE)
   }
   #plot(summaryOfResults$SpearmanCorrelation$BT, main="BT True", xlab="week", ylab="Spearmans Correlation", ylim=c(.2,.9))
   #points(summaryOfResults$SpearmanCorrelation$TM, col="red")
+  #plot(strengths[[13]]$BT$Strength, summaryOfResults$TrueStrengths)
   
   BTGamePred<-rep(0, 540)
   TMGamePred<-rep(0,540)
@@ -105,14 +106,14 @@ hist(simulation$seasonGames$HomeWinPerecent)
 hist(simulation$seasonGames$HomeWinPerecent[simulation$seasonGames$Date>4])
 hist(simulation$seasonGames$HomeWinPerecent[simulation$seasonGames$Date<=4])
 
-system.time(season1<-simulate1(TRUE))
+system.time(season1<-simulate1(FALSE, TRUE))
 system.time(season2<-simulate1(FALSE))
 
 
 
 mseBT<-findMSE(season1$GameBias$Week, season1$GameBias$BTGamePrediction, season1$GameBias$ActualGame)
 mseTM<-findMSE(season1$GameBias$Week, season1$GameBias$TMGamePrediction, season1$GameBias$ActualGame)
-plot(mseBT$MSE~mseBT$weeks, main="With Bradley Terry Strengths", xlab="Week", ylab="MSE")
+plot(mseBT$MSE~mseBT$weeks, main="With Uniform Strengths", xlab="Week", ylab="MSE", ylim=c(0,.1))
 points(mseTM$MSE~mseTM$weeks, col="Red")
 legend("topright", c("BT", "TM"), lty=c(1,1), col=c("Black", "red"))
 

@@ -5,18 +5,20 @@ pickTMStrength<-function(mean = 0)
   rnorm(length(mean),mean=mean, sd=3/4)
 }
 
-getConferenceMeans<-function(useBT, params)
+getConferenceMeans<-function(useBT, params, uniform=FALSE)
 {
-  if (!useBT)
+  if (!useBT &!uniform)
     rep(rep(0, 10), each=9)
-  else
+  else if (useBT)
     rep(params, each=9)
+  else
+    rep(.5, 9)
     
 }
 
 pickUnifStrength<-function(upper)
 {
-  runif(length(upper), upper-.2, upper)
+  runif(length(upper), upper-1, upper)
 }
 
 pickBTStrength<-function(shape)

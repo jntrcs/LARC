@@ -8,7 +8,7 @@ generateTeams<-function(useBT, uniform=FALSE)
   }
   else if (uniform)
   {
-    params<-c(.2,.2,.4,.4,.6,.6,.8,.8,1,1)
+    params<-c(1,1,1,1,1,1,1,1,1,1)
     func <-pickUnifStrength
     
   }
@@ -20,7 +20,7 @@ generateTeams<-function(useBT, uniform=FALSE)
   teams<-data.frame(rep(1:10, each=9), 1:90)
   names(teams)<-c("Conference", "Team")
   teams$TrueStrength<-func(params[teams$Conference])
-  teams$ConferenceMeans<-getConferenceMeans(useBT, params)
+  teams$ConferenceMeans<-getConferenceMeans(useBT, params, uniform)
   teams
 }
 
@@ -103,8 +103,9 @@ generateConference<-function(teams)
   schedule[,3:11]
 }
 
-generateSeasonResults<-function(season, useBT)
+generateSeasonResults<-function(season, useBT, uniform=FALSE)
 {
+  type<-ifelse(useBT, "BT", ifelse(uniform, "Uni", "TM"))
   numGames<-nrow(season)/2*12
   seasonGames<-data.frame(matrix(0, nrow=numGames, 5))
   names(seasonGames)<-c("Date", "Home", "Visitor", "Winner", "HomeWinPerecent")
@@ -121,8 +122,7 @@ generateSeasonResults<-function(season, useBT)
         seasonGames$Home[game]<-j
         visitor<-season[j, i+week0Index]
         seasonGames$Visitor[game]<-visitor
-        seasonGames$HomeWinPerecent[game]<-ifelse(useBT, season$TrueStrength[j]/(season$TrueStrength[j]+season$TrueStrength[visitor]),
-                                          pnorm(season$TrueStrength[j]-season$TrueStrength[visitor]))
+        seasonGames$HomeWinPerecent[game]<-predictionPercentage(season$TrueStrength[j], season$TrueStrength[visitor], type)
         seasonGames$Winner[game]<-ifelse(rbinom(1,1,seasonGames$HomeWinPerecent[game]), j, visitor)
       }
     }
