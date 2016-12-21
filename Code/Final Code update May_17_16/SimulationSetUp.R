@@ -63,6 +63,7 @@ simulate1<-function(useBT, useUnif = FALSE)
       
     }
     
+    
   }
   BTGamePred[simulation$seasonGames$HomeWinPerecent<.5]<-1-BTGamePred[simulation$seasonGames$HomeWinPerecent<.5]
   favoredRealPred<-simulation$seasonGames$HomeWinPerecent
@@ -72,7 +73,17 @@ simulate1<-function(useBT, useUnif = FALSE)
   summaryOfResults$GameBias<-data.frame(week[46:540],(BTGamePred)[46:540], 
                                         (TMGamePred)[46:540], favoredRealPred[46:540])
   names(summaryOfResults$GameBias)<-c("Week","BTGamePrediction", "TMGamePrediction", "ActualGame")
+  summaryOfResults$GameBiasByWeek<-analyzeGameBias(summaryOfResults$GameBias)
   summaryOfResults
+}
+
+analyzeGameBias<-function(gamebias)
+{
+  mseBT<-findMSE(gamebias$Week, gamebias$BTGamePrediction, gamebias$ActualGame)
+  mseTM<-findMSE(gamebias$Week, gamebias$TMGamePrediction, gamebias$ActualGame)
+  a<-merge(mseBT, mseTM, by=c("weeks"))
+  names(a)<-c("Week", "BT.MSE", "TM.MSE")
+  a
 }
 #variance of estimates  + bias^2
 normalizeSample<-function(strengths)
@@ -83,11 +94,7 @@ normalizeSample<-function(strengths)
   norm
 }
 
-calcMSE<-function(pred, actual)
-{
-  dif<-pred-actual
-  sum(i^2)/length(i)
-}
+
 
 findMSE<-function(weeks, gamePred, actual)
 {
