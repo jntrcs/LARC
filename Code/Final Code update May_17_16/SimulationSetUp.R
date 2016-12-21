@@ -6,6 +6,7 @@ Rcpp::sourceCpp("cppFiles.cpp")
 
 simulate1<-function(useBT, useUnif = FALSE)
 {
+  ##SIMULATE A SEASON
   uniform <-!useBT & useUnif
   simulation<-list()
   simulation$teamSchedule<-generateTeamSchedule(useBT, uniform)
@@ -13,6 +14,7 @@ simulate1<-function(useBT, useUnif = FALSE)
   strengths<-list()
   normTrueStrengths<-simulation$teamSchedule$TrueStrength-simulation$teamSchedule$ConferenceMeans
   
+  ##ESTIMATE THE SEASON   
   for (i in 1:13)
   {
     configured<-dataconfigure(simulation$seasonGames,reldate = i)
@@ -23,13 +25,28 @@ simulate1<-function(useBT, useUnif = FALSE)
     strengths[[i]]$TM<-LARC.Rank.Football(configured, func=TMDensity, sorted=FALSE)
   }
   
+  #ANALYZE THE SEASON
   summaryOfResults<-list()
   summaryOfResults$TrueStrengthType<-ifelse(useBT, "Bradley-Terry Gamma", ifelse(uniform,"Uniform","Thurstone-Mosteller Normal"))
   summaryOfResults$TrueStrengths<-simulation$teamSchedule$TrueStrength
+
+  #week over week MSE
+  centeredDif<- simulation$teamSchedule$ConferenceMeans - summaryOfResults$TrueStrengths
+  BTMSE<-numeric()
+  TMMSE<-numeric()
+  for (i in 1:13)
+  {
+    thetaAC<-strengths[[i]]$BT$Strength+centeredDif
+    thetaAC<-strengths[[i]]$TM$Strength+centeredDif
+  }
+  summaryOfResults$WeeklyMSE<-list()
+  summaryOfResults$WeeklyMSE$BT<-BTMSE
+  summaryOfResults$WeeklyMSE$TM<-TMMSE
+  
+  #Correlation
   summaryOfResults$SpearmanCorrelation<-list()
   summaryOfResults$SpearmanCorrelation$BT<-rep(0,13)
   summaryOfResults$SpearmanCorrelation$TM<-rep(0,13)
-  
   for (i in 1:13)
   {
     summaryOfResults$SpearmanCorrelation$BT[i]<-cor(summaryOfResults$TrueStrengths, strengths[[i]]$BT$Strength, method="spearman")
@@ -39,6 +56,7 @@ simulate1<-function(useBT, useUnif = FALSE)
   #points(summaryOfResults$SpearmanCorrelation$TM, col="red")
   #plot(strengths[[13]]$BT$Strength, summaryOfResults$TrueStrengths)
   
+  #Game Bias MSE
   BTGamePred<-rep(0, 540)
   TMGamePred<-rep(0,540)
   week<-numeric()
