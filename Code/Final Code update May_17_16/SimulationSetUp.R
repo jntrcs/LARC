@@ -31,17 +31,12 @@ simulate1<-function(useBT, useUnif = FALSE)
   summaryOfResults$TrueStrengths<-simulation$teamSchedule$TrueStrength
 
   #week over week MSE
-  centeredDif<- simulation$teamSchedule$ConferenceMeans - summaryOfResults$TrueStrengths
-  BTMSE<-numeric()
-  TMMSE<-numeric()
-  for (i in 1:13)
-  {
-    thetaAC<-strengths[[i]]$BT$Strength+centeredDif
-    thetaAC<-strengths[[i]]$TM$Strength+centeredDif
-  }
-  summaryOfResults$WeeklyMSE<-list()
-  summaryOfResults$WeeklyMSE$BT<-BTMSE
-  summaryOfResults$WeeklyMSE$TM<-TMMSE
+  summaryOfResults$centeringValue<- simulation$teamSchedule$ConferenceMeans - summaryOfResults$TrueStrengths
+  summaryOfResults$strengths<-list()
+  summaryOfResults$strengths$BT<-list()
+  summaryOfResults$strengths$BT<-lapply(1:13, FUN=function(i)strengths[[i]]$BT$Strength)
+  summaryOfResults$strengths$TM<-list()
+  summaryOfResults$strengths$TM<-lapply(1:13, FUN=function(i)strengths[[i]]$TM$Strength)
   
   #Correlation
   summaryOfResults$SpearmanCorrelation<-list()
