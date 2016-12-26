@@ -1,7 +1,7 @@
 #SimDataLoader
 
 files<-paste0("Results/",list.files("Results/"))
-type<-character()
+type<-factor()
 trueStrengths<-list()
 centeringValues<-list()
 strengths<-list()
@@ -10,9 +10,9 @@ gameBias<-list()
 weeklyGameBias<-list()
 
 
-for (i in 1:length(names))
+for (i in 1:length(files))
 {
-  load(names[i])
+  load(files[i])
   type<-c(type, dat$TrueStrengthType)
   trueStrengths[[i]]<-dat$TrueStrengths
   centeringValues[[i]]<-dat$centeringValue
@@ -22,8 +22,19 @@ for (i in 1:length(names))
   weeklyGameBias[[i]]<-dat$GameBiasByWeek
 }
 rm(dat)
+type<-as.factor(type)
 
 
+corDifs<-matrix(0, nrow=length(correlations), ncol=13)
+for (i in 1:length(correlations))
+{
+  corDifs[i,]<-correlations[[i]]$BT-correlations[[i]]$TM 
+}
+apply(corDifs, 2, FUN = mean)
+apply(corDifs, 2, FUN = function(i)quantile(i,c(.05,.95)))
+
+
+##Sample
 
 cols<-as.factor(type)
 plot(correlations[[1]]$BT, type='l',col=cols[1], ylim=c(.2, 1), xlab="Week", ylab="Spearman Correlation", 
