@@ -63,3 +63,16 @@ stripped2016data[[range]][[4]]
 
 save(all2016data,latestRaw,file="2016FootballData.RData") 
 save(stripped2016data, strippedRaw, file="Stripped2016FootballData.RData")
+
+
+BCSRankings<-c("Alabama", "Clemson", "Ohio St", "Washington", "Penn St", "Michigan", "Oklahoma", "Wisconsin",
+               "USC", "Colorado", "Florida St", "Oklahoma St", "Louisville", "Auburn", "W Michigan",
+               "West Virginia", "Florida", "Stanford", "Utah", "LSU", "Tennessee", "Virginia Tech",
+               "Pittsburgh", "Temple", "Navy")
+corr<-data.frame(BCSRankings, 1:25, match(BCSRankings, stripped2016data[[14]][[2]]$Team), 
+                 match(BCSRankings, stripped2016data[[14]][[3]]$Team))
+names(corr)<-c("Team", "BCSRanking", "BTRanking", "TMRanking")
+corr
+cor(corr$BTRanking, corr$TMRanking)
+cor(corr$BCSRanking,corr$BTRanking)
+cor(corr$BCSRanking, corr$TMRanking)
