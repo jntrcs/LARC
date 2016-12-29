@@ -2,7 +2,7 @@
 
 files<-paste0("Results/",list.files("Results/"))
 type<-factor()
-trueStrengths<-list()
+trueStrengths<-list(BradleyTerryGamma=list(),Uniform=list(), ThurstoneMostellerNormal=list())
 centeringValues<-list()
 strengths<-list()
 correlations<-list()
@@ -14,13 +14,14 @@ for (i in 1:length(files))
 {
   load(files[i])
   type<-c(type, dat$TrueStrengthType)
-  trueStrengths[[i]]<-dat$TrueStrengths
+  trueStrengths[dat$TrueStrengthType][[length(trueStrengths[dat$TrueStrengthType])]]<-dat$TrueStrengths
   centeringValues[[i]]<-dat$centeringValue
   strengths[[i]]<-dat$strengths
   correlations[[i]]<-dat$SpearmanCorrelation
   gameBias[[i]]<-dat$GameBias
-  weeklyGameBias[[i]]<-dat$GameBiasByWeek
-}
+    weeklyGameBias[[i]]<-dat$GameBiasByWeek
+        
+  }
 rm(dat)
 type<-as.factor(type)
 

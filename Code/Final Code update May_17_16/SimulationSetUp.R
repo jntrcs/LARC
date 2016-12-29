@@ -1,16 +1,16 @@
 ##Simulation function
-useBT<-TRUE
-useUnif<-FALSE
+useBT<-FALSE
+useBeta<-TRUE
 load("MasterFunctionFile.RData")
 Rcpp::sourceCpp("cppFiles.cpp")
 
-simulate1<-function(useBT, useUnif = FALSE)
+simulate1<-function(useBT, useBeta = FALSE)
 {
   ##SIMULATE A SEASON
-  uniform <-!useBT & useUnif
+  beta <-!useBT & useBeta
   simulation<-list()
-  simulation$teamSchedule<-generateTeamSchedule(useBT, uniform)
-  simulation$seasonGames<-generateSeasonResults(simulation$teamSchedule, useBT, uniform)
+  simulation$teamSchedule<-generateTeamSchedule(useBT, beta)
+  simulation$seasonGames<-generateSeasonResults(simulation$teamSchedule, useBT, beta)
   strengths<-list()
   normTrueStrengths<-simulation$teamSchedule$TrueStrength-simulation$teamSchedule$ConferenceMeans
   
@@ -27,7 +27,7 @@ simulate1<-function(useBT, useUnif = FALSE)
   
   #ANALYZE THE SEASON
   summaryOfResults<-list()
-  summaryOfResults$TrueStrengthType<-ifelse(useBT, "Bradley-Terry Gamma", ifelse(uniform,"Uniform","Thurstone-Mosteller Normal"))
+  summaryOfResults$TrueStrengthType<-ifelse(useBT, "BradleyTerryGamma", ifelse(beta,"Beta","ThurstoneMostellerNormal"))
   summaryOfResults$TrueStrengths<-simulation$teamSchedule$TrueStrength
 
   #week over week MSE
@@ -133,7 +133,7 @@ system.time(season2<-simulate1(FALSE))
 
 mseBT<-findMSE(season1$GameBias$Week, season1$GameBias$BTGamePrediction, season1$GameBias$ActualGame)
 mseTM<-findMSE(season1$GameBias$Week, season1$GameBias$TMGamePrediction, season1$GameBias$ActualGame)
-plot(mseBT$MSE~mseBT$weeks, main="With Uniform Strengths", xlab="Week", ylab="MSE", ylim=c(0,.1))
+plot(mseBT$MSE~mseBT$weeks, main="With Beta Strengths", xlab="Week", ylab="MSE", ylim=c(0,.1))
 points(mseTM$MSE~mseTM$weeks, col="Red")
 legend("topright", c("BT", "TM"), lty=c(1,1), col=c("Black", "red"))
 

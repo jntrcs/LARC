@@ -1,27 +1,27 @@
 ##True Strength Generator
 
-pickTMStrength<-function(mean = 0)
+pickTMStrength<-function(mean = 0, paramB=NULL)
 {
   rnorm(length(mean),mean=mean, sd=3/4)
 }
 
-getConferenceMeans<-function(useBT, params, uniform=FALSE)
+getConferenceMeans<-function(useBT, params, paramsB=NULL, beta=FALSE)
 {
-  if (!useBT &!uniform)
-    rep(rep(0, 10), each=9)
+  if (!useBT &!beta)
+    rep(params, each=9)
   else if (useBT)
     rep(params, each=9)
   else
-    rep(.5, 9)
+    rep(params/(params+paramsB), each=9)
     
 }
 
-pickUnifStrength<-function(upper)
+pickBetaStrength<-function(paramA, paramB)
 {
-  runif(length(upper), upper-1, upper)
+  rbeta(length(paramA), paramA, paramB)
 }
 
-pickBTStrength<-function(shape)
+pickBTStrength<-function(shape, paramB=NULL)
 {
   rgamma(length(shape), shape=shape)
 }

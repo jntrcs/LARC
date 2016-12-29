@@ -73,6 +73,8 @@ corr<-data.frame(BCSRankings, 1:25, match(BCSRankings, stripped2016data[[14]][[2
                  match(BCSRankings, stripped2016data[[14]][[3]]$Team))
 names(corr)<-c("Team", "BCSRanking", "BTRanking", "TMRanking")
 corr
-cor(corr$BTRanking, corr$TMRanking)
-cor(corr$BCSRanking,corr$BTRanking)
-cor(corr$BCSRanking, corr$TMRanking)
+cor(corr$BTRanking, corr$TMRanking, method="spearman")
+cor(corr$BCSRanking,corr$BTRanking,method="spearman")
+cor(corr$BCSRanking, corr$TMRanking,method="spearman")
+plot(corr$BTRanking~corr$BCSRanking)
+plot(corr$TMRanking~corr$BCSRanking)

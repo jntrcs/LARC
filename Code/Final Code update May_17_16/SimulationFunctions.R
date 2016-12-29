@@ -1,32 +1,33 @@
 #Simulation Functions
 
-generateTeams<-function(useBT, uniform=FALSE)
+generateTeams<-function(useBT, beta=FALSE)
 {
   if(useBT) {
-      params<-c(2,3,1.5,2.5,1,2,4,.5,1.25,.75)
+      paramsA<-c(2,3,1.5,2.5,1,2,4,.5,1.25,.75)
       func <-pickBTStrength
   }
-  else if (uniform)
+  else if (beta)
   {
-    params<-c(1,1,1,1,1,1,1,1,1,1)
-    func <-pickUnifStrength
+    paramsA<-c(2,3,2,2.5,2,2,4,2,2,2)
+    paramsB<-c(2,2,2.5,2,3,2,2,3.5,2.25,3.25)
+    func <-pickBetaStrength
     
   }
   else{
-    params<-c(0,.5,-.25,.25,-.5,0,.75,-.75,-.25, -.5)
+    paramsA<-c(0,.5,-.25,.25,-.5,0,.75,-.75,-.25, -.5)
     func<-pickTMStrength
   }
   
   teams<-data.frame(rep(1:10, each=9), 1:90)
   names(teams)<-c("Conference", "Team")
-  teams$TrueStrength<-func(params[teams$Conference])
-  teams$ConferenceMeans<-getConferenceMeans(useBT, params, uniform)
+  teams$TrueStrength<-func(paramsA[teams$Conference], paramsB[teams$Conference])
+  teams$ConferenceMeans<-getConferenceMeans(useBT, paramsA, paramsB, beta)
   teams
 }
 
-generateTeamSchedule<-function(useBT, uniform)
+generateTeamSchedule<-function(useBT, beta)
 {
-  teams<-generateTeams(useBT, uniform)
+  teams<-generateTeams(useBT, beta)
   generateSchedule(teams)
 }
 
@@ -103,9 +104,9 @@ generateConference<-function(teams)
   schedule[,3:11]
 }
 
-generateSeasonResults<-function(season, useBT, uniform=FALSE)
+generateSeasonResults<-function(season, useBT, beta=FALSE)
 {
-  type<-ifelse(useBT, "BT", ifelse(uniform, "Uni", "TM"))
+  type<-ifelse(useBT, "BT", ifelse(beta, "Beta", "TM"))
   numGames<-nrow(season)/2*12
   seasonGames<-data.frame(matrix(0, nrow=numGames, 5))
   names(seasonGames)<-c("Date", "Home", "Visitor", "Winner", "HomeWinPerecent")
