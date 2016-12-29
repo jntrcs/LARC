@@ -51,6 +51,8 @@ NCAAFPredictor<-function(BTStrengths,TMStrengths, schedule, dateVector)
   weekGames$Penalty <- ifelse(weekGames$DidWorse =="Bradley-Terry", abs(ifelse(weekGames$HomeTeamWon, 1, 0)-weekGames$BTHomeWin), abs(ifelse(weekGames$HomeTeamWon, 1, 0)-weekGames$TMHomeWin))
   weekGames$BrierComponenetBT<-weekGames$BTHomeWin - ifelse(weekGames$HomeTeamWon, 1, 0)
   weekGames$BrierComponenetTM<-weekGames$TMHomeWin - ifelse(weekGames$HomeTeamWon, 1, 0)
+  weekGames$logComponentBT<-log(ifelse(weekGames$HomeTeamWon, weekGames$BTHomeWin, 1-weekGames$BTHomeWin))
+  weekGames$logComponentTM<-log(ifelse(weekGames$HomeTeamWon, weekGames$TMHomeWin, 1-weekGames$TMHomeWin))
   
   penalties<-c(sum(weekGames$Penalty[weekGames$DidWorse=="Bradley-Terry"]/nrow(weekGames)),
   sum(weekGames$Penalty[weekGames$DidWorse=="Thurstone-Mosteller"])/nrow(weekGames))
@@ -59,7 +61,9 @@ NCAAFPredictor<-function(BTStrengths,TMStrengths, schedule, dateVector)
   names(percentHomeWins)<-c("Bradely-Terry Home Win Percent", "Thurstone-Mosteller Home Win Percent")
   results<-list(weekGames, table(weekGames$DidBetter), penalties, mean(weekGames$Difference), nrow(weekGames),
                 list(BTBrierScore=sum(weekGames$BrierComponenetBT^2)/nrow(weekGames),
-                     TMBrierScore=sum(weekGames$BrierComponenetTM^2)/nrow(weekGames)))
+                     TMBrierScore=sum(weekGames$BrierComponenetTM^2)/nrow(weekGames)),
+                list(BTLogScore=sum(weekGames$logComponentBT)/nrow(weekGames),
+                     TMLogScore=sum(weekGames$logComponentTM)/nrow(weekGames)))
   results
 }  
 
@@ -121,6 +125,9 @@ brierScores<-lapply(2:length(stripped2016data), FUN=function(n){
   c(stripped2016data[[n]][[4]][[6]]$BTBrierScore, stripped2016data[[n]][[4]][[6]]$TMBrierScore)})
 makePenaltyGraph(brierScores, lab="Brier Scoring", yax="Brier score (Lower = Better)")
 
+logScores<-lapply(2:length(stripped2016data), FUN=function(n){
+  c(stripped2016data[[n]][[4]][[7]]$BTLogScore, stripped2016data[[n]][[4]][[7]]$TMLogScore)})
+makePenaltyGraph(logScores, lab="Log Scoring", yax="Log score (Closer to zero better)")
 
 penalties<-lapply(2:length(stripped2016data), FUN=function(n){stripped2016data[[n]][[4]][[3]]})
 makePenaltyGraph(penalties)
