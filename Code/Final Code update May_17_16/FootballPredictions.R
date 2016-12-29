@@ -49,16 +49,50 @@ NCAAFPredictor<-function(BTStrengths,TMStrengths, schedule, dateVector)
   weekGames$DidWorse<-ifelse(weekGames$DidBetter=="Bradley-Terry", "Thurstone-Mosteller", "Bradley-Terry")
   weekGames$DidWorse[weekGames$DidBetter=="Tie"]<-"Tie"
   weekGames$Penalty <- ifelse(weekGames$DidWorse =="Bradley-Terry", abs(ifelse(weekGames$HomeTeamWon, 1, 0)-weekGames$BTHomeWin), abs(ifelse(weekGames$HomeTeamWon, 1, 0)-weekGames$TMHomeWin))
+  weekGames$BrierComponenetBT<-weekGames$BTHomeWin - ifelse(weekGames$HomeTeamWon, 1, 0)
+  weekGames$BrierComponenetTM<-weekGames$TMHomeWin - ifelse(weekGames$HomeTeamWon, 1, 0)
   
   penalties<-c(sum(weekGames$Penalty[weekGames$DidWorse=="Bradley-Terry"]/nrow(weekGames)),
   sum(weekGames$Penalty[weekGames$DidWorse=="Thurstone-Mosteller"])/nrow(weekGames))
   names(penalties)<-c("Bradley-Terry Penalty", "Thurstone-Mosteller Penalty")
   percentHomeWins<-c(mean(weekGames$BTHomeWin), mean(weekGames$TMHomeWin))
   names(percentHomeWins)<-c("Bradely-Terry Home Win Percent", "Thurstone-Mosteller Home Win Percent")
-  results<-list(weekGames, table(weekGames$DidBetter), penalties, mean(weekGames$Difference), nrow(weekGames))
+  results<-list(weekGames, table(weekGames$DidBetter), penalties, mean(weekGames$Difference), nrow(weekGames),
+                list(BTBrierScore=sum(weekGames$BrierComponenetBT^2)/nrow(weekGames),
+                     TMBrierScore=sum(weekGames$BrierComponenetTM^2)/nrow(weekGames)))
   results
 }  
 
+makePerformanceGraph<-function(performance)
+{
+  graphic<-sapply(performance, FUN=function(vec){vec[1]/(vec[2]+vec[1])})
+  plot(1-graphic, type='l', main="More Accuracy Comparison", ylab="Model Favored Proportion",
+       xlab="Week", xaxt="n", ylim=c(.1,.9))
+  lines(graphic, col="red")
+  legend(x="topleft",c("Bradley-Terry", "Thurstone-Mosteller"), col=c("Red", "black"), lty=c(1,1))
+  axis(1,at=1:length(graphic),labels=2:(length(graphic)+1))
+}
+
+makePenaltyGraph<-function(penalties, lab="Bad Prediction Penalization", yax="Penalty Score")
+{
+  BTPenalties<-sapply(penalties, FUN = function(vec){vec[1]})
+  TMPenalties<-sapply(penalties, FUN = function(vec){vec[2]})
+  plot(TMPenalties, type='l', lty=2, col="Blue", main=lab, ylab=yax,
+       xlab="Week Predicted", xaxt="n")
+  lines(BTPenalties, col="Red")
+  axis(1,at=1:length(BTPenalties),labels=2:(length(BTPenalties)+1))
+  legend(x="bottomleft",c("Bradley-Terry", "Thurstone-Mosteller"), col=c("Red", "Blue"), lty=c(1,2))
+}
+
+makeDifferenceGraph<-function(meanDifferences)
+{
+  plot(meanDifferences, type="l", main="Average Difference in Prediction (%)", xaxt="n", xlab="Week",
+       ylab="% Different", yaxt="n")
+  yticks<-seq(floor(min(meanDifferences*100))/100,ceiling(max(meanDifferences*100))/100, by=.001)
+  axis(2, at=yticks, label=yticks*100)
+  axis(1,at=1:length(meanDifferences),labels=2:(length(meanDifferences)+1))
+  
+}
 
 temp<-lapply(2:17, FUN=function(i) NCAAFPredictor(all2015data[[i-1]][[2]],all2015data[[i-1]][[3]],raw2015,all2015data[[i]][[5]]))
 for (i in 2:17)
@@ -76,31 +110,17 @@ meanDifferences<-sapply(2:16, FUN=function(n){all2015data[[n]][[4]][[4]]})
 makeDifferenceGraph(meanDifferences)
 
 
-makePerformanceGraph<-function(performance)
-{
-  graphic<-sapply(performance, FUN=function(vec){vec[1]/(vec[2]+vec[1])})
-  plot(1-graphic, type='l', main="More Accuracy Comparison", ylab="Model Favored Proportion",
-     xlab="Week", xaxt="n", ylim=c(.1,.9))
-  lines(graphic, col="red")
-  legend(x="topleft",c("Bradley-Terry", "Thurstone-Mosteller"), col=c("Red", "black"), lty=c(1,1))
-  axis(1,at=1:length(graphic),labels=2:(length(graphic)+1))
-}
+
 
 performance<-lapply(2:length(stripped2016data), FUN=function(n){stripped2016data[[n]][[4]][[2]]})
 makePerformanceGraph(performance)
 performance<-lapply(2:length(all2016data), FUN=function(n){all2016data[[n]][[4]][[2]]})
 makePerformanceGraph(performance)
 
-makePenaltyGraph<-function(penalties)
-{
-BTPenalties<-sapply(penalties, FUN = function(vec){vec[1]})
-TMPenalties<-sapply(penalties, FUN = function(vec){vec[2]})
-plot(TMPenalties, type='l', lty=2, col="Blue", main="Bad Prediction Penalization", ylab="Penalty Score",
-     xlab="Week Predicted", xaxt="n")
-lines(BTPenalties, col="Red")
-axis(1,at=1:length(BTPenalties),labels=2:(length(BTPenalties)+1))
-legend(x="bottomleft",c("Bradley-Terry", "Thurstone-Mosteller"), col=c("Red", "Blue"), lty=c(1,2))
-}
+brierScores<-lapply(2:length(stripped2016data), FUN=function(n){
+  c(stripped2016data[[n]][[4]][[6]]$BTBrierScore, stripped2016data[[n]][[4]][[6]]$TMBrierScore)})
+makePenaltyGraph(brierScores, lab="Brier Scoring", yax="Brier score (Lower = Better)")
+
 
 penalties<-lapply(2:length(stripped2016data), FUN=function(n){stripped2016data[[n]][[4]][[3]]})
 makePenaltyGraph(penalties)
@@ -109,15 +129,7 @@ penaltiesAll<-lapply(2:length(all2016data), FUN=function(n){all2016data[[n]][[4]
 makePenaltyGraph(penaltiesAll)
 rowSums(sapply(1:12, FUN= function(i){penaltiesAll[[i]]}))
 
-makeDifferenceGraph<-function(meanDifferences)
-{
-  plot(meanDifferences, type="l", main="Average Difference in Prediction (%)", xaxt="n", xlab="Week",
-       ylab="% Different", yaxt="n")
-  yticks<-seq(floor(min(meanDifferences*100))/100,ceiling(max(meanDifferences*100))/100, by=.001)
-  axis(2, at=yticks, label=yticks*100)
-  axis(1,at=1:length(meanDifferences),labels=2:(length(meanDifferences)+1))
 
-}
 meanDifferences<-sapply(2:length(stripped2016data), FUN=function(n){stripped2016data[[n]][[4]][[4]]})
 makeDifferenceGraph(meanDifferences)
 meanDifferences<-sapply(2:length(all2016data), FUN=function(n){all2016data[[n]][[4]][[4]]})
