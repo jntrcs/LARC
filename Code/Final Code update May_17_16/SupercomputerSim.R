@@ -20,7 +20,7 @@ parLapply(clust, 1:10, fun = function(i){
   useBT <- i<4
   useUniform<-i>7
   dat<-simulate1(useBT, useUniform)
-  save(dat, file=paste0("~/season",i, ".rdata"))
+  save(dat, file=paste0("~/LARC/LARC/Code/Final\ Code\ update\ May_17_16/Results/season",i, ".rdata"))
   i})
 
 
