@@ -12,14 +12,14 @@ neededFunc<- c("dataconfigure", "LARC.Rank.Football", "BTDensity", "TMDensity",
                "pickTMStrength", "pickBTStrength", "simHomeWin", "generateTeams","generateSchedule", 
                "generateConference","generateNonConference", "generateTeamSchedule", "generateSeasonResults",
                "predictionPercentage", "simulate1", "findMSE", "normalizeSample","getConferenceMeans", 
-               "pickUnifStrength","analyzeGameBias")
+               "pickBetaStrength","analyzeGameBias")
 clusterExport(clust, neededFunc)
 
 parLapply(clust, 1:10, fun = function(i){
   Rcpp::sourceCpp("cppFiles.cpp")
   useBT <- i<4
-  useUniform<-i>7
-  dat<-simulate1(useBT, useUniform)
+  useBeta<-i>7
+  dat<-simulate1(useBT, useBeta)
   save(dat, file=paste0("~/LARC/LARC/Code/Final\ Code\ update\ May_17_16/Results/season",i, ".rdata"))
   i})
 
