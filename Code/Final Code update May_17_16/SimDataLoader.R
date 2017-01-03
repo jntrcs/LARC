@@ -29,16 +29,6 @@ for (i in 1:length(files))
 rm(dat)
 type<-as.factor(type)
 
-
-corDifs<-matrix(0, nrow=length(correlations), ncol=13)
-for (i in 1:length(correlations))
-{
-  corDifs[i,]<-correlations[[i]]$BT-correlations[[i]]$TM 
-}
-apply(corDifs, 2, FUN = mean)
-apply(corDifs, 2, FUN = function(i)quantile(i,c(.05,.95)))
-
-
 ##Sample
 
 cols<-as.factor(type)

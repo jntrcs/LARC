@@ -129,6 +129,8 @@ logScores<-lapply(2:length(stripped2016data), FUN=function(n){
   c(stripped2016data[[n]][[4]][[7]]$BTLogScore, stripped2016data[[n]][[4]][[7]]$TMLogScore)})
 makePenaltyGraph(logScores, lab="Log Scoring", yax="Log score (Closer to zero better)")
 
+sapply(logScores, FUN = which.max)==sapply(penalties, FUN=which.min) #comparing the penalty metric
+
 penalties<-lapply(2:length(stripped2016data), FUN=function(n){stripped2016data[[n]][[4]][[3]]})
 makePenaltyGraph(penalties)
 rowSums(sapply(1:12, FUN= function(i){penalties[[i]]}))
