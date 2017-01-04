@@ -2,6 +2,7 @@
 
 suffix<-c("BradleyTerryGamma", "Beta","ThurstoneMostellerNormal")
 
+###CODE FOR ONE CORRELATION GRAPH
 corDif<-list()
 for (i in suffix)
 {
@@ -22,3 +23,36 @@ lines(center, col=colors[inc])
 #lines(confidence[2,], lty=2, col="Gray")
 })
 
+
+##Code for 3 correlation graphs
+BTMatrix<-list()
+TMMatrix<-list()
+for (i in suffix)
+{
+  BTMatrix[[i]]<-sapply(correlations[[i]], FUN = function(n) {n$BT})
+  TMMatrix[[i]]<-sapply(correlations[[i]], FUN = function(n) {n$TM})
+}
+
+correlationPlot<-function(BTmatrix, TMmatrix, title, ymax=1)
+{
+ plot(1, type='n', main = paste("Rank Correlation with", title,  "True Strengths"), ylab="Spearman Rank Correlation Coefficent",
+      xlab="Week", ylim=c(.2, ymax), xlim=c(0,14)) 
+  btMean<-apply(BTmatrix, 1, mean)
+  tmMean<-apply(TMmatrix, 1, mean)
+  lines(btMean, col="Red")
+  lines(tmMean, col="Blue")
+  sdsBT<-apply(BTmatrix, 1, sd)
+  lowerBoundsBT<-btMean-qnorm(.975)*sdsBT/sqrt(ncol(BTmatrix))
+  lines(lowerBoundsBT, lty=2, col="Red")
+  upperBoundsBT<-btMean+qnorm(.975)*sdsBT/sqrt(ncol(BTmatrix))
+  lines(upperBoundsBT, lty=2, col="Red")
+  sdsTM<-apply(TMmatrix, 1, sd)
+  lowerBoundsTM<-tmMean-qnorm(.975)*sdsTM/sqrt(ncol(TMmatrix))
+  lines(lowerBoundsTM, lty=2, col="Blue")
+  upperBoundsTM<-tmMean+qnorm(.975)*sdsTM/sqrt(ncol(TMmatrix))
+  lines(upperBoundsTM, lty=2, col="Blue")
+  legend("bottomright", legend=c("Bradley-Terry Estimate", "Thurstone Mosteller Estimate", "95% Confidence Interval"),
+         title=paste(title, "Underlying Strengths"), lty=c(1,1,2), col=c("Red", "Blue", "Red"))
+}
+
+correlationPlot(BTMatrix$Beta, TMMatrix$Beta, "Beta", ymax=.7)
