@@ -11,6 +11,7 @@ save(BradleyTerryLARC, BTWP, dataconfigure, datascrape, find.mf, full.sim.gen, L
      pickTMStrength, pickBTStrength, simHomeWin, generateTeams, generateSchedule, generateConference,
      generateNonConference, generateTeamSchedule, generateSeasonResults, simulate1, normalizeSample,
      predictionPercentage, findMSE, getConferenceMeans, pickBetaStrength, analyzeGameBias, correlationPlot,
+     gameBiasGraph,
      file="MasterFunctionFile.RData")
 #Removed: simulate, simulation,
 
