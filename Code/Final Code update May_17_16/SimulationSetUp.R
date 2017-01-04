@@ -78,10 +78,10 @@ simulate1<-function(useBT, useBeta = FALSE)
     
     
   }
-  BTGamePred[simulation$seasonGames$HomeWinPerecent<.5]<-1-BTGamePred[simulation$seasonGames$HomeWinPerecent<.5]
+  #BTGamePred[simulation$seasonGames$HomeWinPerecent<.5]<-1-BTGamePred[simulation$seasonGames$HomeWinPerecent<.5]
   favoredRealPred<-simulation$seasonGames$HomeWinPerecent
-  favoredRealPred[simulation$seasonGames$HomeWinPerecent<.5]<-1-simulation$seasonGames$HomeWinPerecent[simulation$seasonGames$HomeWinPerecent<.5]
-  TMGamePred[simulation$seasonGames$HomeWinPerecent<.5]<-1-TMGamePred[simulation$seasonGames$HomeWinPerecent<.5]
+  #favoredRealPred[simulation$seasonGames$HomeWinPerecent<.5]<-1-simulation$seasonGames$HomeWinPerecent[simulation$seasonGames$HomeWinPerecent<.5]
+  #TMGamePred[simulation$seasonGames$HomeWinPerecent<.5]<-1-TMGamePred[simulation$seasonGames$HomeWinPerecent<.5]
   
   summaryOfResults$GameBias<-data.frame(week[46:540],(BTGamePred)[46:540], 
                                         (TMGamePred)[46:540], favoredRealPred[46:540])

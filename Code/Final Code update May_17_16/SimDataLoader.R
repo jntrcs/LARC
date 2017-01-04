@@ -1,5 +1,4 @@
 #SimDataLoader
-
 files<-paste0("Results/",list.files("Results/"))
 type<-factor()
 trueStrengths<-list(BradleyTerryGamma=vector("list", 5),Beta=vector("list", 5), ThurstoneMostellerNormal=vector("list", 5))
@@ -28,5 +27,6 @@ for (i in 1:length(files))
   }
 rm(dat)
 type<-as.factor(type)
+
 
 
