@@ -1,4 +1,5 @@
 #SimDataLoader
+load("MasterFunctionFile.RData")
 files<-paste0("Results/",list.files("Results/"))
 type<-factor()
 trueStrengths<-list(BradleyTerryGamma=vector("list", 5),Beta=vector("list", 5), ThurstoneMostellerNormal=vector("list", 5))
