@@ -4,14 +4,15 @@ load("2016FootballData.RData")
 load("Stripped2016FootballData.RData")
 Rcpp::sourceCpp("cppFiles.cpp")
 
-latestRaw<-datascrape("NCAAF")
+latestRaw<-datascrape("NCAAF", year=2016)
 numGames<-table(c(latestRaw$Home, latestRaw$Visitor))
 numGames<-data.frame(numGames)
 takeOut<-as.character(numGames[numGames$Freq<5, 1])
 strippedRaw<-latestRaw[!(latestRaw$Home %in% takeOut | latestRaw$Visitor %in% takeOut),]
 
-dates<-seq(as.Date("2016-09-04"), to=Sys.Date(), by=7)
-range<-2:14
+dates<-seq(as.Date("2016-09-04"), to=as.Date("2016-12-05"), by=7)
+dates<-c(dates, as.Date("2017-01-10"))
+range<-15
 
 for (i in range)
 {

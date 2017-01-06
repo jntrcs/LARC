@@ -141,8 +141,8 @@ rowSums(sapply(1:12, FUN= function(i){penaltiesAll[[i]]}))
 
 meanDifferences<-sapply(2:length(stripped2016data), FUN=function(n){stripped2016data[[n]][[4]][[4]]})
 makeDifferenceGraph(meanDifferences)
-meanDifferences<-sapply(2:length(all2016data), FUN=function(n){all2016data[[n]][[4]][[4]]})
-makeDifferenceGraph(meanDifferences)
+#meanDifferences<-sapply(2:length(all2016data), FUN=function(n){all2016data[[n]][[4]][[4]]})
+#makeDifferenceGraph(meanDifferences)
 
 games<-sapply(2:17, FUN=function(i){all2015data[[i]][[4]][[5]]})
 plot(games)

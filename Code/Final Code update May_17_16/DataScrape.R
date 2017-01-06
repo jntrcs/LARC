@@ -110,14 +110,15 @@ scrapeNCAAF<-function(year="2016")
   site<-""
   skip<-0
   if (year=="2016")
-    {site<-"http://www.masseyratings.com/scores.php?s=286577&sub=11604&all=1"
-    skip<-25
+    {
+      site<-"http://www.masseyratings.com/scores.php?s=286577&sub=11604&all=1"
+      skip<-25
     }
   else if (year=="2015")
   { 
     site<-"http://www.masseyratings.com/scores.php?s=279541&sub=11590&all=1"
     skip=10
-    }
+  }
   table1 <- read.fwf(file=url(site),
                      skip=skip, n=-1, widths=c(10, 2, 24, 3, 2, 24, 3, 4, 25),
                      col.names=c("Date","Where1","Team1","PTS1","Where2","Team2","PTS2","OT?","Notes"),
@@ -219,7 +220,7 @@ datascrape <- function(datatype,playoffs=FALSE,year=substr(Sys.Date(),1,4), date
 }
 
 raw2015<-datascrape("NCAAF", year=2015)
-latestRaw<-datascrape("NCAAF")
+latestRaw<-datascrape("NCAAF", year=2016)
 ###TODO: fix parameters to require what is needed and respect choices. 
 #Fix NFL and NHL (I don't think I broke those)
 #Get rid of NCAAF warning message
