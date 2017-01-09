@@ -26,7 +26,7 @@ for (i in 1:length(files))
     weeklyGameBias[dat$TrueStrengthType][[1]][[a]]<-dat$GameBiasByWeek
         
   }
-rm(dat)
+rm(dat, a, i, index, indices)
 type<-as.factor(type)
 
 

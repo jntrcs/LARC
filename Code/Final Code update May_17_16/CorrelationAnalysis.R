@@ -2,7 +2,7 @@
 
 suffix<-c("BradleyTerryGamma", "Beta","ThurstoneMostellerNormal")
 
-###CODE FOR ONE CORRELATION GRAPH
+###CODE FOR ONE CORRELATION GRAPH--outdated
 corDif<-list()
 for (i in suffix)
 {
