@@ -38,17 +38,38 @@ for (i in suffix)
 )
 
 mse<-list()
+#varc<-list()
+#biasc<-list()
 for (i in suffix)
 {
   mse[[i]]<-list(BT=list(), TM=list())
+ # varc[[i]]<-list(BT=list(), TM=list())
+#  biasc[[i]]<-list(BT=list(), TM=list())
+  
   for (week in 1:13)
   {
+ #   varc[[i]]$BT[[week]]<-apply(sigti[[i]]$BT[[week]], 2, var)
+  #  varc[[i]]$TM[[week]]<-apply(sigti[[i]]$TM[[week]], 2, var)
+   # biasc[[i]]$BT[[week]]<-apply(biasSigti[[i]]$BT[[week]], 2, FUN=function(s){mean(s)^2})
+  #  biasc[[i]]$TM[[week]]<-apply(biasSigti[[i]]$TM[[week]], 2, FUN=function(s){mean(s)^2})
+    
     mse[[i]]$BT[[week]]<-apply(sigti[[i]]$BT[[week]], 2, var)+apply(biasSigti[[i]]$BT[[week]], 2, FUN=function(s){mean(s)^2})
    mse[[i]]$TM[[week]]<-apply(sigti[[i]]$TM[[week]], 2, var)+apply(biasSigti[[i]]$TM[[week]], 2, FUN=function(s){mean(s)^2})
 
   }
 }
 
-plotting<-sapply(mse$BradleyTerryGamma$BT, FUN=mean)
-plot(plotting)
+msePlot<-function(data, varc=NULL, biasc=NULL)
+{
+  MSE<-sapply(data, FUN=mean)
+  varp<-sapply(varc, FUN=mean)
+  biasp<-sapply(biasc, FUN=mean)
+  plot(MSE, main="MSE", col="purple", type='l', xlim=c(0,13), xlab="Week", ylim=c(min(MSE)-.2,max(MSE)+.2)) 
+  #lines(varp)
+  #lines(biasp, col="Green")
+}
+
+
+msePlot(mse$ThurstoneMostellerNormal$TM, varc$ThurstoneMostellerNormal$TM, biasc$ThurstoneMostellerNormal$TM)
+msePlot(mse$BradleyTerryGamma$BT, varc$BradleyTerryGamma$BT, biasc$BradleyTerryGamma$BT)
 hist(mse$BradleyTerryGamma$BT[[13]])
