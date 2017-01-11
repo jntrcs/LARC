@@ -2,7 +2,7 @@
 
 suffix<-c("BradleyTerryGamma", "Beta","ThurstoneMostellerNormal")
 
-###CODE FOR ONE CORRELATION GRAPH
+###CODE FOR ONE CORRELATION GRAPH--outdated
 corDif<-list()
 for (i in suffix)
 {
@@ -25,13 +25,7 @@ lines(center, col=colors[inc])
 
 
 ##Code for 3 correlation graphs
-BTMatrix<-list()
-TMMatrix<-list()
-for (i in suffix)
-{
-  BTMatrix[[i]]<-sapply(correlations[[i]], FUN = function(n) {n$BT})
-  TMMatrix[[i]]<-sapply(correlations[[i]], FUN = function(n) {n$TM})
-}
+
 
 correlationPlot<-function(BTmatrix, TMmatrix, title, ymax=1, ymin=.2)
 {
@@ -55,6 +49,14 @@ correlationPlot<-function(BTmatrix, TMmatrix, title, ymax=1, ymin=.2)
          title=paste(title, "Underlying Strengths"), lty=c(1,1,2), col=c("Red", "Blue", "Red"))
 }
 
+suffix<-c("BradleyTerryGamma", "Beta","ThurstoneMostellerNormal")
+BTMatrix<-list()
+TMMatrix<-list()
+for (i in suffix)
+{
+  BTMatrix[[i]]<-sapply(correlations[[i]], FUN = function(n) {n$BT})
+  TMMatrix[[i]]<-sapply(correlations[[i]], FUN = function(n) {n$TM})
+}
 correlationPlot(BTMatrix$Beta, TMMatrix$Beta, "Beta", ymax=.7)
 correlationPlot(BTMatrix$BradleyTerryGamma, TMMatrix$BradleyTerryGamma, "Bradley-Terry", ymax=.85, ymin=.4)
 correlationPlot(BTMatrix$ThurstoneMostellerNormal, TMMatrix$ThurstoneMostellerNormal, "Thurstone-Mosteller",
