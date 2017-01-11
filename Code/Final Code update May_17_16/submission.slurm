@@ -1,10 +1,10 @@
 #!/bin/bash
 
-#SBATCH --time=0:02:00   # walltime
+#SBATCH --time=0:05:00   # walltime
 #SBATCH --ntasks=10   # number of processor cores (i.e. tasks)
-#SBATCH --nodes=1   # number of nodes
+#SBATCH --nodes=2   # number of nodes
 #SBATCH --mem-per-cpu=2048M   # memory per CPU core
-#SBATCH -J "InitialSimulationTest"   # job name
+#SBATCH -J "multiNodeSimulationTest"   # job name
 #SBATCH --mail-user=jcurtis210@gmail.com   # email address
 #SBATCH --mail-type=BEGIN
 #SBATCH --mail-type=END
