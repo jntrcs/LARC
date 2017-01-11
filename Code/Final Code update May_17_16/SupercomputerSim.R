@@ -4,7 +4,7 @@ load("MasterFunctionFile.RData")
 Rcpp::sourceCpp("cppFiles.cpp")
 
 library(parallel)
-numCores<-20
+numCores<-32
 clust <- makeCluster(numCores)
 neededFunc<- c("dataconfigure", "LARC.Rank.Football", "BTDensity", "TMDensity",
                "ThurstoneMostellerLARC",   "BradleyTerryLARC", "LARC.Rank", "LARC.Optim",
@@ -15,10 +15,10 @@ neededFunc<- c("dataconfigure", "LARC.Rank.Football", "BTDensity", "TMDensity",
                "pickBetaStrength","analyzeGameBias")
 clusterExport(clust, neededFunc)
 
-parLapply(clust, 1:30, fun = function(i){
+parLapply(clust, 1:3000, fun = function(i){
   Rcpp::sourceCpp("cppFiles.cpp")
-  useBT <- i<=10
-  useBeta<-i>20
+  useBT <- i<=1000
+  useBeta<-i>2000
   dat<-simulate1(useBT, useBeta)
   save(dat, file=paste0("~/LARC/LARC/Code/Final\ Code\ update\ May_17_16/Results/season",i, ".rdata"))
   i})
