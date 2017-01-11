@@ -98,21 +98,6 @@ makeDifferenceGraph<-function(meanDifferences)
   
 }
 
-temp<-lapply(2:17, FUN=function(i) NCAAFPredictor(all2015data[[i-1]][[2]],all2015data[[i-1]][[3]],raw2015,all2015data[[i]][[5]]))
-for (i in 2:17)
-{
-  all2015data[[i]][[4]]<-temp[[i-1]]
-}
-
-performance<-lapply(2:16, FUN=function(n){all2015data[[n]][[4]][[2]]})
-makePerformanceGraph(performance)
-
-penalties<-lapply(2:13, FUN=function(n){all2015data[[n]][[4]][[3]]/all2015data[[n]][[4]][[5]]})
-makePenaltyGraph(penalties)
-
-meanDifferences<-sapply(2:16, FUN=function(n){all2015data[[n]][[4]][[4]]})
-makeDifferenceGraph(meanDifferences)
-
 
 
 
@@ -144,27 +129,20 @@ makeDifferenceGraph(meanDifferences)
 #meanDifferences<-sapply(2:length(all2016data), FUN=function(n){all2016data[[n]][[4]][[4]]})
 #makeDifferenceGraph(meanDifferences)
 
-games<-sapply(2:17, FUN=function(i){all2015data[[i]][[4]][[5]]})
-plot(games)
-games
-all2015data[[2]][[4]][[5]]
+performance<-lapply(2:length(stripped2015data), FUN=function(n){stripped2015data[[n]][[4]][[2]]})
+makePerformanceGraph(performance)
+performance<-lapply(2:length(all2015data), FUN=function(n){all2015data[[n]][[4]][[2]]})
+makePerformanceGraph(performance)
 
-lapply(2:13, FUN=function(i){
-  dat<-stripped2016data[[i]][[4]][[1]]
-  dat<-dat[(dat$BTHomeWin>.5&dat$TMHomeWin<.5)|(dat$BTHomeWin<.5&dat$TMHomeWin>.5),]
-  dat
-})
+brierScores<-lapply(2:length(stripped2015data), FUN=function(n){
+  c(stripped2015data[[n]][[4]][[6]]$BTBrierScore, stripped2015data[[n]][[4]][[6]]$TMBrierScore)})
+makePenaltyGraph(brierScores, lab="Brier Scoring", yax="Brier score (Lower = Better)")
 
-d<-lapply(2:13, FUN=function(i){
-dat<-stripped2016data[[i]][[4]][[1]]
-dat<-dat[(dat$DidWorse=="Thurstone-Mosteller"&dat$Penalty>.5),]
-dat
-})
+logScores<-lapply(2:length(stripped2015data), FUN=function(n){
+  c(stripped2015data[[n]][[4]][[7]]$BTLogScore, stripped2015data[[n]][[4]][[7]]$TMLogScore)})
+makePenaltyGraph(logScores, lab="Log Scoring", yax="Log score (Closer to zero better)")
 
-sum(sapply(d, FUN=nrow))
+penalties<-lapply(2:length(stripped2015data), FUN=function(n){stripped2015data[[n]][[4]][[3]]})
+makePenaltyGraph(penalties)
 
-endStrengthBT<-stripped2016data[[13]][[2]]$Strength[order(stripped2016data[[13]][[2]]$Team)]
-endStrengthTM<-stripped2016data[[13]][[3]]$Strength[order(stripped2016data[[13]][[3]]$Team)]
-plot(endStrengthBT, endStrengthTM)
-cor(endStrengthBT, endStrengthTM, method="spearman")
-?cor
+sapply(logScores, FUN = which.max)==sapply(penalties, FUN=which.min) #comparing the penalty metric
