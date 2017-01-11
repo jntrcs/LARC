@@ -59,17 +59,17 @@ for (i in suffix)
   }
 }
 
-msePlot<-function(data, varc=NULL, biasc=NULL)
+msePlot<-function(data, type, varc=NULL, biasc=NULL)
 {
   MSE<-sapply(data, FUN=mean)
   varp<-sapply(varc, FUN=mean)
   biasp<-sapply(biasc, FUN=mean)
-  plot(MSE, main="MSE", col="purple", type='l', xlim=c(0,13), xlab="Week", ylim=c(min(MSE)-.2,max(MSE)+.2)) 
+  plot(MSE, main=paste("MSE of", type, "Predictor on", type,"Strengths"), col="purple", type='l', xlim=c(0,13), xlab="Week", ylim=c(min(MSE)-.2,max(MSE)+.2)) 
   #lines(varp)
   #lines(biasp, col="Green")
 }
 
 
-msePlot(mse$ThurstoneMostellerNormal$TM, varc$ThurstoneMostellerNormal$TM, biasc$ThurstoneMostellerNormal$TM)
-msePlot(mse$BradleyTerryGamma$BT, varc$BradleyTerryGamma$BT, biasc$BradleyTerryGamma$BT)
+msePlot(mse$ThurstoneMostellerNormal$TM, "Thurstone-Mosteller") #, varc$ThurstoneMostellerNormal$TM, biasc$ThurstoneMostellerNormal$TM
+msePlot(mse$BradleyTerryGamma$BT, "Bradley-Terry") #, varc$BradleyTerryGamma$BT, biasc$BradleyTerryGamma$BT
 hist(mse$BradleyTerryGamma$BT[[13]])
