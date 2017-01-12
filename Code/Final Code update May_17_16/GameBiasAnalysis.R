@@ -31,6 +31,7 @@ for (i in suffix)
   gameBiasMatrix[[i]]$TM<-sapply(weeklyGameBias[[i]], FUN=function(n){n$TM.MSE})
 }
 par(bg="gray90")
+par(mfrow=c(1,1))
 gameBiasGraph(gameBiasMatrix$BradleyTerryGamma$BT, gameBiasMatrix$BradleyTerryGamma$TM, "Bradley-Terry")
 gameBiasGraph(gameBiasMatrix$Beta$BT, gameBiasMatrix$Beta$TM, "Beta")
 gameBiasGraph(gameBiasMatrix$ThurstoneMostellerNormal$BT, gameBiasMatrix$ThurstoneMostellerNormal$TM, "Thurstone-Mosteller")
@@ -40,7 +41,9 @@ suffix<-c("BradleyTerryGamma", "Beta","ThurstoneMostellerNormal")
 par(mfrow=c(3,1))
 for (i in suffix)
 {
-  hist(disparity[[i]], main=paste("Disparity Score for", i))
+  hist(disparity[[i]], main=paste("Team Disparity Score for", i), xlim=c(.1,.3), xlab="Disparity by Season")
   abline(v=mean(disparity[[i]]), col="Red")
+  abline(v=mean(disparity[[i]])+c(-1,1)*qnorm(.975)*sd(disparity[[i]]/sqrt(length(disparity[[i]]))), col="Blue", lty=2)
+  print(var(disparity[[i]])*10)
 }
 ##Need to make the scales the same
