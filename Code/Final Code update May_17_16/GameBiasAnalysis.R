@@ -36,9 +36,11 @@ gameBiasGraph(gameBiasMatrix$Beta$BT, gameBiasMatrix$Beta$TM, "Beta")
 gameBiasGraph(gameBiasMatrix$ThurstoneMostellerNormal$BT, gameBiasMatrix$ThurstoneMostellerNormal$TM, "Thurstone-Mosteller")
 
 
+suffix<-c("BradleyTerryGamma", "Beta","ThurstoneMostellerNormal")
 par(mfrow=c(3,1))
 for (i in suffix)
 {
-  hist(disparity[[i]])
-  abline(mean(disparity[[i]]))
+  hist(disparity[[i]], main=paste("Disparity Score for", i))
+  abline(v=mean(disparity[[i]]), col="Red")
 }
+##Need to make the scales the same

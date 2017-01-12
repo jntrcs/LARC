@@ -8,6 +8,7 @@ strengths<-list(BradleyTerryGamma=vector("list", 5),Beta=vector("list", 5), Thur
 correlations<-list(BradleyTerryGamma=vector("list", 5),Beta=vector("list", 5), ThurstoneMostellerNormal=vector("list", 5))
 gameBias<-list(BradleyTerryGamma=vector("list", 5),Beta=vector("list", 5), ThurstoneMostellerNormal=vector("list", 5))
 weeklyGameBias<-list(BradleyTerryGamma=vector("list", 5),Beta=vector("list", 5), ThurstoneMostellerNormal=vector("list", 5))
+disparity<-list(BradleyTerryGamma=numeric(),Beta=numeric(), ThurstoneMostellerNormal=numeric())
 
 indices<-rep(0,3) # BT then TM then Beta
 for (i in 1:length(files))
@@ -24,6 +25,7 @@ for (i in 1:length(files))
   correlations[dat$TrueStrengthType][[1]][[a]]<-dat$SpearmanCorrelation
   gameBias[dat$TrueStrengthType][[1]][[a]]<-dat$GameBias
     weeklyGameBias[dat$TrueStrengthType][[1]][[a]]<-dat$GameBiasByWeek
+    disparity[[dat$TrueStrengthType]][[a]]<-dat$disparityScore
         
   }
 rm(dat, a, i, index, indices)
