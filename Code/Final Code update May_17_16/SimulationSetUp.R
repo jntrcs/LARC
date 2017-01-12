@@ -87,6 +87,7 @@ simulate1<-function(useBT, useBeta = FALSE)
                                         (TMGamePred)[46:540], favoredRealPred[46:540])
   names(summaryOfResults$GameBias)<-c("Week","BTGamePrediction", "TMGamePrediction", "ActualGame")
   summaryOfResults$GameBiasByWeek<-analyzeGameBias(summaryOfResults$GameBias)
+  summaryOfResults$disparityScore<-sum(abs(summaryOfResults$GameBias$ActualGame-.5))/nrow(summaryOfResults$GameBias)
   summaryOfResults
 }
 

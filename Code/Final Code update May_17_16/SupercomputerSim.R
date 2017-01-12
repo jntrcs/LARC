@@ -1,5 +1,4 @@
 #The file that will actually be submitted to the supercomputer to run
-
 load("MasterFunctionFile.RData")
 Rcpp::sourceCpp("cppFiles.cpp")
 

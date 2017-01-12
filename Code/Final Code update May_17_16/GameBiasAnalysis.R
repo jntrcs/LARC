@@ -34,3 +34,11 @@ par(bg="gray90")
 gameBiasGraph(gameBiasMatrix$BradleyTerryGamma$BT, gameBiasMatrix$BradleyTerryGamma$TM, "Bradley-Terry")
 gameBiasGraph(gameBiasMatrix$Beta$BT, gameBiasMatrix$Beta$TM, "Beta")
 gameBiasGraph(gameBiasMatrix$ThurstoneMostellerNormal$BT, gameBiasMatrix$ThurstoneMostellerNormal$TM, "Thurstone-Mosteller")
+
+
+par(mfrow=c(3,1))
+for (i in suffix)
+{
+  hist(disparity[[i]])
+  abline(mean(disparity[[i]]))
+}
