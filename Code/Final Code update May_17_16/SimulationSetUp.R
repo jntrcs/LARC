@@ -1,6 +1,6 @@
 ##Simulation function
-useBT<-FALSE
-useBeta<-TRUE
+useBT<-TRUE
+useBeta<-FALSE
 load("MasterFunctionFile.RData")
 Rcpp::sourceCpp("cppFiles.cpp")
 
@@ -8,9 +8,15 @@ simulate1<-function(useBT, useBeta = FALSE)
 {
   ##SIMULATE A SEASON
   beta <-!useBT & useBeta
+  disp<-numeric()
+  for (i in 1:10)
+  {
   simulation<-list()
   simulation$teamSchedule<-generateTeamSchedule(useBT, beta)
   simulation$seasonGames<-generateSeasonResults(simulation$teamSchedule, useBT, beta)
+  a<-calcDisparity(simulation$seasonGames$HomeWinPerecent)
+  disp<-c(disp,a)
+  }
   strengths<-list()
   normTrueStrengths<-simulation$teamSchedule$TrueStrength-simulation$teamSchedule$ConferenceMeans
   
@@ -108,7 +114,10 @@ normalizeSample<-function(strengths)
   norm
 }
 
-
+calcDisparity<-function(actuals)
+{
+sum(abs(actuals-.5))/length(actuals)
+}
 
 findMSE<-function(weeks, gamePred, actual)
 {

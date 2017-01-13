@@ -3,7 +3,7 @@
 generateTeams<-function(useBT, beta=FALSE)
 {
   if(useBT) {
-      paramsA<-c(2,3,1.5,2.5,1,2,4,.5,1.25,.75)
+      paramsA<-c(2,3,1.5,2.5,1,2,4,.5,1.25,.75)/2
       func <-pickBTStrength
   }
   else if (beta)
