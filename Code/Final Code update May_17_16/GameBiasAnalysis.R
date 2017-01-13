@@ -30,7 +30,7 @@ gameBiasGraph<-function(BTMatrix, TMMatrix, type)
   
 }
 
-suffix<-c("BradleyTerryGamma", "Beta","ThurstoneMostellerNormal")
+suffix<-c("BradleyTerryGamma", "Beta","ThurstoneMostellerNormal", "ExtremeBT")
 gameBiasMatrix<-list()
 for (i in suffix)
 {
@@ -43,10 +43,11 @@ par(mfrow=c(1,1))
 gameBiasGraph(gameBiasMatrix$BradleyTerryGamma$BT, gameBiasMatrix$BradleyTerryGamma$TM, "Bradley-Terry")
 gameBiasGraph(gameBiasMatrix$Beta$BT, gameBiasMatrix$Beta$TM, "Beta")
 gameBiasGraph(gameBiasMatrix$ThurstoneMostellerNormal$BT, gameBiasMatrix$ThurstoneMostellerNormal$TM, "Thurstone-Mosteller")
+gameBiasGraph(gameBiasMatrix$ExtremeBT$BT, gameBiasMatrix$ExtremeBT$TM, "Extreme Bradley Terry")
 
 
-suffix<-c("BradleyTerryGamma", "Beta","ThurstoneMostellerNormal")
-par(mfrow=c(3,1))
+suffix<-c("BradleyTerryGamma", "Beta","ThurstoneMostellerNormal", "ExtremeBT")
+par(mfrow=c(4,1))
 for (i in suffix)
 {
   hist(disparity[[i]], main=paste("Team Disparity Score for", i), xlim=c(.1,.3), xlab="Disparity by Season")

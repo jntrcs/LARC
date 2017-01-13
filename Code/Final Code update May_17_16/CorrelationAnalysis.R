@@ -1,6 +1,6 @@
 ###Analysis.R
 
-suffix<-c("BradleyTerryGamma", "Beta","ThurstoneMostellerNormal")
+suffix<-c("BradleyTerryGamma", "Beta","ThurstoneMostellerNormal", "ExtremeBT")
 
 ###CODE FOR ONE CORRELATION GRAPH--outdated
 corDif<-list()
@@ -55,7 +55,7 @@ correlationPlot<-function(BTmatrix, TMmatrix, title, ymax=1, ymin=.2)
          title=paste(title, "Underlying Strengths"), lty=c(1,1,2,1), col=c("Red", "Blue", "Red", "pink"))
 }
 
-suffix<-c("BradleyTerryGamma", "Beta","ThurstoneMostellerNormal")
+suffix<-c("BradleyTerryGamma", "Beta","ThurstoneMostellerNormal", "ExtremeBT")
 BTMatrix<-list()
 TMMatrix<-list()
 for (i in suffix)
