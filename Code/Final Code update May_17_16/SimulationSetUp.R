@@ -1,15 +1,17 @@
 ##Simulation function
-useBT<-FALSE
-useBeta<-TRUE
+useBT<-TRUE
+useBeta<-FALSE
+extremeBT<-TRUE
 load("MasterFunctionFile.RData")
 Rcpp::sourceCpp("cppFiles.cpp")
 
-simulate1<-function(useBT, useBeta = FALSE)
+simulate1<-function(useBT, useBeta = FALSE, extremeBT=FALSE)
 {
   ##SIMULATE A SEASON
-  beta <-!useBT & useBeta
+  beta <-!useBT & useBeta & !extremeBT
+  extBT<-useBT & extremeBT
   simulation<-list()
-  simulation$teamSchedule<-generateTeamSchedule(useBT, beta)
+  simulation$teamSchedule<-generateTeamSchedule(useBT, beta, extBT)
   simulation$seasonGames<-generateSeasonResults(simulation$teamSchedule, useBT, beta)
   strengths<-list()
   normTrueStrengths<-simulation$teamSchedule$TrueStrength-simulation$teamSchedule$ConferenceMeans
@@ -27,7 +29,7 @@ simulate1<-function(useBT, useBeta = FALSE)
   
   #ANALYZE THE SEASON
   summaryOfResults<-list()
-  summaryOfResults$TrueStrengthType<-ifelse(useBT, "BradleyTerryGamma", ifelse(beta,"Beta","ThurstoneMostellerNormal"))
+  summaryOfResults$TrueStrengthType<-ifelse(useBT, ifelse(extBT, "ExtremeBT", "BradleyTerryGamma"), ifelse(beta,"Beta","ThurstoneMostellerNormal"))
   summaryOfResults$TrueStrengths<-simulation$teamSchedule$TrueStrength
 
   #week over week MSE

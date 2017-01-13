@@ -1,8 +1,8 @@
 #Simulation Functions
 
-generateTeams<-function(useBT, beta=FALSE)
+generateTeams<-function(useBT, beta=FALSE, extBT=FALSE)
 {
-  if(useBT) {
+  if(useBT &!extBT) {
       paramsA<-c(2,3,1.5,2.5,1,2,4,.5,1.25,.75)
       func <-pickBTStrength
   }
@@ -13,9 +13,14 @@ generateTeams<-function(useBT, beta=FALSE)
     func <-pickBetaStrength
     
   }
-  else{
+  else if (!beta & !useBT &!extBT){
     paramsA<-c(0,.5,-.25,.25,-.5,0,.75,-.75,-.25, -.5)
     func<-pickTMStrength
+  }
+  else
+  {
+    paramsA<-c(2,3,1.5,2.5,1,2,4,.5,1.25,.75)/2
+    func <-pickBTStrength
   }
   
   teams<-data.frame(rep(1:10, each=9), 1:90)
@@ -25,9 +30,9 @@ generateTeams<-function(useBT, beta=FALSE)
   teams
 }
 
-generateTeamSchedule<-function(useBT, beta)
+generateTeamSchedule<-function(useBT, beta, extBT=FALSE)
 {
-  teams<-generateTeams(useBT, beta)
+  teams<-generateTeams(useBT, beta, extBT)
   generateSchedule(teams)
 }
 
@@ -131,6 +136,10 @@ generateSeasonResults<-function(season, useBT, beta=FALSE)
     seasonGames
 }
 
+disparityScore<-function(actuals)
+{
+  sum(abs(actuals-.5))/length(actuals)
+}
 a<-generateSeasonResults(season, TRUE)
 b<-generateSeasonResults(season, FALSE)
 hist(b$HomeWinPerecent)
