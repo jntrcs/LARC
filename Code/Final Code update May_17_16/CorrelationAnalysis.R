@@ -35,6 +35,12 @@ correlationPlot<-function(BTmatrix, TMmatrix, title, ymax=1, ymin=.2)
   tmMean<-apply(TMmatrix, 1, mean)
   lines(btMean, col="Red")
   lines(tmMean, col="Blue")
+  qboundsBT<-apply(BTmatrix, 1, FUN=function(d){quantile(d, c(0.025, .975))})
+  lines(qboundsBT[1,], col="pink")
+  lines(qboundsBT[2,], col="pink")
+  qboundsTM<-apply(TMmatrix, 1, FUN=function(d){quantile(d, c(0.025, .975))})
+  lines(qboundsTM[1,], col="lightblue")
+  lines(qboundsTM[2,], col="lightblue")
   sdsBT<-apply(BTmatrix, 1, sd)
   lowerBoundsBT<-btMean-qnorm(.975)*sdsBT/sqrt(ncol(BTmatrix))
   lines(lowerBoundsBT, lty=2, col="Red")
@@ -45,8 +51,8 @@ correlationPlot<-function(BTmatrix, TMmatrix, title, ymax=1, ymin=.2)
   lines(lowerBoundsTM, lty=2, col="Blue")
   upperBoundsTM<-tmMean+qnorm(.975)*sdsTM/sqrt(ncol(TMmatrix))
   lines(upperBoundsTM, lty=2, col="Blue")
-  legend("bottomright", legend=c("Bradley-Terry Rankings", "Thurstone-Mosteller Rankings", "95% Confidence Interval"),
-         title=paste(title, "Underlying Strengths"), lty=c(1,1,2), col=c("Red", "Blue", "Red"))
+  legend("bottomright", legend=c("Bradley-Terry Rankings", "Thurstone-Mosteller Rankings", "95% Confidence Interval", "95% Quantiles"),
+         title=paste(title, "Underlying Strengths"), lty=c(1,1,2,1), col=c("Red", "Blue", "Red", "pink"))
 }
 
 suffix<-c("BradleyTerryGamma", "Beta","ThurstoneMostellerNormal")

@@ -69,7 +69,7 @@ msePlot<-function(data, type, varc=NULL, biasc=NULL)
   #lines(biasp, col="Green")
 }
 
-
+par(mfrow=c(1,1))
 msePlot(mse$ThurstoneMostellerNormal$TM, "Thurstone-Mosteller") #, varc$ThurstoneMostellerNormal$TM, biasc$ThurstoneMostellerNormal$TM
 msePlot(mse$BradleyTerryGamma$BT, "Bradley-Terry") #, varc$BradleyTerryGamma$BT, biasc$BradleyTerryGamma$BT
 hist(mse$BradleyTerryGamma$BT[[13]])
