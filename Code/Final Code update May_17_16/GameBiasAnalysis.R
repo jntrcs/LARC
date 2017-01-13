@@ -4,11 +4,19 @@ gameBiasGraph<-function(BTMatrix, TMMatrix, type)
 {
   plot(1, type='n', main = "Win Prediction Probability MSE",
        ylab="Predicted Probability MSE", xlab="Week", ylim=c(0,.1), xlim=c(1,13), xaxt='n')
-  legend("topright", legend=c("Bradley-Terry", "Thurstone-Mosteller", "95% CI"), title=paste(type, "True Strengths"),
-         col=c("Red", "Blue", "firebrick1"), lty = c(1,1,2))
+  legend("topright", legend=c("Bradley-Terry", "Thurstone-Mosteller", "95% CI", "95% Quantiles"), title=paste(type, "True Strengths"),
+         col=c("Red", "Blue", "firebrick1", "firebrick1"), lty = c(1,1,2,1))
   BTmeans<-apply(BTMatrix, 1, mean) 
   lines(BTmeans, col="Red", type='l')
   BTsds<-apply(BTMatrix, 1, sd)
+  qBT<-apply(BTMatrix, 1, FUN=function(d){quantile(d, c(.025,.975))})
+  lines(qBT[1,], col="firebrick1")
+  lines(qBT[2,], col="firebrick1")
+  qTM<-apply(TMMatrix, 1, FUN=function(d){quantile(d, c(.025,.975))})
+  lines(qTM[1,], col="steelblue1")
+  lines(qTM[2,], col="steelblue1")
+  
+  
   serror<-qnorm(.975)*BTsds/sqrt(ncol(BTMatrix))
   lines(BTmeans+serror, col="firebrick1", lty=2)
   lines(BTmeans-serror, col="firebrick1", lty=2)
