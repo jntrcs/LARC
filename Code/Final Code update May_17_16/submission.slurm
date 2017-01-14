@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #SBATCH --time=1:30:00   # walltime
-#SBATCH --ntasks=32   # number of processor cores (i.e. tasks)
-#SBATCH --nodes=2   # number of nodes
+#SBATCH --ntasks=43   # number of processor cores (i.e. tasks)
+#SBATCH --nodes=3   # number of nodes
 #SBATCH --mem-per-cpu=1024M   # memory per CPU core
 #SBATCH -J "3000seasonsimulation"   # job name
 #SBATCH --mail-user=jcurtis210@gmail.com   # email address
