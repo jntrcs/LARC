@@ -13,6 +13,7 @@ simulate1<-function(useBT, useBeta = FALSE, extremeBT=FALSE)
   simulation<-list()
   simulation$teamSchedule<-generateTeamSchedule(useBT, beta, extBT)
   simulation$seasonGames<-generateSeasonResults(simulation$teamSchedule, useBT, beta)
+
   strengths<-list()
   normTrueStrengths<-simulation$teamSchedule$TrueStrength-simulation$teamSchedule$ConferenceMeans
   

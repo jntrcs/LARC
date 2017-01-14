@@ -53,6 +53,6 @@ for (i in suffix)
   hist(disparity[[i]], main=paste("Team Disparity Score for", i), xlim=c(.1,.3), xlab="Disparity by Season")
   abline(v=mean(disparity[[i]]), col="Red")
   abline(v=mean(disparity[[i]])+c(-1,1)*qnorm(.975)*sd(disparity[[i]]/sqrt(length(disparity[[i]]))), col="Blue", lty=2)
-  print(var(disparity[[i]])*10)
+  print(var(disparity[[i]]))
 }
 ##Need to make the scales the same
