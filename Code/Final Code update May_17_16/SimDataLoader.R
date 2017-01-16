@@ -28,8 +28,9 @@ for (i in 1:length(files))
     disparity[[dat$TrueStrengthType]][[a]]<-dat$disparityScore
         
   }
-rm(dat, a, i, index, indices)
+rm(dat, a, i, index, indices, files)
 type<-as.factor(type)
 
-
-
+save(type, trueStrengths, centeringValues, strengths, correlations, gameBias, file="SimulationResults.RData")
+#rm(type, trueStrengths, centeringValues, strengths, correlations, gameBias)
+#load("SimulationResults.RData")

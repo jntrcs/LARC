@@ -1,6 +1,7 @@
 ##Analyze Excel sheet
 
 
+#To use, change the path and then run the first three lines (highlight and hit run, control-r) (ignore the stuff below)
 #Remember, this doesn't handle ties.
 #Probability that team A beats team B = strength(A)/(strength(A)/Strength(B))
 #When you specify the file path make sure to use double back slash instead of single back slash
