@@ -1,4 +1,5 @@
 #Game Bias Analysis
+load("SimulationResults.RData")
 
 gameBiasGraph<-function(BTMatrix, TMMatrix, type)
 {

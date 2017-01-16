@@ -1,5 +1,5 @@
 ###Analysis.R
-
+load("SimulationResults.RData")
 suffix<-c("BradleyTerryGamma", "Beta","ThurstoneMostellerNormal", "ExtremeBT")
 
 ###CODE FOR ONE CORRELATION GRAPH--outdated
@@ -62,6 +62,7 @@ for (i in suffix)
 {
   BTMatrix[[i]]<-sapply(correlations[[i]], FUN = function(n) {n$BT})
   TMMatrix[[i]]<-sapply(correlations[[i]], FUN = function(n) {n$TM})
+  print(max(TMMatrix[[i]]))
 }
 par(mfrow=c(1,1))
 
