@@ -30,9 +30,11 @@ generateTeams<-function(useBT, beta=FALSE, extBT=FALSE)
   teams
 }
 
-generateTeamSchedule<-function(useBT, beta, extBT=FALSE)
+generateTeamSchedule<-function(useBT, beta, extBT=FALSE, teams=NULL)
 {
-  teams<-generateTeams(useBT, beta, extBT)
+  if (is.null(teams)){
+    teams<-generateTeams(useBT, beta, extBT)
+  }
   generateSchedule(teams)
 }
 
@@ -140,10 +142,10 @@ disparityScore<-function(actuals)
 {
   sum(abs(actuals-.5))/length(actuals)
 }
-a<-generateSeasonResults(season, TRUE)
-b<-generateSeasonResults(season, FALSE)
-hist(b$HomeWinPerecent)
-hist(a$HomeWinPerecent)
-mean(a$Visitor)
-mean(b$Home)
-mean(b$Winner)
+#a<-generateSeasonResults(season, TRUE)
+#b<-generateSeasonResults(season, FALSE)
+#hist(b$HomeWinPerecent)
+#hist(a$HomeWinPerecent)
+#mean(a$Visitor)
+#mean(b$Home)
+#mean(b$Winner)

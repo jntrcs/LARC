@@ -1,7 +1,7 @@
 ##Simulation function
 useBT<-TRUE
 useBeta<-FALSE
-extremeBT<-TRUE
+extremeBT<-FALSE
 load("MasterFunctionFile.RData")
 Rcpp::sourceCpp("cppFiles.cpp")
 
@@ -11,14 +11,26 @@ simulate1<-function(useBT, useBeta = FALSE, extremeBT=FALSE)
   beta <-!useBT & useBeta & !extremeBT
   extBT<-useBT & extremeBT
   simulation<-list()
-  simulation$teamSchedule<-generateTeamSchedule(useBT, beta, extBT)
-  simulation$seasonGames<-generateSeasonResults(simulation$teamSchedule, useBT, beta)
-
+  for (i in 1:10)
+  {
+    if(i==1){
+      simulation$teamSchedule<-generateTeamSchedule(useBT, beta, extBT)
+      teams<-simulation$teamSchedule[,1:4]
+      simulation$seasonGames<-generateSeasonResults(simulation$teamSchedule, useBT, beta)
+    }
+    else{
+      simulation$teamSchedule<-generateTeamSchedule(useBT,beta,extBT, teams)
+      newseason<-generateSeasonResults(simulation$teamSchedule, useBT, beta)
+      newseason$Date<-(i-1)*13+newseason$Date
+      simulation$seasonGames<-rbind(simulation$seasonGames,newseason )
+    }
+    
+  }
   strengths<-list()
   normTrueStrengths<-simulation$teamSchedule$TrueStrength-simulation$teamSchedule$ConferenceMeans
   
   ##ESTIMATE THE SEASON   
-  for (i in 1:13)
+  for (i in 1:max(simulation$seasonGames$Date))
   {
     configured<-dataconfigure(simulation$seasonGames,reldate = i)
     if (i!=1)
