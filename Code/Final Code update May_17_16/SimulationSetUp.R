@@ -28,10 +28,11 @@ simulate1<-function(useBT, useBeta = FALSE, extremeBT=FALSE)
   }
   strengths<-list()
   normTrueStrengths<-simulation$teamSchedule$TrueStrength-simulation$teamSchedule$ConferenceMeans
-  
+  weeks<-max(simulation$seasonGames$Date)
   ##ESTIMATE THE SEASON   
-  for (i in 1:max(simulation$seasonGames$Date))
+  for (i in 1:weeks)
   {
+    print(i)
     configured<-dataconfigure(simulation$seasonGames,reldate = i)
     if (i!=1)
       configured<-attachMostRecentStrengths(configured, strengths[[i-1]]$BT, strengths[[i-1]]$TM)
@@ -49,15 +50,15 @@ simulate1<-function(useBT, useBeta = FALSE, extremeBT=FALSE)
   summaryOfResults$centeringValue<- simulation$teamSchedule$ConferenceMeans - summaryOfResults$TrueStrengths
   summaryOfResults$strengths<-list()
   summaryOfResults$strengths$BT<-list()
-  summaryOfResults$strengths$BT<-lapply(1:13, FUN=function(i)strengths[[i]]$BT$Strength)
+  summaryOfResults$strengths$BT<-lapply(1:weeks, FUN=function(i)strengths[[i]]$BT$Strength)
   summaryOfResults$strengths$TM<-list()
-  summaryOfResults$strengths$TM<-lapply(1:13, FUN=function(i)strengths[[i]]$TM$Strength)
+  summaryOfResults$strengths$TM<-lapply(1:weeks, FUN=function(i)strengths[[i]]$TM$Strength)
   
   #Correlation
   summaryOfResults$SpearmanCorrelation<-list()
-  summaryOfResults$SpearmanCorrelation$BT<-rep(0,13)
-  summaryOfResults$SpearmanCorrelation$TM<-rep(0,13)
-  for (i in 1:13)
+  summaryOfResults$SpearmanCorrelation$BT<-rep(0,weeks)
+  summaryOfResults$SpearmanCorrelation$TM<-rep(0,weeks)
+  for (i in 1:weeks)
   {
     summaryOfResults$SpearmanCorrelation$BT[i]<-cor(summaryOfResults$TrueStrengths, strengths[[i]]$BT$Strength, method="spearman")
     summaryOfResults$SpearmanCorrelation$TM[i]<-cor(summaryOfResults$TrueStrengths, strengths[[i]]$TM$Strength, method="spearman")
@@ -67,8 +68,8 @@ simulate1<-function(useBT, useBeta = FALSE, extremeBT=FALSE)
   #plot(strengths[[13]]$BT$Strength, summaryOfResults$TrueStrengths)
   
   #Game Bias MSE
-  BTGamePred<-rep(0, 540)
-  TMGamePred<-rep(0,540)
+  BTGamePred<-rep(0, 540*weeks/13)
+  TMGamePred<-rep(0,540*weeks/13)
   week<-numeric()
   for (i in 1:nrow(simulation$seasonGames))
   {
@@ -98,8 +99,8 @@ simulate1<-function(useBT, useBeta = FALSE, extremeBT=FALSE)
   #favoredRealPred[simulation$seasonGames$HomeWinPerecent<.5]<-1-simulation$seasonGames$HomeWinPerecent[simulation$seasonGames$HomeWinPerecent<.5]
   #TMGamePred[simulation$seasonGames$HomeWinPerecent<.5]<-1-TMGamePred[simulation$seasonGames$HomeWinPerecent<.5]
   
-  summaryOfResults$GameBias<-data.frame(week[46:540],(BTGamePred)[46:540], 
-                                        (TMGamePred)[46:540], favoredRealPred[46:540])
+  summaryOfResults$GameBias<-data.frame(week[46:length(week)],(BTGamePred)[46:length(BTGamePred)], 
+                                        (TMGamePred)[46:length(TMGamePred)], favoredRealPred[46:length(favoredRealPred)])
   names(summaryOfResults$GameBias)<-c("Week","BTGamePrediction", "TMGamePrediction", "ActualGame")
   summaryOfResults$GameBiasByWeek<-analyzeGameBias(summaryOfResults$GameBias)
   summaryOfResults$disparityScore<-sum(abs(summaryOfResults$GameBias$ActualGame-.5))/nrow(summaryOfResults$GameBias)
