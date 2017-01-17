@@ -32,7 +32,6 @@ simulate1<-function(useBT, useBeta = FALSE, extremeBT=FALSE)
   ##ESTIMATE THE SEASON   
   for (i in 1:weeks)
   {
-    print(i)
     configured<-dataconfigure(simulation$seasonGames,reldate = i)
     if (i!=1)
       configured<-attachMostRecentStrengths(configured, strengths[[i-1]]$BT, strengths[[i-1]]$TM)
