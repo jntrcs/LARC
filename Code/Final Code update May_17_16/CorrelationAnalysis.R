@@ -30,7 +30,7 @@ lines(center, col=colors[inc])
 correlationPlot<-function(BTmatrix, TMmatrix, title, ymax=1, ymin=.2)
 {
  plot(1, type='n', main = paste("Rank Correlation with", title,  "True Strengths"), ylab="Spearman Rank Correlation Coefficent",
-      xlab="Week", ylim=c(ymin, ymax), xlim=c(0,14)) 
+      xlab="Week", ylim=c(ymin, ymax), xlim=c(0,135)) 
   btMean<-apply(BTmatrix, 1, mean)
   tmMean<-apply(TMmatrix, 1, mean)
   lines(btMean, col="Red")
@@ -55,7 +55,7 @@ correlationPlot<-function(BTmatrix, TMmatrix, title, ymax=1, ymin=.2)
          title=paste(title, "Underlying Strengths"), lty=c(1,1,2,1), col=c("Red", "Blue", "Red", "pink"))
 }
 
-suffix<-c("BradleyTerryGamma", "Beta","ThurstoneMostellerNormal", "ExtremeBT")
+suffix<-c( "Beta")#,"BradleyTerryGamma","ThurstoneMostellerNormal", "ExtremeBT")
 BTMatrix<-list()
 TMMatrix<-list()
 for (i in suffix)
@@ -66,7 +66,7 @@ for (i in suffix)
 }
 par(mfrow=c(1,1))
 
-correlationPlot(BTMatrix$Beta, TMMatrix$Beta, "Beta", ymax=.7)
+correlationPlot(BTMatrix$Beta, TMMatrix$Beta, "Beta", ymax=1)
 correlationPlot(BTMatrix$BradleyTerryGamma, TMMatrix$BradleyTerryGamma, "Bradley-Terry", ymax=.85, ymin=.4)
 correlationPlot(BTMatrix$ThurstoneMostellerNormal, TMMatrix$ThurstoneMostellerNormal, "Thurstone-Mosteller",
                 ymax=.9, ymin=.4)

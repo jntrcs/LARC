@@ -4,7 +4,7 @@ load("SimulationResults.RData")
 gameBiasGraph<-function(BTMatrix, TMMatrix, type)
 {
   plot(1, type='n', main = "Win Prediction Probability MSE",
-       ylab="Predicted Probability MSE", xlab="Week", ylim=c(0,.1), xlim=c(1,13), xaxt='n')
+       ylab="Predicted Probability MSE", xlab="Week", ylim=c(0,.1), xlim=c(1,130), xaxt='n')
   legend("topright", legend=c("Bradley-Terry", "Thurstone-Mosteller", "95% CI", "95% Quantiles"), title=paste(type, "True Strengths"),
          col=c("Red", "Blue", "firebrick1", "firebrick1"), lty = c(1,1,2,1))
   BTmeans<-apply(BTMatrix, 1, mean) 
