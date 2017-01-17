@@ -9,7 +9,7 @@
 
 load("MasterFunctionFile.RData")
 Rcpp::sourceCpp("cppFiles.cpp")
-analyzeExcel(path="C:\\Users\\jntrcs\\Desktop\\Apex\\Template.csv")
+analyzeExcel(path="Template.csv")
 
 
 
