@@ -38,7 +38,6 @@ simulate1<-function(useBT, useBeta = FALSE, extremeBT=FALSE)
     strengths[[i]]<-list()
     strengths[[i]]$BT<-LARC.Rank.Football(configured, func=BTDensity, sorted=FALSE)
     strengths[[i]]$TM<-LARC.Rank.Football(configured, func=TMDensity, sorted=FALSE)
-    print(i)
   }
   
   #ANALYZE THE SEASON
