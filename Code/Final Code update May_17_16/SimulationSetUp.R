@@ -11,7 +11,7 @@ simulate1<-function(useBT, useBeta = FALSE, extremeBT=FALSE)
   beta <-!useBT & useBeta & !extremeBT
   extBT<-useBT & extremeBT
   simulation<-list()
-  for (i in 1:10)
+  for (i in 1:2)
   {
     if(i==1){
       simulation$teamSchedule<-generateTeamSchedule(useBT, beta, extBT)
