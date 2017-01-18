@@ -11,7 +11,7 @@ simulate1<-function(useBT, useBeta = FALSE, extremeBT=FALSE)
   beta <-!useBT & useBeta & !extremeBT
   extBT<-useBT & extremeBT
   simulation<-list()
-  for (i in 1:2)
+  for (i in 1:10)
   {
     if(i==1){
       simulation$teamSchedule<-generateTeamSchedule(useBT, beta, extBT)
@@ -22,7 +22,7 @@ simulate1<-function(useBT, useBeta = FALSE, extremeBT=FALSE)
       simulation$teamSchedule<-generateTeamSchedule(useBT,beta,extBT, teams)
       newseason<-generateSeasonResults(simulation$teamSchedule, useBT, beta)
       newseason$Date<-(i-1)*13+newseason$Date
-      simulation$seasonGames<-rbind(simulation$seasonGames,newseason )
+      simulation$seasonGames<-rbind(simulation$seasonGames,newseason)
     }
     
   }
