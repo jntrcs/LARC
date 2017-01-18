@@ -31,15 +31,15 @@ find.mf <- function(df, mf = 1, func, adj=1) {
     else if (d>1e100)
     {
       mf<-mf-adj
-      if (is.nan(func(df$Strength, df$WinsVersus, df$WinsTotal, mf)))
-          { print(mf)
-            print(df$Strength)
-            print(df$WinsVersus)
-            print(df$WinsTotal)
-            print(func)
-            save(func, df, mf, file="Debug.Rdata")
+      #if (is.nan(func(df$Strength, df$WinsVersus, df$WinsTotal, mf)))
+       #   { print(mf)
+        #    print(df$Strength)
+         #   print(df$WinsVersus)
+          #  print(df$WinsTotal)
+           # print(func)
+            #save(func, df, mf, file="Debug.Rdata")
             
-      }
+      #}
       if (func(df$Strength,df$WinsVersus, df$WinsTotal,mf) <1e-100)
         adj<-adj/10
     }
