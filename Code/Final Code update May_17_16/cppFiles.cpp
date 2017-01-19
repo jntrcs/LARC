@@ -36,7 +36,7 @@ double BTDensity(NumericVector strengths, IntegerMatrix wins, NumericVector wins
     pi = pi * pow(strengths.at(i), winsTotal.at(i)+1)*exp(-strengths.at(i));
     if (pi>tooBig)
     {
-      int downer=1000000000;
+      int downer=pow(10, 50);
       pi = pi/downer;
       pipi=pipi * downer;
     }

@@ -1,4 +1,4 @@
-BradleyTerryLARC <- function(strengths,wins,magnificationfactor=1) {
+BradleyTerryLARCcccc <- function(strengths,wins,magnificationfactor=1) {
   PI <- 1
   PIPI <- 1
   W <- vector()
@@ -16,7 +16,7 @@ BradleyTerryLARC <- function(strengths,wins,magnificationfactor=1) {
   return(exp(-sum(strengths))*PI*PIPI)
 }
 
-MostellerLARC <- function(strengths,wins,magnificationfactor=1) {
+MostellerLARCccc <- function(strengths,wins,magnificationfactor=1) {
   
   # First we compute the Prior
   prior <- 1
@@ -50,7 +50,7 @@ LARC.Posterior <- function(df, func = BradleyTerryLARC, mf=1, adj=1, report=FALS
   }
 }
 
-LARC.Optim <- function(df, func = BradleyTerryLARC, increment = 0.001,
+LARC.Optimccc <- function(df, func = BradleyTerryLARC, increment = 0.001,
                        iterations = Inf, magnificationfactor=1, adj=1) {
   st <- df$Strength
   wv <- df$WinsVersus
@@ -85,7 +85,7 @@ LARC.Optim <- function(df, func = BradleyTerryLARC, increment = 0.001,
   return(list(UpdatedStrengths=df$Strength,MaximizedPosterior=comp,Iterations=x))
 }
 
-LARC.Rank <- function(df, func=BradleyTerryLARC, increment = 0.001, 
+LARC.Rankcccc <- function(df, func=BradleyTerryLARC, increment = 0.001, 
                       iterations = Inf, dgt=3, magnificationfactor=1, adj=1) {
   
   options(digits=dgt)
