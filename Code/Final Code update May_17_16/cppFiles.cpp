@@ -22,6 +22,7 @@ double BTDensity(NumericVector strengths, IntegerMatrix wins, NumericVector wins
   double mf=magnificationfactor.at(0);
   double pi = 1;
   long double pipi=1;
+  double tooBig = pow(10, 200);
   //NumericVector w;
   for (int i = 0; i<strengths.size(); ++i)
   {
@@ -33,7 +34,7 @@ double BTDensity(NumericVector strengths, IntegerMatrix wins, NumericVector wins
     //w.push_back(sum);
    
     pi = pi * pow(strengths.at(i), winsTotal.at(i)+1)*exp(-strengths.at(i));
-    if (pi>pow(10, 200))
+    if (pi>tooBig)
     {
       int downer=1000000000;
       pi = pi/downer;
