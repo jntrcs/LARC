@@ -27,7 +27,7 @@ gameBiasGraph<-function(BTMatrix, TMMatrix, type)
   lines(TMmeans+serror, lty=2, col="steelblue1")
   lines(TMmeans-serror, lty=2, col="steelblue1")
   lines(TMmeans, col="Blue", type='l')
-  axis(1,at=1:12,labels=2:13)
+  axis(1,at=1:129,labels=2:130)
   
 }
 
