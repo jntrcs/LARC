@@ -31,11 +31,11 @@ double BTDensity(NumericVector strengths, IntegerMatrix wins, NumericVector wins
     //  sum+=wins.row(i)[j]; //I think we could save serious computation time by not recomputing this constantly
     //}
     //w.push_back(sum);
-    int downer = 1;
+   
     pi = pi * pow(strengths.at(i), winsTotal.at(i)+1)*exp(-strengths.at(i));
-    if (pi>pow(10, 300))
+    if (pi>pow(10, 200))
     {
-      downer=10000;
+      int downer=1000000000;
       pi = pi/downer;
       pipi=pipi * downer;
     }
