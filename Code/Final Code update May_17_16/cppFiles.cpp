@@ -19,7 +19,6 @@ using namespace Rcpp;
 //[[Rcpp::export]]
 double BTDensity(NumericVector strengths, IntegerMatrix wins, NumericVector winsTotal, NumericVector magnificationfactor=1)
 {
-  
   double mf=magnificationfactor.at(0);
   double pi = 1;
   long double pipi=1;
@@ -32,7 +31,14 @@ double BTDensity(NumericVector strengths, IntegerMatrix wins, NumericVector wins
     //  sum+=wins.row(i)[j]; //I think we could save serious computation time by not recomputing this constantly
     //}
     //w.push_back(sum);
+    int downer = 1;
     pi = pi * pow(strengths.at(i), winsTotal.at(i)+1)*exp(-strengths.at(i));
+    if (pi>pow(10, 300))
+    {
+      downer=10000;
+      pi = pi/downer;
+      pipi=pipi * downer;
+    }
     if (i<strengths.size())
     {
       for (int j = i+1; j<strengths.size(); ++j){

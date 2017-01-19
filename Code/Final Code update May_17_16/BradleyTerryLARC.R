@@ -9,7 +9,7 @@
 # wins      -- a matrix of the number of times that team i beat team j
 # magnificationfactor -- when the posterior becomes too small this factor increases the size of the posterior
 #
-BradleyTerryLARC <- function(strengths,wins,magnificationfactor=1) {
+BradleyTerryLARC <- function(strengths,wins, winsTotal=NULL,magnificationfactor=1) {
   PI <- 1
   PIPI <- 1
   W <- vector()
