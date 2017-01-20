@@ -55,7 +55,7 @@ correlationPlot<-function(BTmatrix, TMmatrix, title, ymax=1, ymin=.2)
          title=paste(title, "Underlying Strengths"), lty=c(1,1,2,1), col=c("Red", "Blue", "Red", "pink"))
 }
 
-suffix<-c( "Beta","BradleyTerryGamma")#,"ThurstoneMostellerNormal", "ExtremeBT")
+suffix<-c( "Beta","BradleyTerryGamma","ThurstoneMostellerNormal", "ExtremeBT")
 BTMatrix<-list()
 TMMatrix<-list()
 for (i in suffix)
@@ -63,6 +63,7 @@ for (i in suffix)
   BTMatrix[[i]]<-sapply(correlations[[i]], FUN = function(n) {n$BT})
   TMMatrix[[i]]<-sapply(correlations[[i]], FUN = function(n) {n$TM})
   print(max(TMMatrix[[i]]))
+  print(max(BTMatrix[[i]]))
 }
 par(mfrow=c(1,1))
 
@@ -71,5 +72,5 @@ correlationPlot(BTMatrix$BradleyTerryGamma, TMMatrix$BradleyTerryGamma, "Bradley
 correlationPlot(BTMatrix$ThurstoneMostellerNormal, TMMatrix$ThurstoneMostellerNormal, "Thurstone-Mosteller",
                 ymax=1, ymin=.4)
 correlationPlot(BTMatrix$ExtremeBT, TMMatrix$ExtremeBT, "Extreme-BT",
-                ymax=.9, ymin=.4)
+                ymax=1, ymin=.4)
 
