@@ -19,39 +19,33 @@ using namespace Rcpp;
 //[[Rcpp::export]]
 double BTDensity(NumericVector strengths, IntegerMatrix wins, NumericVector winsTotal, NumericVector magnificationfactor=1)
 {
-  
   double mf=magnificationfactor.at(0);
-  double pi = 1;
-  long double pipi=1;
-  double tooBig = pow(10,200);
+  long double ans=1;
+  //double tooBig = pow(10, 200);
+  //double downer=pow(10, 45);
   //NumericVector w;
   for (int i = 0; i<strengths.size(); ++i)
   {
-    //int sum=0;
-    //for (int j = 0; j<wins.ncol(); ++j)
+    
+    
+    ans = ans * pow(strengths.at(i), winsTotal.at(i)+1)*exp(-strengths.at(i));
+    // if (pi>tooBig)
     //{
-    //  sum+=wins.row(i)[j]; //I think we could save serious computation time by not recomputing this constantly
+    //  pi = pi/downer;
+    //  pipi=pipi * downer;
     //}
-    //w.push_back(sum);
-    pi = pi * pow(strengths.at(i), winsTotal.at(i)+1)*exp(-strengths.at(i));
-    if (pi>tooBig)
-    {
-      int downer=1000000000;
-      pi = pi/downer;
-      pipi=pipi * downer;
-    }
     if (i<strengths.size())
     {
       for (int j = i+1; j<strengths.size(); ++j){
         if (wins.row(j)[i]+wins.row(i)[j]!=0)
         {
-          pipi =pipi*(1/pow(strengths.at(i)+strengths.at(j), wins.row(j)[i]+wins.row(i)[j]))*mf;
+          ans =ans*(1/pow(strengths.at(i)+strengths.at(j), wins.row(j)[i]+wins.row(i)[j]))*mf;
         }
-        }
+      }
     }
   }
-
-  return pi*pipi;
+  
+  return ans;
 }
 
 //[[Rcpp::export]]
@@ -94,5 +88,3 @@ double TMDensity(NumericVector strengths, IntegerMatrix wins, NumericVector wins
   }
   return prior*cond;
 }
-
-

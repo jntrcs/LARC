@@ -3,22 +3,22 @@
 #BradleyTerryLARC: this function is the Bradley-Terry Model. It takes three arguments
 # the strengths of the teams, the number of wins for each team, and a matrix that provides
 # the number of times each team has played each other.
-BradleyTerryLARC <- function(strengths,wins,magnificationfactor=1) {
+BradleyTerryLARC <- function(strengths,wins, winsTotal=NULL,magnificationfactor=1) {
   PI <- 1
   PIPI <- 1
   W <- vector()
+  x <- 0 #Never Used
   for (i in 1:length(strengths)) {
     W[i] <- sum(wins[i,])
-    PI <- PI*strengths[i]^(W[i]+1)*exp(-strengths[i])
-    if (i<length(strengths)){
+    PI <- PI*strengths[i]^(W[i]+1)
     for (j in (i+1):length(strengths)) {
-        if ((wins[i,j]+wins[j,i])>0){
-          PIPI <- PIPI*(1/(strengths[i]+strengths[j])^(wins[i,j]+wins[j,i]))*magnificationfactor
-        }
-    }
+      if (j < length(strengths)+1) {
+        x <- x + 1 #This is unused so I'm not sure why it's here.
+        PIPI <- PIPI*(1/(strengths[i]+strengths[j])^(wins[i,j]+wins[j,i]))*magnificationfactor
+      }
     }
   }
-  return(PI*PIPI)
+  return(exp(-sum(strengths))*PI*PIPI)
 }
 
 #an example of the function
@@ -33,7 +33,7 @@ BradleyTerryLARC <- function(strengths,wins,magnificationfactor=1) {
 #ThurstoneMostellerLARC: this function is the Thurstone-Mosteller Model. It takes three arguments
 # the strengths of the teams, the number of wins for each team against each team,
 # and a matrix that provides the number of times each team has played each other.
-ThurstoneMostellerLARC <- function(strengths,wins,magnificationfactor=1) {
+ThurstoneMostellerLARC <- function(strengths,wins,winsTotal=NULL,magnificationfactor=1) {
   # First we compute the Prior
   prior <- 1
   for (i in 1: length(strengths)) { prior = prior * dnorm( strengths[i])*magnificationfactor}
