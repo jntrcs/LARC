@@ -31,6 +31,6 @@ for (i in 1:length(files))
 rm(dat, a, i, index, indices, files)
 type<-as.factor(type)
 
-save(type, trueStrengths, centeringValues, strengths, correlations, gameBias, file="SimulationResults.RData")
+save(type, trueStrengths, centeringValues, strengths, correlations, gameBias, weeklyGameBias, disparity, file="SimulationResults.RData")
 #rm(type, trueStrengths, centeringValues, strengths, correlations, gameBias)
 load("SimulationResults.RData")
