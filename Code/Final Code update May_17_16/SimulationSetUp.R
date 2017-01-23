@@ -103,13 +103,13 @@ analyzeGameBias<-function(gamebias)
   a
 }
 #variance of estimates  + bias^2
-normalizeSample<-function(strengths)
-{
-  meanStrength<-mean(strengths)
-  sdStrength<-sd(strengths)
-  norm <- (strengths- meanStrength)/sdStrength
-  norm
-}
+#normalizeSample<-function(strengths)
+#{
+#  meanStrength<-mean(strengths)
+#  sdStrength<-sd(strengths)
+#  norm <- (strengths- meanStrength)/sdStrength
+#  norm
+#}
 
 
 
