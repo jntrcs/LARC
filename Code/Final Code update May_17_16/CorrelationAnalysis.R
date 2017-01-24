@@ -62,8 +62,7 @@ for (i in suffix)
 {
   BTMatrix[[i]]<-sapply(correlations[[i]], FUN = function(n) {n$BT})
   TMMatrix[[i]]<-sapply(correlations[[i]], FUN = function(n) {n$TM})
-  print(max(TMMatrix[[i]]))
-  print(max(BTMatrix[[i]]))
+
 }
 par(mfrow=c(1,1))
 
