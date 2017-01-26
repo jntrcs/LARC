@@ -11,7 +11,7 @@ weeklyGameBias<-list(BradleyTerryGamma=vector("list", 5),Beta=vector("list", 5),
 disparity<-list(BradleyTerryGamma=numeric(),Beta=numeric(), ThurstoneMostellerNormal=numeric(), ExtremeBT=numeric())
 
 indices<-rep(0,4) # BT then TM then Beta then EXTREMEBETA
-for (i in 1:length(files))
+#for (i in 1:length(files))
 {
   load(files[i])
   ifelse(dat$TrueStrengthType=="BradleyTerryGamma", index<-1,
