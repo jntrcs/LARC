@@ -5,13 +5,14 @@ extremeBT<-TRUE
 load("MasterFunctionFile.RData")
 Rcpp::sourceCpp("cppFiles.cpp")
 
-simulate1<-function(useBT, useBeta = FALSE, extremeBT=FALSE)
+
+simulate1<-function(useBT, useBeta = FALSE, extremeBT=FALSE, fixedStrengths=NULL)
 {
   ##SIMULATE A SEASON
   beta <-!useBT & useBeta & !extremeBT
   extBT<-useBT & extremeBT
   simulation<-list()
-  simulation$teamSchedule<-generateTeamSchedule(useBT, beta, extBT)
+  simulation$teamSchedule<-generateTeamSchedule(useBT, beta, extBT, strengths=fixedStrengths)
   simulation$seasonGames<-generateSeasonResults(simulation$teamSchedule, useBT, beta)
 
   strengths<-list()

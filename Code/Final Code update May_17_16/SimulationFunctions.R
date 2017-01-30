@@ -1,6 +1,6 @@
 #Simulation Functions
 
-generateTeams<-function(useBT, beta=FALSE, extBT=FALSE)
+generateTeams<-function(useBT, beta=FALSE, extBT=FALSE, strengths=NULL)
 {
   if(useBT &!extBT) {
       paramsA<-c(2,3,1.5,2.5,1,2,4,.5,1.25,.75)
@@ -25,14 +25,17 @@ generateTeams<-function(useBT, beta=FALSE, extBT=FALSE)
   
   teams<-data.frame(rep(1:10, each=9), 1:90)
   names(teams)<-c("Conference", "Team")
-  teams$TrueStrength<-func(paramsA[teams$Conference], paramsB[teams$Conference])
+  if (is.null(strengths))
+    teams$TrueStrength<-func(paramsA[teams$Conference], paramsB[teams$Conference])
+  else
+    teams$TrueStrength<-strengths
   teams$ConferenceMeans<-getConferenceMeans(useBT, paramsA, paramsB, beta)
   teams
 }
 
-generateTeamSchedule<-function(useBT, beta, extBT=FALSE)
+generateTeamSchedule<-function(useBT, beta, extBT=FALSE, strengths=NULL)
 {
-  teams<-generateTeams(useBT, beta, extBT)
+  teams<-generateTeams(useBT, beta, extBT, strengths=strengths)
   generateSchedule(teams)
 }
 
