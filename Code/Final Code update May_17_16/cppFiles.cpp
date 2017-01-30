@@ -14,7 +14,37 @@ using namespace Rcpp;
 //
 
 #include <cmath>
-
+//[[Rcpp::export]]
+double logBTDensity(NumericVector strengths, IntegerMatrix wins, NumericVector winsTotal, NumericVector magnificationfactor=1)
+{
+  //double mf=magnificationfactor.at(0);
+  long double ans=1;
+  //double tooBig = pow(10, 200);
+  //double downer=pow(10, 45);
+  //NumericVector w;
+  for (int i = 0; i<strengths.size(); ++i)
+  {
+    
+    
+    ans =ans + (winsTotal.at(i)+1)*log(strengths.at(i)) - strengths.at(i);
+    // if (pi>tooBig)
+    //{
+    //  pi = pi/downer;
+    //  pipi=pipi * downer;
+    //}
+    if (i<strengths.size())
+    {
+      for (int j = i+1; j<strengths.size(); ++j){
+        if (wins.row(j)[i]+wins.row(i)[j]!=0)
+        {
+          ans =(ans+(wins.row(j)[i]+wins.row(i)[j])*log(1/(strengths.at(i)+strengths.at(j))));
+        }
+      }
+    }
+  }
+  
+  return ans;
+}
 
 //[[Rcpp::export]]
 double BTDensity(NumericVector strengths, IntegerMatrix wins, NumericVector winsTotal, NumericVector magnificationfactor=1)

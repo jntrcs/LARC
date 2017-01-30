@@ -27,11 +27,14 @@
 #     func
 LARC.Optim <- function(df, func = BTDensity, increment = 0.001,
                        iterations = Inf, magnificationfactor=1, adj=1) {
-  BT<-identical(func, BTDensity)|identical(func, BradleyTerryLARC)
+  BT<-identical(func, BTDensity)|identical(func, BradleyTerryLARC)|identical(func, logBTDensity)
+  logged <- identical(func, logBTDensity)
   st <- df$Strength
   wv <- df$WinsVersus
   
-  mf <- find.mf(df,func=func)
+  if (!logged)
+    mf <- find.mf(df,func=func)
+  else mf=1
   comp <- func(df$Strength,df$WinsVersus, df$WinsTotal, mf)
   #LARC.Posterior(df, func, mf = magnificationfactor, adj = adj)
   #tells function to round results to the decimal place indicated by increment
@@ -42,7 +45,10 @@ LARC.Optim <- function(df, func = BTDensity, increment = 0.001,
   #the while statement tells it to stop optimizing when the iteration cap is reached
   # or when the incrament is too small.
   while ((comp != last & x < iterations) | inc >= increment) {
-    mf <- find.mf(df,func=func)
+    if (!logged)
+      mf <- find.mf(df,func=func)
+    else
+      mf<-1
     comp <- func(df$Strength,df$WinsVersus,df$WinsTotal,mf)
     last <- comp
     #the for loop adjusts each strength either up or down by inc until func is maxed
