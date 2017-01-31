@@ -55,4 +55,5 @@ EmployeeScores$Home <- as.character(EmployeeScores$Winner)
 EmployeeScores$Visitor <- as.character(EmployeeScores$Loser)
 Employeedf <- dataconfigure(EmployeeScores)
 EmployeeRank <- LARC.Rank(Employeedf)
-cbind(EmployeeRank, LARC.Rank(Employeedf, func=logBTDensity))
+cbind(EmployeeRank, prank, means[o])
+Employeedf
