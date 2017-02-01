@@ -78,6 +78,46 @@ double BTDensity(NumericVector strengths, IntegerMatrix wins, NumericVector wins
   return ans;
 }
 
+
+//[[Rcpp::export]]
+double logTMDensity(NumericVector strengths, IntegerMatrix wins, NumericVector winsTotal=0, NumericVector magFac=1)
+{
+  double logoneoversqrt = -0.91893853320467274;
+  double a1 =  0.254829592;
+  double a2 = -0.284496736;
+  double a3 =  1.421413741;
+  double a4 = -1.453152027;
+  double a5 =  1.061405429;
+  double p  =  0.3275911; 
+  double sumStrengths=0;
+  int n = strengths.size();
+  for (int i = 0; i<n; ++i)
+  {
+    sumStrengths+=pow(strengths.at(i),2)/2;
+  }
+  double sumCDFs = 0;
+  for (int i =0; i<n; ++i)
+  {
+    for (int j=0; j<n; ++j)
+    {
+      if (wins.row(i)[j]!=0)
+      {
+        int sign = 1;
+        double x=strengths.at(i)-strengths(j);
+        if (x < 0)
+          sign = -1;
+        x = fabs(x)/sqrt(2.0);
+        
+        // A&S formula 7.1.26
+        double t = 1.0/(1.0 + p*x);
+        double y = 1.0 - (((((a5*t + a4)*t) + a3)*t + a2)*t + a1)*t*exp(-x*x);
+        double phi= 0.5*(1.0 + sign*y);
+        sumCDFs+=wins.row(i)[j]*log(phi);
+      }
+    }
+  }
+  return n*logoneoversqrt-sumStrengths+sumCDFs;
+}  
 //[[Rcpp::export]]
 double TMDensity(NumericVector strengths, IntegerMatrix wins, NumericVector winsTotal=0, NumericVector magFac=1)
 {

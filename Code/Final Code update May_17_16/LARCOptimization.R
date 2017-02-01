@@ -28,7 +28,7 @@
 LARC.Optim <- function(df, func = BTDensity, increment = 0.001,
                        iterations = Inf, magnificationfactor=1, adj=1) {
   BT<-identical(func, BTDensity)|identical(func, BradleyTerryLARC)|identical(func, logBTDensity)
-  logged <- identical(func, logBTDensity)
+  logged <- identical(func, logBTDensity) |identical(func,logTMDensity)
   st <- df$Strength
   wv <- df$WinsVersus
   
