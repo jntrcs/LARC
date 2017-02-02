@@ -86,4 +86,12 @@ hist(s1)
 ord<-order(means, decreasing=T)
 cbind(EmployeeRank, Employeedf$Team[ord], means[ord])
 
+means<-apply(final,2,mean)
+o<-order(means, decreasing=T)
+teamRank<-stripped2016data[[15]][[1]]$Team[o]
+upperBound<-apply(final, 2, FUN=function(i){quantile(i,.975)})[o]
+lowerBound<-apply(final, 2, FUN=function(i){quantile(i,.025)})[o]
 
+cbind(stripped2016data[[15]][[3]], teamRank, means[o], lowerBound, upperBound)
+hist(final[,3])
+stripped2016data[[15]][[5]]
