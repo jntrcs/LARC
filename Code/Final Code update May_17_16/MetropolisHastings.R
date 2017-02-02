@@ -11,7 +11,7 @@ useEvery<-function(matDat, n)
   matDat[seq(from=1, to=nrow(matDat), by=n),]
 }
 
-MetHast<-function(func, nSamples=NULL, winsMatrix, rnormSD=.1, useTimer=F, time=NULL)
+MetHast<-function(func, nSamples=NULL, winsMatrix, rnormSD=.1, useTimer=F, time=NULL) ###warning: using the timer method currently uses 5GB of RAM :/
 {
   
   if(identical(func, logBTDensity))
@@ -24,7 +24,7 @@ MetHast<-function(func, nSamples=NULL, winsMatrix, rnormSD=.1, useTimer=F, time=
   if(useTimer)
   {
     start<-Sys.time()
-    nSamples<-5000000
+    nSamples<-4000000
   }
   nTeams<-nrow(winsMatrix)
   winTotals<-apply(winsMatrix, 1, sum)
