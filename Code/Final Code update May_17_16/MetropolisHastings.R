@@ -14,6 +14,16 @@ useEvery<-function(matDat, n)
   matDat[seq(from=1, to=nrow(matDat), by=n),]
 }
 
+anaylyzeMHMatrix<-function(dat)
+{
+  means<-apply(dat, 2, mean)
+  upperBound<-apply(dat, 2, function(i){quantile(i, .975)})
+  lowerBound<-apply(dat, 2, function(i){quantile(i, .025)})
+  a<-data.frame(means, lowerBound, upperBound)
+  names(a)<-c("Mean", "LowerBound", "UpperBound")
+  return(a)
+}
+
 
 MetHast<-function(func, nSamples=NULL, winsMatrix, rnormSD=.1, useTimer=F, time=NULL) ###warning: using the timer method currently uses 5GB of RAM :/
 {
@@ -117,3 +127,12 @@ cbind(stripped2016data[[15]][[2]], teamRankNew, meansNew[o], lowerBoundN, upperB
 hist(final[,3])
 stripped2016data[[15]][[5]]
 
+meansNew<-apply(finalTM,2,mean)
+ord<-order(meansNew, decreasing=T)
+teamRankNew<-stripped2016data[[15]][[1]]$Team[ord]
+hist(finalTM[,3])
+upperBoundN<-apply(finalTM, 2, FUN=function(i){quantile(i,.975)})[ord]
+lowerBoundN<-apply(finalTM, 2, FUN=function(i){quantile(i,.025)})[ord]
+cbind(stripped2016data[[15]][[3]], teamRankNew, meansNew[ord], lowerBoundN, upperBoundN)
+hist(final[,3])
+stripped2016data[[15]][[5]]

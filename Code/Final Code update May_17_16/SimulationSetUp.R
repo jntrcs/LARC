@@ -1,7 +1,7 @@
 ##Simulation function
-useBT<-TRUE
-useBeta<-FALSE
-extremeBT<-TRUE
+useBT<-FALSE
+useBeta<-TRUE
+extremeBT<-F
 load("MasterFunctionFile.RData")
 Rcpp::sourceCpp("cppFiles.cpp")
 
@@ -16,6 +16,10 @@ simulate1<-function(useBT, useBeta = FALSE, extremeBT=FALSE)
 
   strengths<-list()
   normTrueStrengths<-simulation$teamSchedule$TrueStrength-simulation$teamSchedule$ConferenceMeans
+  meanStrengths<-list()
+  rejectionRate<-list()
+  sdScaleBT<-seq(from=.075, to =.032,length.out=13)
+  sdScaleTM<-seq(from=.115, to=.055, length.out=13)
   
   ##ESTIMATE THE SEASON   
   for (i in 1:13)
@@ -26,7 +30,25 @@ simulate1<-function(useBT, useBeta = FALSE, extremeBT=FALSE)
     strengths[[i]]<-list()
     strengths[[i]]$BT<-LARC.Rank.Football(configured, func=BTDensity, sorted=FALSE)
     strengths[[i]]$TM<-LARC.Rank.Football(configured, func=TMDensity, sorted=FALSE)
+    
+    meanStrengths[[i]]<-list()
+    rejectionRate[[i]]<-list()
+    datBT<-MetHast(logBTDensity, nSamples = 1000000, winsMatrix = configured$WinsVersus, rnormSD = sdScaleBT[i])
+    rejectionRate[[i]]$BT<-rej/(1000000)
+    datBT<-handleBurnIn(datBT[[1]],2000)
+    datBT<-useEvery(datBT,400)
+    meanStrengths[[i]]$BT<-analyzeMHMatrix(datBT)
+    rm(datBT)
+    datTM<-MetHast(logTMDensity, nSamples = 1000000, winsMatrix = configured$WinsVersus, rnormSD = sdScaleTM[i])
+    rejectionRate[[i]]$TM<-rej/(1000000)
+    datBT<-handleBurnIn(datBT[[1]],2000)
+    datBT<-useEvery(datTM,400)
+    meanStrengths[[i]]$TM<-analyzeMHMatrix(datTM)
+    rm(datTM)
+    
   }
+  
+
   
   #ANALYZE THE SEASON
   summaryOfResults<-list()
