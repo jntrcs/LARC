@@ -4,8 +4,8 @@ load("MasterFunctionFile.RData")
 Rcpp::sourceCpp("cppFiles.cpp")
 
 load("Stripped2016FootballData.RData")
-rnormSD=.09
-dat<-MetHast(logBTDensity, winsMatrix = stripped2016data[[15]][[1]]$WinsVersus, rnormSD=.rnormSD, useTimer = T, time=2260)
+rnormSD=.05
+dat<-MetHast(logBTDensity, winsMatrix = stripped2016data[[15]][[1]]$WinsVersus, rnormSD=rnormSD, useTimer = T, time=2260)
 print("num rejects: " )
       print(dat[[2]])
       print("Dimensions")
