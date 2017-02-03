@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --time=1:30:00   # walltime
+#SBATCH --time=0:30:00   # walltime
 #SBATCH --ntasks=43   # number of processor cores (i.e. tasks)
 #SBATCH --nodes=3   # number of nodes
 #SBATCH --mem-per-cpu=1024M   # memory per CPU core
@@ -17,4 +17,4 @@ export OMP_NUM_THREADS=$SLURM_CPUS_ON_NODE
 
 # LOAD MODULES, INSERT CODE, AND RUN YOUR PROGRAMS HERE
 module load r/3/3
-Rscript SupercomputerSim.R
+Rscript SuperMetHast.R
