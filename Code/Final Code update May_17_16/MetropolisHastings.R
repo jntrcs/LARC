@@ -1,4 +1,7 @@
 ##Metropolis Hastings.....
+load("MasterFunctionFile.RData")
+
+Rcpp::sourceCpp("cppFiles.cpp")
 
 
 handleBurnIn<-function(matDat, numToRemove)
@@ -11,6 +14,7 @@ useEvery<-function(matDat, n)
   matDat[seq(from=1, to=nrow(matDat), by=n),]
 }
 
+
 MetHast<-function(func, nSamples=NULL, winsMatrix, rnormSD=.1, useTimer=F, time=NULL) ###warning: using the timer method currently uses 5GB of RAM :/
 {
   
@@ -21,11 +25,13 @@ MetHast<-function(func, nSamples=NULL, winsMatrix, rnormSD=.1, useTimer=F, time=
   else
     return("ERROR. Did you remember to use a log likelihood density?")
   
+  start<-Sys.time()
   if(useTimer)
   {
-    start<-Sys.time()
     nSamples<-4000000
   }
+  else
+    time<-0
   nTeams<-nrow(winsMatrix)
   winTotals<-apply(winsMatrix, 1, sum)
   #curve(dnorm(x,0,.1), xlim=c(-1,1))
@@ -35,15 +41,17 @@ MetHast<-function(func, nSamples=NULL, winsMatrix, rnormSD=.1, useTimer=F, time=
   rowCounter<-2
   lastDensity<-func(initial,winsMatrix, winTotals)
   rejections<-0
-  while(rowCounter<=nSamples &Sys.time()<start+time)
+  while(rowCounter<=nSamples & (!useTimer |Sys.time()<start+time))
   {
    
     changeVec<-rnorm(nTeams, 0,rnormSD)
     newStrengths<-dist[rowCounter-1,]+changeVec
-    if (BT)
-      newStrengths[newStrengths<0]<-0
-    newDensity<-func(newStrengths, winsMatrix, winTotals)
-    probab<-exp(newDensity-lastDensity)
+    if (BT & any(newStrengths<0))
+      {newDensity<-0
+       probab<-0}
+    else
+      {newDensity<-func(newStrengths, winsMatrix, winTotals)
+      probab<-exp(newDensity-lastDensity)}
     if (is.na(probab))
     {
       print(newStrengths)
@@ -51,18 +59,22 @@ MetHast<-function(func, nSamples=NULL, winsMatrix, rnormSD=.1, useTimer=F, time=
     }
     if (runif(1)<probab)
     {
-      dist[rowCounter,]<-newStrengths
-      rowCounter<-rowCounter+1
+      nextDraw<-newStrengths
       lastDensity<-newDensity
     }
     else 
-      rejections<-rejections+1
-   
+     { 
+       rejections<-rejections+1
+       nextDraw<-dist[rowCounter-1,]
+     }
+     dist[rowCounter,]<-nextDraw
+     rowCounter<-rowCounter+1
+ 
   }
-  return(list(dist[1:rowCounter,], rejections))
+  return(list(dist[1:(rowCounter-1),], rejections))
 }
 
-week15<-MetHast(logTMDensity, winsMatrix=stripped2016data[[15]][[1]]$WinsVersus,rnormSD=.05,useTimer = T, time=10)
+week15<-MetHast(logBTDensity, winsMatrix=stripped2016data[[15]][[1]]$WinsVersus,rnormSD=.04,useTimer = T, time=10)
 week15[[2]]
 dim(week15[[1]])
 dist<-handleBurnIn(week15[[1]], 500)
@@ -76,15 +88,18 @@ o<-order(means, decreasing=T)
 teamRank<-stripped2016data[[15]][[1]]$Team[o]
 cbind(stripped2016data[[15]][[3]], teamRank, means[o])
 
-employee<-MetHast(logTMDensity, 10000, Employeedf$WinsVersus, .3)
+employee<-MetHast(logBTDensity, 5000, Employeedf$WinsVersus, .3)
 employeem<-handleBurnIn(employee[[1]], 1000)
+employeem<-useEvery(employeem, 10)
 s1<-employeem[,1]
 means<-apply(employee[[1]],2,mean)
 means
 plot(s1)
 hist(s1)
 ord<-order(means, decreasing=T)
-cbind(EmployeeRank, Employeedf$Team[ord], means[ord])
+upperBound<-apply(employeem, 2, FUN=function(i){quantile(i,.975)})[ord]
+lowerBound<-apply(employeem, 2, FUN=function(i){quantile(i,.025)})[ord]
+cbind(EmployeeRank, Employeedf$Team[ord], means[ord], lowerBound, upperBound)
 
 means<-apply(final,2,mean)
 o<-order(means, decreasing=T)
@@ -95,3 +110,4 @@ lowerBound<-apply(final, 2, FUN=function(i){quantile(i,.025)})[o]
 cbind(stripped2016data[[15]][[3]], teamRank, means[o], lowerBound, upperBound)
 hist(final[,3])
 stripped2016data[[15]][[5]]
+
