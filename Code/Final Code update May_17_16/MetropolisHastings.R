@@ -107,7 +107,13 @@ teamRank<-stripped2016data[[15]][[1]]$Team[o]
 upperBound<-apply(final, 2, FUN=function(i){quantile(i,.975)})[o]
 lowerBound<-apply(final, 2, FUN=function(i){quantile(i,.025)})[o]
 
-cbind(stripped2016data[[15]][[3]], teamRank, means[o], lowerBound, upperBound)
+
+meansNew<-apply(finalBT,2,mean)
+ord<-order(meansNew, decreasing=T)
+teamRankNew<-stripped2016data[[15]][[1]]$Team[ord]
+upperBoundN<-apply(finalBT, 2, FUN=function(i){quantile(i,.975)})[ord]
+lowerBoundN<-apply(finalBT, 2, FUN=function(i){quantile(i,.025)})[ord]
+cbind(stripped2016data[[15]][[2]], teamRankNew, meansNew[o], lowerBoundN, upperBoundN)
 hist(final[,3])
 stripped2016data[[15]][[5]]
 
