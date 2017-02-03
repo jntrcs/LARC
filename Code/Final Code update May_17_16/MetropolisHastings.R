@@ -46,7 +46,7 @@ MetHast<-function(func, nSamples=NULL, winsMatrix, rnormSD=.1, useTimer=F, time=
    
     changeVec<-rnorm(nTeams, 0,rnormSD)
     newStrengths<-dist[rowCounter-1,]+changeVec
-    if (BT & any(newStrengths<0))
+    if (BT & any(newStrengths<=0))
       {newDensity<-0
        probab<-0}
     else
