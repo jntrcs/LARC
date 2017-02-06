@@ -69,6 +69,10 @@ simulate1<-function(useBT, useBeta = FALSE, extremeBT=FALSE)
   summaryOfResults$strengths$BT<-lapply(1:13, FUN=function(i)strengths[[i]]$BT$Strength)
   summaryOfResults$strengths$TM<-list()
   summaryOfResults$strengths$TM<-lapply(1:13, FUN=function(i)strengths[[i]]$TM$Strength)
+  summaryOfResults$strengths$BTMean<-list()
+  summaryOfResults$strengths$BTMean<-lapply(1:13, FUN=function(i)meanStrengths[[i]]$BT$Mean)
+  summaryOfResults$strengths$TMMean<-list()
+  summaryOfResults$strengths$TMMean<-lapply(1:13, FUN=function(i)meanStrengths[[i]]$TM$Mean)
   
   ##Strength Estimate Confidence size
   summaryOfResults$CISize<-list()

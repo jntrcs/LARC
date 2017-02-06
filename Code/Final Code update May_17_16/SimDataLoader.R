@@ -5,6 +5,8 @@ type<-factor()
 trueStrengths<-list(BradleyTerryGamma=vector("list", 5),Beta=vector("list", 5), ThurstoneMostellerNormal=vector("list", 5), ExtremeBT=vector("list",5))
 centeringValues<-list(BradleyTerryGamma=vector("list", 5),Beta=vector("list", 5), ThurstoneMostellerNormal=vector("list", 5), ExtremeBT=vector("list",5))
 strengths<-list(BradleyTerryGamma=vector("list", 5),Beta=vector("list", 5), ThurstoneMostellerNormal=vector("list", 5), ExtremeBT=vector("list",5))
+CISize<-list(BradleyTerryGamma=vector("list", 5),Beta=vector("list", 5), ThurstoneMostellerNormal=vector("list", 5), ExtremeBT=vector("list",5))
+rejectionRates<-list(BradleyTerryGamma=vector("list", 5),Beta=vector("list", 5), ThurstoneMostellerNormal=vector("list", 5), ExtremeBT=vector("list",5))
 correlations<-list(BradleyTerryGamma=vector("list", 5),Beta=vector("list", 5), ThurstoneMostellerNormal=vector("list", 5), ExtremeBT=vector("list",5))
 gameBias<-list(BradleyTerryGamma=vector("list", 5),Beta=vector("list", 5), ThurstoneMostellerNormal=vector("list", 5), ExtremeBT=vector("list",5))
 weeklyGameBias<-list(BradleyTerryGamma=vector("list", 5),Beta=vector("list", 5), ThurstoneMostellerNormal=vector("list", 5), ExtremeBT=vector("list",5))
@@ -22,15 +24,17 @@ indices<-rep(0,4) # BT then TM then Beta then EXTREMEBETA
   trueStrengths[dat$TrueStrengthType][[1]][[a]]<-dat$TrueStrengths
   centeringValues[dat$TrueStrengthType][[1]][[a]]<-dat$centeringValue
   strengths[dat$TrueStrengthType][[1]][[a]]<-dat$strengths
+  CISize[dat$TrueStrengthType][[1]][[a]]<-dat$CISize
+  rejectionRates[dat$TrueStrengthType][[1]][[a]]<-dat$RejectionRate
   correlations[dat$TrueStrengthType][[1]][[a]]<-dat$SpearmanCorrelation
   gameBias[dat$TrueStrengthType][[1]][[a]]<-dat$GameBias
-    weeklyGameBias[dat$TrueStrengthType][[1]][[a]]<-dat$GameBiasByWeek
-    disparity[[dat$TrueStrengthType]][[a]]<-dat$disparityScore
+  weeklyGameBias[dat$TrueStrengthType][[1]][[a]]<-dat$GameBiasByWeek
+  disparity[[dat$TrueStrengthType]][[a]]<-dat$disparityScore
         
-  }
+}
 rm(dat, a, i, index, indices, files)
 type<-as.factor(type)
 
-save(type, trueStrengths, centeringValues, strengths, correlations, gameBias, weeklyGameBias, disparity, file="SimulationResults.RData")
+#save(type, trueStrengths, centeringValues, strengths, correlations, rejectionRate, gameBias, weeklyGameBias, disparity, file="SimulationResults.RData")
 #rm(type, trueStrengths, centeringValues, strengths, correlations, gameBias)
 load("SimulationResults.RData")
