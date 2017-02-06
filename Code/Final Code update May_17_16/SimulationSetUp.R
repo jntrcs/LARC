@@ -1,6 +1,6 @@
 ##Simulation function
-useBT<-FALSE
-useBeta<-TRUE
+useBT<-T
+useBeta<-F
 extremeBT<-F
 load("MasterFunctionFile.RData")
 Rcpp::sourceCpp("cppFiles.cpp")
@@ -13,14 +13,14 @@ simulate1<-function(useBT, useBeta = FALSE, extremeBT=FALSE)
   simulation<-list()
   simulation$teamSchedule<-generateTeamSchedule(useBT, beta, extBT)
   simulation$seasonGames<-generateSeasonResults(simulation$teamSchedule, useBT, beta)
-
+  simulation$seasonGames$Outcome<-ifelse(simulation$seasonGames$Home==simulation$seasonGames$Winner, 1, 0)
   strengths<-list()
   normTrueStrengths<-simulation$teamSchedule$TrueStrength-simulation$teamSchedule$ConferenceMeans
   meanStrengths<-list()
   rejectionRate<-list()
-  sdScaleBT<-seq(from=.075, to =.032,length.out=13)
-  sdScaleTM<-seq(from=.115, to=.055, length.out=13)
-  
+  sdScaleBT<-seq(from=.077, to =.034,length.out=13) #chosen through trial and error to achieve close to 50% rejection rate
+  sdScaleTM<-seq(from=.114, to=.054, length.out=13)
+  nsamp<-1000000
   ##ESTIMATE THE SEASON   
   for (i in 1:13)
   {
@@ -33,16 +33,18 @@ simulate1<-function(useBT, useBeta = FALSE, extremeBT=FALSE)
     
     meanStrengths[[i]]<-list()
     rejectionRate[[i]]<-list()
-    datBT<-MetHast(logBTDensity, nSamples = 1000000, winsMatrix = configured$WinsVersus, rnormSD = sdScaleBT[i])
-    rejectionRate[[i]]$BT<-rej/(1000000)
-    datBT<-handleBurnIn(datBT[[1]],2000)
+    datBT<-MetHast(logBTDensity, nSamples = nsamp, winsMatrix = configured$WinsVersus, rnormSD = sdScaleBT[i])
+    rej<-datBT[[2]]
+    rejectionRate[[i]]$BT<-rej/(nsamp)
+    datBT<-handleBurnIn(datBT[[1]],10000)
     datBT<-useEvery(datBT,400)
     meanStrengths[[i]]$BT<-analyzeMHMatrix(datBT)
     rm(datBT)
-    datTM<-MetHast(logTMDensity, nSamples = 1000000, winsMatrix = configured$WinsVersus, rnormSD = sdScaleTM[i])
-    rejectionRate[[i]]$TM<-rej/(1000000)
-    datBT<-handleBurnIn(datBT[[1]],2000)
-    datBT<-useEvery(datTM,400)
+    datTM<-MetHast(logTMDensity, nSamples = nsamp, winsMatrix = configured$WinsVersus, rnormSD = sdScaleTM[i])
+    rej<-datTM[[2]]/nsamp
+    rejectionRate[[i]]$TM<-rej/(nsamp)
+    datTM<-handleBurnIn(datTM[[1]],10000)
+    datTM<-useEvery(datTM,400)
     meanStrengths[[i]]$TM<-analyzeMHMatrix(datTM)
     rm(datTM)
     
@@ -55,6 +57,11 @@ simulate1<-function(useBT, useBeta = FALSE, extremeBT=FALSE)
   summaryOfResults$TrueStrengthType<-ifelse(useBT, ifelse(extBT, "ExtremeBT", "BradleyTerryGamma"), ifelse(beta,"Beta","ThurstoneMostellerNormal"))
   summaryOfResults$TrueStrengths<-simulation$teamSchedule$TrueStrength
 
+  #Check Rejection rate
+  summaryOfResults$RejectionRate<-list()
+  summaryOfResults$RejectionRate$BT<-sapply(1:13, function(i)rejectionRate[[i]]$BT)
+  summaryOfResults$RejectionRate$TM<-sapply(1:13, function(i)rejectionRate[[i]]$TM)
+  
   #week over week MSE
   summaryOfResults$centeringValue<- simulation$teamSchedule$ConferenceMeans - summaryOfResults$TrueStrengths
   summaryOfResults$strengths<-list()
@@ -63,22 +70,32 @@ simulate1<-function(useBT, useBeta = FALSE, extremeBT=FALSE)
   summaryOfResults$strengths$TM<-list()
   summaryOfResults$strengths$TM<-lapply(1:13, FUN=function(i)strengths[[i]]$TM$Strength)
   
+  ##Strength Estimate Confidence size
+  summaryOfResults$CISize<-list()
+  summaryOfResults$CISize$BT<-list()
+  summaryOfResults$CISize$BT<-sapply(1:13, FUN=function(i)mean(meanStrengths[[i]]$BT$UpperBound-meanStrengths[[i]]$BT$LowerBound))
+  summaryOfResults$CISize$TM<-list()
+  summaryOfResults$CISize$TM<-sapply(1:13, FUN=function(i)mean(meanStrengths[[i]]$TM$UpperBound-meanStrengths[[i]]$TM$LowerBound))
+  
   #Correlation
   summaryOfResults$SpearmanCorrelation<-list()
   summaryOfResults$SpearmanCorrelation$BT<-rep(0,13)
   summaryOfResults$SpearmanCorrelation$TM<-rep(0,13)
+  summaryOfResults$SpearmanCorrelation$BTMean<-rep(0,13)
+  summaryOfResults$SpearmanCorrelation$TMMean<-rep(0,13)
   for (i in 1:13)
   {
     summaryOfResults$SpearmanCorrelation$BT[i]<-cor(summaryOfResults$TrueStrengths, strengths[[i]]$BT$Strength, method="spearman")
     summaryOfResults$SpearmanCorrelation$TM[i]<-cor(summaryOfResults$TrueStrengths, strengths[[i]]$TM$Strength, method="spearman")
+    summaryOfResults$SpearmanCorrelation$BTMean[i]<-cor(summaryOfResults$TrueStrengths, meanStrengths[[i]]$BT$Mean, method="spearman")
+    summaryOfResults$SpearmanCorrelation$TMMean[i]<-cor(summaryOfResults$TrueStrengths, meanStrengths[[i]]$TM$Mean, method="spearman")
   }
-  #plot(summaryOfResults$SpearmanCorrelation$BT, main="BT True", xlab="week", ylab="Spearmans Correlation", ylim=c(.2,.9))
-  #points(summaryOfResults$SpearmanCorrelation$TM, col="red")
-  #plot(strengths[[13]]$BT$Strength, summaryOfResults$TrueStrengths)
-  
+
   #Game Bias MSE
   BTGamePred<-rep(0, 540)
   TMGamePred<-rep(0,540)
+  BTMeanGamePred<-rep(0, 540)
+  TMMeanGamePred<-rep(0,540)
   week<-numeric()
   for (i in 1:nrow(simulation$seasonGames))
   {
@@ -87,15 +104,29 @@ simulate1<-function(useBT, useBeta = FALSE, extremeBT=FALSE)
     {
       BTGamePred[i]<-NA
       BTGamePred[i]<-NA
+      BTMeanGamePred[i]<-NA
+      TMMeanGamePred[i]<-NA
     }
     else
     {
       homeStrengthBT<-strengths[[cweek-1]]$BT$Strength[simulation$seasonGames$Home[i]]
+      homeStrengthBTMean<-meanStrengths[[cweek-1]]$BT$Mean[simulation$seasonGames$Home[i]]
+      
       homeStrengthTM<-strengths[[cweek-1]]$TM$Strength[simulation$seasonGames$Home[i]]
+      homeStrengthTMMean<-meanStrengths[[cweek-1]]$TM$Mean[simulation$seasonGames$Home[i]]
+      
       awayStrengthBT<-strengths[[cweek-1]]$BT$Strength[simulation$seasonGames$Visitor[i]]
+      awayStrengthBTMean<-meanStrengths[[cweek-1]]$BT$Mean[simulation$seasonGames$Visitor[i]]
+      
       awayStrengthTM<-strengths[[cweek-1]]$TM$Strength[simulation$seasonGames$Visitor[i]]
+      awayStrengthTMMean<-meanStrengths[[cweek-1]]$TM$Mean[simulation$seasonGames$Visitor[i]]
+      
       BTGamePred[i]<-predictionPercentage(homeStrengthBT, awayStrengthBT, "BT")
+      BTMeanGamePred[i]<-predictionPercentage(homeStrengthBTMean, awayStrengthBTMean, "BT")
+      
       TMGamePred[i]<-predictionPercentage(homeStrengthTM, awayStrengthTM, "TM")
+      TMMeanGamePred[i]<-predictionPercentage(homeStrengthTMMean, awayStrengthTMMean, "TM")
+      
       week[i]<-cweek
       
       
@@ -103,14 +134,13 @@ simulate1<-function(useBT, useBeta = FALSE, extremeBT=FALSE)
     
     
   }
-  #BTGamePred[simulation$seasonGames$HomeWinPerecent<.5]<-1-BTGamePred[simulation$seasonGames$HomeWinPerecent<.5]
   favoredRealPred<-simulation$seasonGames$HomeWinPerecent
-  #favoredRealPred[simulation$seasonGames$HomeWinPerecent<.5]<-1-simulation$seasonGames$HomeWinPerecent[simulation$seasonGames$HomeWinPerecent<.5]
-  #TMGamePred[simulation$seasonGames$HomeWinPerecent<.5]<-1-TMGamePred[simulation$seasonGames$HomeWinPerecent<.5]
-  
-  summaryOfResults$GameBias<-data.frame(week[46:540],(BTGamePred)[46:540], 
-                                        (TMGamePred)[46:540], favoredRealPred[46:540])
-  names(summaryOfResults$GameBias)<-c("Week","BTGamePrediction", "TMGamePrediction", "ActualGame")
+  summaryOfResults$GameBias<-data.frame(week[46:540],(BTGamePred)[46:540], (BTMeanGamePred)[46:540],
+                                        
+                                        (TMGamePred)[46:540],(TMMeanGamePred)[46:540],
+                                        favoredRealPred[46:540], simulation$seasonGames$Outcome[46:540])
+  names(summaryOfResults$GameBias)<-c("Week","BTGamePrediction", "BTMeanGamePrediction", 
+                                      "TMGamePrediction", "TMMeanGamePrediction", "ActualGame", "ActualOutcome")
   summaryOfResults$GameBiasByWeek<-analyzeGameBias(summaryOfResults$GameBias)
   summaryOfResults$disparityScore<-sum(abs(summaryOfResults$GameBias$ActualGame-.5))/nrow(summaryOfResults$GameBias)
   summaryOfResults
@@ -120,18 +150,17 @@ analyzeGameBias<-function(gamebias)
 {
   mseBT<-findMSE(gamebias$Week, gamebias$BTGamePrediction, gamebias$ActualGame)
   mseTM<-findMSE(gamebias$Week, gamebias$TMGamePrediction, gamebias$ActualGame)
+  mseBTMean<-findMSE(gamebias$Week, gamebias$BTMeanGamePrediction, gamebias$ActualGame)
+  mseTMMean<-findMSE(gamebias$Week, gamebias$TMMeanGamePrediction, gamebias$ActualGame)
   a<-merge(mseBT, mseTM, by=c("weeks"))
-  names(a)<-c("Week", "BT.MSE", "TM.MSE")
+  a<-merge(a, mseBTMean, by=c("weeks"))
+  names(a)<-c("weeks", "a", "b", "c")
+  a<-merge(a, mseTMMean, by=c("weeks"))
+  
+  names(a)<-c("Week", "BT.MSE", "TM.MSE", "BTMean.MSE", "TMMean.MSE")
   a
 }
-#variance of estimates  + bias^2
-#normalizeSample<-function(strengths)
-#{
-#  meanStrength<-mean(strengths)
-#  sdStrength<-sd(strengths)
-#  norm <- (strengths- meanStrength)/sdStrength
-#  norm
-#}
+
 
 
 

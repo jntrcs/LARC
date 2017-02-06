@@ -14,7 +14,7 @@ useEvery<-function(matDat, n)
   matDat[seq(from=1, to=nrow(matDat), by=n),]
 }
 
-anaylyzeMHMatrix<-function(dat)
+analyzeMHMatrix<-function(dat)
 {
   means<-apply(dat, 2, mean)
   upperBound<-apply(dat, 2, function(i){quantile(i, .975)})
