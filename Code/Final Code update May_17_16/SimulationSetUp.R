@@ -41,7 +41,7 @@ simulate1<-function(useBT, useBeta = FALSE, extremeBT=FALSE)
     meanStrengths[[i]]$BT<-analyzeMHMatrix(datBT)
     rm(datBT)
     datTM<-MetHast(logTMDensity, nSamples = nsamp, winsMatrix = configured$WinsVersus, rnormSD = sdScaleTM[i])
-    rej<-datTM[[2]]/nsamp
+    rej<-datTM[[2]]
     rejectionRate[[i]]$TM<-rej/(nsamp)
     datTM<-handleBurnIn(datTM[[1]],10000)
     datTM<-useEvery(datTM,400)
