@@ -1,6 +1,5 @@
 ###Confidence size
 
-CISize$BradleyTerryGamma
 suffix<-c("BradleyTerryGamma", "Beta","ThurstoneMostellerNormal", "ExtremeBT")
 BTPreds<-list()
 TMPreds<-list()

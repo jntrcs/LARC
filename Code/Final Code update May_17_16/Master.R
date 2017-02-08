@@ -12,7 +12,7 @@ save(BradleyTerryLARC, BTWP, dataconfigure, datascrape, find.mf, full.sim.gen, L
      generateNonConference, generateTeamSchedule, generateSeasonResults, simulate1, normalizeSample,
      predictionPercentage, findMSE, getConferenceMeans, pickBetaStrength, analyzeGameBias, correlationPlot,
      gameBiasGraph, msePlot, disparityScore, analyzeExcel, MetHast, handleBurnIn, useEvery, analyzeMHMatrix,
-     file="MasterFunctionFile.RData")
+     makeCIGraph, makeBrierPlot, file="MasterFunctionFile.RData")
 #Removed: simulate, simulation,
 
 #Whenevere you need to load functions, call this command

@@ -49,8 +49,8 @@ NCAAFPredictor<-function(BTStrengths,TMStrengths, schedule, dateVector)
   weekGames$DidWorse<-ifelse(weekGames$DidBetter=="Bradley-Terry", "Thurstone-Mosteller", "Bradley-Terry")
   weekGames$DidWorse[weekGames$DidBetter=="Tie"]<-"Tie"
   weekGames$Penalty <- ifelse(weekGames$DidWorse =="Bradley-Terry", abs(ifelse(weekGames$HomeTeamWon, 1, 0)-weekGames$BTHomeWin), abs(ifelse(weekGames$HomeTeamWon, 1, 0)-weekGames$TMHomeWin))
-  weekGames$BrierComponenetBT<-weekGames$BTHomeWin - ifelse(weekGames$HomeTeamWon, 1, 0)
-  weekGames$BrierComponenetTM<-weekGames$TMHomeWin - ifelse(weekGames$HomeTeamWon, 1, 0)
+  weekGames$BrierComponentBT<-weekGames$BTHomeWin - ifelse(weekGames$HomeTeamWon, 1, 0)
+  weekGames$BrierComponentTM<-weekGames$TMHomeWin - ifelse(weekGames$HomeTeamWon, 1, 0)
   weekGames$logComponentBT<-log(ifelse(weekGames$HomeTeamWon, weekGames$BTHomeWin, 1-weekGames$BTHomeWin))
   weekGames$logComponentTM<-log(ifelse(weekGames$HomeTeamWon, weekGames$TMHomeWin, 1-weekGames$TMHomeWin))
   
@@ -60,8 +60,8 @@ NCAAFPredictor<-function(BTStrengths,TMStrengths, schedule, dateVector)
   percentHomeWins<-c(mean(weekGames$BTHomeWin), mean(weekGames$TMHomeWin))
   names(percentHomeWins)<-c("Bradely-Terry Home Win Percent", "Thurstone-Mosteller Home Win Percent")
   results<-list(weekGames, table(weekGames$DidBetter), penalties, mean(weekGames$Difference), nrow(weekGames),
-                list(BTBrierScore=sum(weekGames$BrierComponenetBT^2)/nrow(weekGames),
-                     TMBrierScore=sum(weekGames$BrierComponenetTM^2)/nrow(weekGames)),
+                list(BTBrierScore=sum(weekGames$BrierComponentBT^2)/nrow(weekGames),
+                     TMBrierScore=sum(weekGames$BrierComponentTM^2)/nrow(weekGames)),
                 list(BTLogScore=sum(weekGames$logComponentBT)/nrow(weekGames),
                      TMLogScore=sum(weekGames$logComponentTM)/nrow(weekGames)))
   results
