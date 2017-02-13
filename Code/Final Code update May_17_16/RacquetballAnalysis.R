@@ -1,5 +1,6 @@
 #Racquetball analysis
-load("RacquetballData.RData")
+Rcpp::sourceCpp("cppFiles.cpp")
+load("MasterFunctionFile.RData")
 
 
 readFile<-function(path)
@@ -16,7 +17,9 @@ readFile<-function(path)
 rac<-readFile("Racquetball.csv")
 
 brierOutcomesBT<-numeric(nrow(rac))
+boReqGameBT<-numeric(0)
 brierOutcomesTM<-numeric(nrow(rac))
+boReqGameTM<-numeric(0)
 for (i in 1:nrow(rac))
 {
   conf<-dataconfigure(rac[-i,])
@@ -26,16 +29,23 @@ for (i in 1:nrow(rac))
   loser<-rac[i,7]
   winnerStrengthBT<-ifelse(length(BTRank$Strength[BTRank$Team ==winner])>0, BTRank$Strength[BTRank$Team ==winner], 1)
   loserStrengthBT<-ifelse(length(BTRank$Strength[BTRank$Team ==loser])>0, BTRank$Strength[BTRank$Team ==loser], 1)
-  if (winnerStrengthBT==1|loserStrengthBT==1)
-    print("Uh OH")
   winnerStrengthTM<-ifelse(length(TMRank$Strength[TMRank$Team ==winner])>0, TMRank$Strength[TMRank$Team ==winner], 0)
   loserStrengthTM<-ifelse(length(TMRank$Strength[TMRank$Team ==loser])>0, TMRank$Strength[TMRank$Team ==loser], 0)
   BTPred<-predictionPercentage(winnerStrengthBT, loserStrengthBT, "BT")
   TMPred<-predictionPercentage(winnerStrengthTM, loserStrengthTM, "TM")
   brierOutcomesBT[i]<-BTPred
   brierOutcomesTM[i]<-TMPred
+  if (winnerStrengthBT!=1 & loserStrengthBT!=1)
+  {
+    boReqGameBT<-cbind(boReqGameBT, BTPred)
+    boReqGameTM<-cbind(boReqGameTM, TMPred)
+  }
 }
 brierScoreBT<-sum((brierOutcomesBT-1)^2)/length(brierOutcomesBT)
 brierScoreTM<-sum((brierOutcomesTM-1)^2)/length(brierOutcomesTM)
 brierScoreBT
 brierScoreTM
+bSBTReq<-sum((boReqGameBT-1)^2)/length(boReqGameBT)
+bSTMReq<-sum((boReqGameTM-1)^2)/length(boReqGameTM)
+bSBTReq
+bSTMReq
