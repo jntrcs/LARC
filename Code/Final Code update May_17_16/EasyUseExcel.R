@@ -9,7 +9,7 @@
 
 load("MasterFunctionFile.RData")
 Rcpp::sourceCpp("cppFiles.cpp")
-config<-analyzeExcel(path="Racquetball.csv")
+config<-analyzeExcel(path="Template.csv")
 
 
 
@@ -25,6 +25,5 @@ analyzeExcel<-function(path)
  names(dat)<-c("Home", "HomeScore", "Visitor", "VisitorScore", "Date", "Winner", "Loser")
  con<-dataconfigure(dat)
  LARC.Rank(con) 
- }
-LARC.Rank(config, func=BTDensity)
-LARC.Rank(config, func=logBTDensity)
+}
+
