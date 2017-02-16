@@ -150,3 +150,8 @@ sapply(logScores, FUN = which.max)==sapply(penalties, FUN=which.min) #comparing 
 corWithEachOther<-sapply(1:15, FUN = function(i) cor(stripped2016data[[i]][[2]]$Strength[order(stripped2016data[[i]][[2]]$Team)],stripped2016data[[i]][[3]]$Strength[order(stripped2016data[[i]][[3]]$Team)], method="spearman"))
 plot(corWithEachOther, type='l')
 corWithEachOther<-sapply(1:14, FUN = function(i) cor(stripped2015data[[i]][[2]]$Strength[order(stripped2015data[[i]][[2]]$Team)],stripped2015data[[i]][[3]]$Strength[order(stripped2015data[[i]][[3]]$Team)], method="spearman"))
+library(plyr)
+allWeeks<-lapply(stripped2016data, FUN=function(i)i[[4]][[1]])
+allWeeksDF<-ldply(allWeeks)
+allWeeksDF
+allWeeksDF$BrierComponentTM

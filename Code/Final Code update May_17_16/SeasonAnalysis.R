@@ -12,7 +12,7 @@ strippedRaw<-latestRaw[!(latestRaw$Home %in% takeOut | latestRaw$Visitor %in% ta
 
 dates<-seq(as.Date("2016-09-04"), to=as.Date("2016-12-05"), by=7)
 dates<-c(dates, as.Date("2017-01-10"))
-range<-15
+range<-2:15
 
 for (i in range)
 {
