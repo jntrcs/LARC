@@ -7,6 +7,8 @@ gameBiasGraph<-function(BTMatrix, TMMatrix, type)
        ylab="Predicted Probability MSE", xlab="Week", ylim=c(0,.1), xlim=c(1,13), xaxt='n')
   legend("topright", legend=c("Bradley-Terry", "Thurstone-Mosteller", "95% Quantiles"), title=paste(type, "True Strengths"),
          col=c("black", "gray", "gray13"), lty = c(1,2,1), lwd=c(4,4,1))
+  rect(0,-1,3,1,col = rgb(0.5,0.5,0.5,1/4), border=NA)
+    legend("bottomleft", legend="Shade represents non-conference weeks")
   BTmeans<-apply(BTMatrix, 1, mean) 
   lines(BTmeans, col="Black", type='l', lwd=4)
   BTsds<-apply(BTMatrix, 1, sd)

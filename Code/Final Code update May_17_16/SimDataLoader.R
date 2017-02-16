@@ -31,6 +31,6 @@ indices<-rep(0,4) # BT then TM then Beta then EXTREMEBETA
 rm(dat, a, i, index, indices, files)
 type<-as.factor(type)
 
-save(type, trueStrengths, centeringValues, strengths, correlations, gameBias, weeklyGameBias, disparity, file="SimulationResults.RData")
+#save(type, trueStrengths, centeringValues, strengths, correlations, gameBias, weeklyGameBias, disparity, file="SimulationResults.RData")
 #rm(type, trueStrengths, centeringValues, strengths, correlations, gameBias)
 load("SimulationResults.RData")
