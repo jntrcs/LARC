@@ -77,15 +77,15 @@ makePerformanceGraph<-function(performance)
   axis(1,at=1:length(graphic),labels=2:(length(graphic)+1))
 }
 
-makePenaltyGraph<-function(penalties, lab="Bad Prediction Penalization", yax="Penalty Score")
+makePenaltyGraph<-function(penalties, lab="Bad Prediction Penalization", yax="Penalty Score", where="bottomleft")
 {
   BTPenalties<-sapply(penalties, FUN = function(vec){vec[1]})
   TMPenalties<-sapply(penalties, FUN = function(vec){vec[2]})
-  plot(TMPenalties, type='l', lty=2, col="Blue", main=lab, ylab=yax,
+  plot(TMPenalties, type='l', lty=2, col="Gray10", main=lab, ylab=yax,
        xlab="Week Predicted", xaxt="n")
-  lines(BTPenalties, col="Red")
+  lines(BTPenalties, col="Black")
   axis(1,at=1:length(BTPenalties),labels=2:(length(BTPenalties)+1))
-  legend(x="bottomleft",c("Bradley-Terry", "Thurstone-Mosteller"), col=c("Red", "Blue"), lty=c(1,2))
+  legend(x=where,c("Bradley-Terry", "Thurstone-Mosteller"), col=c("Black", "Gray10"), lty=c(1,2))
 }
 
 makeDifferenceGraph<-function(meanDifferences)
@@ -106,9 +106,10 @@ makePerformanceGraph(performance)
 performance<-lapply(2:length(all2016data), FUN=function(n){all2016data[[n]][[4]][[2]]})
 makePerformanceGraph(performance)
 
-brierScores<-lapply(2:length(stripped2016data), FUN=function(n){
+brierScores<-lapply(2:(length(stripped2016data)-1), FUN=function(n){
   c(stripped2016data[[n]][[4]][[6]]$BTBrierScore, stripped2016data[[n]][[4]][[6]]$TMBrierScore)})
-makePenaltyGraph(brierScores, lab="Brier Scoring", yax="Brier score (Lower = Better)")
+makePenaltyGraph(brierScores, lab="Brier Scoring 2016 NCAA Football", yax="Brier score (Lower = Better)")
+apply(ldply(brierScores), 2, mean)
 
 logScores<-lapply(2:length(stripped2016data), FUN=function(n){
   c(stripped2016data[[n]][[4]][[7]]$BTLogScore, stripped2016data[[n]][[4]][[7]]$TMLogScore)})
@@ -134,9 +135,10 @@ makePerformanceGraph(performance)
 performance<-lapply(2:length(all2015data), FUN=function(n){all2015data[[n]][[4]][[2]]})
 makePerformanceGraph(performance)
 
-brierScores<-lapply(2:length(stripped2015data), FUN=function(n){
+brierScores<-lapply(2:(length(stripped2015data)-1), FUN=function(n){
   c(stripped2015data[[n]][[4]][[6]]$BTBrierScore, stripped2015data[[n]][[4]][[6]]$TMBrierScore)})
-makePenaltyGraph(brierScores, lab="Brier Scoring", yax="Brier score (Lower = Better)")
+makePenaltyGraph(brierScores, lab="Brier Scoring 2015 NCAA Football", yax="Brier score", where="topright")
+apply(ldply(brierScores), 2, FUN=mean)
 
 logScores<-lapply(2:length(stripped2015data), FUN=function(n){
   c(stripped2015data[[n]][[4]][[7]]$BTLogScore, stripped2015data[[n]][[4]][[7]]$TMLogScore)})
@@ -153,5 +155,9 @@ corWithEachOther<-sapply(1:14, FUN = function(i) cor(stripped2015data[[i]][[2]]$
 library(plyr)
 allWeeks<-lapply(stripped2016data, FUN=function(i)i[[4]][[1]])
 allWeeksDF<-ldply(allWeeks)
-allWeeksDF
-allWeeksDF$BrierComponentTM
+disagree<-allWeeksDF[(allWeeksDF$BTHomeWin<.5 & allWeeksDF$TMHomeWin>.5)|(allWeeksDF$BTHomeWin>.5 & allWeeksDF$TMHomeWin<.5),]
+agree<-allWeeksDF[!((allWeeksDF$BTHomeWin<.5 & allWeeksDF$TMHomeWin>.5)|(allWeeksDF$BTHomeWin>.5 & allWeeksDF$TMHomeWin<.5)),]
+mean(ifelse(agree$BTHomeWin>.5, agree$BTHomeWin, 1-agree$BTHomeWin)-ifelse(agree$TMHomeWin>.5, agree$TMHomeWin, 1-agree$TMHomeWin)<0)
+mean(ifelse(agree$TMHomeWin>.5, agree$TMHomeWin, 1-agree$TMHomeWin))
+all(c(agree$BTHomeWin>.5)==c(agree$TMHomeWin>.5))
+nrow(allWeeksDF)
