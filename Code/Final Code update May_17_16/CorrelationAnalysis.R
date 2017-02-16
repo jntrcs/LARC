@@ -19,6 +19,7 @@ inc<<-inc+1
 confidence<-apply(a, 1, FUN=function(b){quantile(b,c(.1, .9))})
 center<-apply(a, 1, mean)
 lines(center, col=colors[inc])
+
 #lines(confidence[1,], lty=2, col="Gray")
 #lines(confidence[2,], lty=2, col="Gray")
 })
@@ -53,6 +54,8 @@ correlationPlot<-function(BTmatrix, TMmatrix, title, ymax=1, ymin=.2)
   #lines(upperBoundsTM, lty=2, col="Blue")
   legend("bottomright", legend=c("Bradley-Terry Rankings", "Thurstone-Mosteller Rankings", "95% Quantiles"),
          title=paste(title, "Underlying Strengths"), lty=c(1,2,1), lwd=c(2,2,1))
+  rect(-1,-1,4,1,col = rgb(0.5,0.5,0.5,1/4), border=NA)
+  legend("topleft", legend="Shaded area represents non-conference weeks", cex=.7)
 }
 
 suffix<-c("BradleyTerryGamma", "Beta","ThurstoneMostellerNormal", "ExtremeBT")
