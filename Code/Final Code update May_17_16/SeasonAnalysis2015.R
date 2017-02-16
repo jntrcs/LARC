@@ -12,7 +12,7 @@ takeOut<-as.character(numGames[numGames$Freq<5, 1])
 strippedRaw<-raw2015[!(raw2015$Home %in% takeOut | raw2015$Visitor %in% takeOut),]
 
 dates<-seq(as.Date("2015-09-09"), to=as.Date("2015-12-06"), by=7)
-dates<-c(dates, as.Date("2016-01-10"))
+dates<-c(dates, as.Date("2016-01-12"))
 range<-2:14
 
 for (i in range)

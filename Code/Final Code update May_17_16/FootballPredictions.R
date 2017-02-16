@@ -27,7 +27,7 @@ NCAAFPredictor<-function(BTStrengths,TMStrengths, schedule, dateVector)
   
   weekGames<-schedule[schedule$Date<enddate&schedule$Date>startdate, c(3,5,8,9)]  
   
-
+  
   for (i in 1:nrow(weekGames))
   {
     
@@ -38,7 +38,7 @@ NCAAFPredictor<-function(BTStrengths,TMStrengths, schedule, dateVector)
     weekGames$AwayBTStrength[i]<-ifelse(weekGames$Visitor[i]%in%BTStrengths$Team,BTStrengths$Strength[which(BTStrengths$Team==weekGames$Visitor[i])],1)
     weekGames$HomeBTStrength[i]<-ifelse(weekGames$Home[i]%in%BTStrengths$Team,BTStrengths$Strength[which(BTStrengths$Team==weekGames$Home[i])],1)
   }
-
+  
   weekGames$BTHomeWin<-weekGames$HomeBTStrength/(weekGames$HomeBTStrength+weekGames$AwayBTStrength)
   weekGames$TMHomeWin<-pnorm(weekGames$HomeTMStength-weekGames$AwayTMStrength)
   weekGames$Difference<-abs(weekGames$BTHomeWin-weekGames$TMHomeWin)
@@ -49,19 +49,19 @@ NCAAFPredictor<-function(BTStrengths,TMStrengths, schedule, dateVector)
   weekGames$DidWorse<-ifelse(weekGames$DidBetter=="Bradley-Terry", "Thurstone-Mosteller", "Bradley-Terry")
   weekGames$DidWorse[weekGames$DidBetter=="Tie"]<-"Tie"
   weekGames$Penalty <- ifelse(weekGames$DidWorse =="Bradley-Terry", abs(ifelse(weekGames$HomeTeamWon, 1, 0)-weekGames$BTHomeWin), abs(ifelse(weekGames$HomeTeamWon, 1, 0)-weekGames$TMHomeWin))
-  weekGames$BrierComponenetBT<-weekGames$BTHomeWin - ifelse(weekGames$HomeTeamWon, 1, 0)
-  weekGames$BrierComponenetTM<-weekGames$TMHomeWin - ifelse(weekGames$HomeTeamWon, 1, 0)
+  weekGames$BrierComponentBT<-weekGames$BTHomeWin - ifelse(weekGames$HomeTeamWon, 1, 0)
+  weekGames$BrierComponentTM<-weekGames$TMHomeWin - ifelse(weekGames$HomeTeamWon, 1, 0)
   weekGames$logComponentBT<-log(ifelse(weekGames$HomeTeamWon, weekGames$BTHomeWin, 1-weekGames$BTHomeWin))
   weekGames$logComponentTM<-log(ifelse(weekGames$HomeTeamWon, weekGames$TMHomeWin, 1-weekGames$TMHomeWin))
   
   penalties<-c(sum(weekGames$Penalty[weekGames$DidWorse=="Bradley-Terry"]/nrow(weekGames)),
-  sum(weekGames$Penalty[weekGames$DidWorse=="Thurstone-Mosteller"])/nrow(weekGames))
+               sum(weekGames$Penalty[weekGames$DidWorse=="Thurstone-Mosteller"])/nrow(weekGames))
   names(penalties)<-c("Bradley-Terry Penalty", "Thurstone-Mosteller Penalty")
   percentHomeWins<-c(mean(weekGames$BTHomeWin), mean(weekGames$TMHomeWin))
   names(percentHomeWins)<-c("Bradely-Terry Home Win Percent", "Thurstone-Mosteller Home Win Percent")
   results<-list(weekGames, table(weekGames$DidBetter), penalties, mean(weekGames$Difference), nrow(weekGames),
-                list(BTBrierScore=sum(weekGames$BrierComponenetBT^2)/nrow(weekGames),
-                     TMBrierScore=sum(weekGames$BrierComponenetTM^2)/nrow(weekGames)),
+                list(BTBrierScore=sum(weekGames$BrierComponentBT^2)/nrow(weekGames),
+                     TMBrierScore=sum(weekGames$BrierComponentTM^2)/nrow(weekGames)),
                 list(BTLogScore=sum(weekGames$logComponentBT)/nrow(weekGames),
                      TMLogScore=sum(weekGames$logComponentTM)/nrow(weekGames)))
   results
@@ -77,15 +77,15 @@ makePerformanceGraph<-function(performance)
   axis(1,at=1:length(graphic),labels=2:(length(graphic)+1))
 }
 
-makePenaltyGraph<-function(penalties, lab="Bad Prediction Penalization", yax="Penalty Score")
+makePenaltyGraph<-function(penalties, lab="Bad Prediction Penalization", yax="Penalty Score", where="bottomleft")
 {
   BTPenalties<-sapply(penalties, FUN = function(vec){vec[1]})
   TMPenalties<-sapply(penalties, FUN = function(vec){vec[2]})
-  plot(TMPenalties, type='l', lty=2, col="Blue", main=lab, ylab=yax,
+  plot(TMPenalties, type='l', lty=2, col="Gray10", main=lab, ylab=yax,
        xlab="Week Predicted", xaxt="n")
-  lines(BTPenalties, col="Red")
+  lines(BTPenalties, col="Black")
   axis(1,at=1:length(BTPenalties),labels=2:(length(BTPenalties)+1))
-  legend(x="bottomleft",c("Bradley-Terry", "Thurstone-Mosteller"), col=c("Red", "Blue"), lty=c(1,2))
+  legend(x=where,c("Bradley-Terry", "Thurstone-Mosteller"), col=c("Black", "Gray10"), lty=c(1,2))
 }
 
 makeDifferenceGraph<-function(meanDifferences)
@@ -106,9 +106,10 @@ makePerformanceGraph(performance)
 performance<-lapply(2:length(all2016data), FUN=function(n){all2016data[[n]][[4]][[2]]})
 makePerformanceGraph(performance)
 
-brierScores<-lapply(2:length(stripped2016data), FUN=function(n){
+brierScores<-lapply(2:(length(stripped2016data)-1), FUN=function(n){
   c(stripped2016data[[n]][[4]][[6]]$BTBrierScore, stripped2016data[[n]][[4]][[6]]$TMBrierScore)})
-makePenaltyGraph(brierScores, lab="Brier Scoring", yax="Brier score (Lower = Better)")
+makePenaltyGraph(brierScores, lab="Brier Scoring 2016 NCAA Football", yax="Brier score (Lower = Better)")
+apply(ldply(brierScores), 2, mean)
 
 logScores<-lapply(2:length(stripped2016data), FUN=function(n){
   c(stripped2016data[[n]][[4]][[7]]$BTLogScore, stripped2016data[[n]][[4]][[7]]$TMLogScore)})
@@ -134,9 +135,10 @@ makePerformanceGraph(performance)
 performance<-lapply(2:length(all2015data), FUN=function(n){all2015data[[n]][[4]][[2]]})
 makePerformanceGraph(performance)
 
-brierScores<-lapply(2:length(stripped2015data), FUN=function(n){
+brierScores<-lapply(2:(length(stripped2015data)-1), FUN=function(n){
   c(stripped2015data[[n]][[4]][[6]]$BTBrierScore, stripped2015data[[n]][[4]][[6]]$TMBrierScore)})
-makePenaltyGraph(brierScores, lab="Brier Scoring", yax="Brier score (Lower = Better)")
+makePenaltyGraph(brierScores, lab="Brier Scoring 2015 NCAA Football", yax="Brier score", where="topright")
+apply(ldply(brierScores), 2, FUN=mean)
 
 logScores<-lapply(2:length(stripped2015data), FUN=function(n){
   c(stripped2015data[[n]][[4]][[7]]$BTLogScore, stripped2015data[[n]][[4]][[7]]$TMLogScore)})
@@ -146,3 +148,16 @@ penalties<-lapply(2:length(stripped2015data), FUN=function(n){stripped2015data[[
 makePenaltyGraph(penalties)
 
 sapply(logScores, FUN = which.max)==sapply(penalties, FUN=which.min) #comparing the penalty metric
+
+corWithEachOther<-sapply(1:15, FUN = function(i) cor(stripped2016data[[i]][[2]]$Strength[order(stripped2016data[[i]][[2]]$Team)],stripped2016data[[i]][[3]]$Strength[order(stripped2016data[[i]][[3]]$Team)], method="spearman"))
+plot(corWithEachOther, type='l')
+corWithEachOther<-sapply(1:14, FUN = function(i) cor(stripped2015data[[i]][[2]]$Strength[order(stripped2015data[[i]][[2]]$Team)],stripped2015data[[i]][[3]]$Strength[order(stripped2015data[[i]][[3]]$Team)], method="spearman"))
+library(plyr)
+allWeeks<-lapply(stripped2016data, FUN=function(i)i[[4]][[1]])
+allWeeksDF<-ldply(allWeeks)
+disagree<-allWeeksDF[(allWeeksDF$BTHomeWin<.5 & allWeeksDF$TMHomeWin>.5)|(allWeeksDF$BTHomeWin>.5 & allWeeksDF$TMHomeWin<.5),]
+agree<-allWeeksDF[!((allWeeksDF$BTHomeWin<.5 & allWeeksDF$TMHomeWin>.5)|(allWeeksDF$BTHomeWin>.5 & allWeeksDF$TMHomeWin<.5)),]
+mean(ifelse(agree$BTHomeWin>.5, agree$BTHomeWin, 1-agree$BTHomeWin)-ifelse(agree$TMHomeWin>.5, agree$TMHomeWin, 1-agree$TMHomeWin)<0)
+mean(ifelse(agree$TMHomeWin>.5, agree$TMHomeWin, 1-agree$TMHomeWin))
+all(c(agree$BTHomeWin>.5)==c(agree$TMHomeWin>.5))
+nrow(allWeeksDF)
