@@ -25,3 +25,27 @@ legend("topright", legend = c("Prior", "Posterior"), lty=c(2,1))
 plot(density(finalBT[,42]), xlim=c(0,8), xlab=expression(paste("BT ", theta)), main="South Caronlina Football Prior/Posterior")
 curve(dprior(x), add=T, lty=2)
 legend("topright", legend = c("Prior", "Posterior"), lty=c(2,1))
+
+
+
+
+
+BCSRankings<-c("Alabama", "Clemson", "Ohio St", "Washington", "Penn St", "Michigan", "Oklahoma", "Wisconsin",
+               "USC", "Colorado", "Florida St", "Oklahoma St", "Louisville", "Auburn", "W Michigan",
+               "West Virginia", "Florida", "Stanford", "Utah", "LSU", "Tennessee", "Virginia Tech",
+               "Pittsburgh", "Temple", "Navy")
+bt<-stripped2016data[[14]][[2]]$Team[1:25]
+tm<-stripped2016data[[14]][[3]]$Team[1:25]
+dat<-data.frame(BCSRankings, bt, tm)
+colnames(dat)<-c("BCS Rankings", "Bradley-Terry", "Thurstone-Mosteller")
+View(dat)
+corr<-data.frame(BCSRankings, 1:25, match(BCSRankings, stripped2016data[[14]][[2]]$Team), 
+                 match(BCSRankings, stripped2016data[[14]][[3]]$Team))
+names(corr)<-c("Team", "BCS Ranking", "BT Ranking", "TM Ranking")
+corr
+View(corr)
+
+library(gridExtra)
+pdf("data_output.pdf", height=11, width=8.5)
+grid.table(corr)
+dev.off()

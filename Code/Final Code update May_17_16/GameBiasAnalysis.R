@@ -41,8 +41,7 @@ for (i in suffix)
   gameBiasMatrix[[i]]<-list(BT=list(), TM=list())
   gameBiasMatrix[[i]]$BT<-sapply(weeklyGameBias[[i]], FUN=function(n){n$BT.MSE})
   gameBiasMatrix[[i]]$TM<-sapply(weeklyGameBias[[i]], FUN=function(n){n$TM.MSE})
-  gameBiasMatrix[[i]]$BTMean<-sapply(weeklyGameBias[[i]], FUN=function(n){n$BTMean.MSE})
-  gameBiasMatrix[[i]]$TMMean<-sapply(weeklyGameBias[[i]], FUN=function(n){n$TMMean.MSE})
+
 }
 par(bg="gray99")
 par(mfrow=c(1,1))
