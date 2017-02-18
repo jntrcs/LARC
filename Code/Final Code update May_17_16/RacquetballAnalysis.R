@@ -1,6 +1,7 @@
 #Racquetball analysis
-Rcpp::sourceCpp("cppFiles.cpp")
 load("MasterFunctionFile.RData")
+
+Rcpp::sourceCpp("cppFiles.cpp")
 
 
 readFile<-function(path)
