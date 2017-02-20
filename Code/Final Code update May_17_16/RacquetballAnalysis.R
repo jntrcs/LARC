@@ -16,6 +16,10 @@ readFile<-function(path)
  dat
 }
 rac<-readFile("Racquetball.csv")
+config<-dataconfigure(rac)
+a<-cbind(LARC.Rank(config), LARC.Rank(config, func=TMDensity))
+names(a)<-c("BT Rank", "Name", "BT Strength", "Wins", "TM Rank",  "Name", "TM Strength", "Wins")
+View(a)
 
 brierOutcomesBT<-numeric(nrow(rac))
 boReqGameBT<-numeric(0)
