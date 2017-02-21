@@ -15,7 +15,7 @@ useEvery<-function(matDat, n)
 }
 
 
-MetHast<-function(func, nSamples=NULL, winsMatrix, rnormSD=.1, useTimer=F, time=NULL) ###warning: using the timer method currently uses 5GB of RAM :/
+MetHast<-function(func, nSamples=NULL, winsMatrix, rnormSD=.1, useTimer=F, time=NULL) ###warning: using the timer method currently uses 5GB of RAM 
 {
   
   if(identical(func, logBTDensity))

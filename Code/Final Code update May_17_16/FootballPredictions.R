@@ -108,7 +108,7 @@ makePerformanceGraph(performance)
 
 brierScores<-lapply(2:(length(stripped2016data)-1), FUN=function(n){
   c(stripped2016data[[n]][[4]][[6]]$BTBrierScore, stripped2016data[[n]][[4]][[6]]$TMBrierScore)})
-makePenaltyGraph(brierScores, lab="Brier Scoring 2016 NCAA Football", yax="Brier score (Lower = Better)")
+makePenaltyGraph(brierScores, lab="Brier Scoring 2016 NCAA Football", yax="Brier score")
 apply(ldply(brierScores), 2, mean)
 
 logScores<-lapply(2:length(stripped2016data), FUN=function(n){
