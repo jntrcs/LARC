@@ -15,9 +15,24 @@ The files Stripped2015FootballData.RData and Stripped2016FootballData.RData cont
   4. The fourth element contains analysis of predictions using strengths from the previous week compared with actual outcomes. Therefore, the first week (stripped2016data[[1]][[4]])is NULL, but the following weeks      have information in the form of a list with the following elements:
     1. All games played that week with predictions from both methods, actual outcomes, and summary statistics.
     2. A count of which method predicted closer to the actual outcome
-    3. A penalty metric 
+    3. A penalty metric (which we didn't use in favor of brier scores)
     4. The average difference in prediction for the two methods
     5. The number of games in the week
     6. The brier scores for each method
-    7. The log scores for each method
+    7. The log scores for each method (did not use in favor of brier scores)
   5. The fifth element lists the start and end dates for the time period covered
+  
+2015/2016FootballData.RData contains the same data but with games where FBS teams played teams outside the FBS.
+
+LARC.Rank() is the main computational function for ranking the teams. To test it on your own results open the Template.csv sheet and edit it following the pattern shown in the document with your data. When finished, save, and run the first three lines in EasyUseExcel.R to see the rankings.
+
+dataconfigure() creates the matrix that can be used by LARC.Rank. DataConfigure.R specifies the format of the data frame it accepts.
+
+
+####RECREATING THE SIMULATION
+To run a miniature version of the simulation, run SampleSimulation.R. To see the full, parallelizable version that was run on a supercomputer, view SupercomputerSim.R
+
+Every season simulated produces a .RData file. SimDataLoader.R loads each file one at a time and conglomerates the data into useful groups in memory.
+
+SimulationSetUp contains the main logic to simulate a season. Simulate1 conducts the bulk of the work by creating the teams, assigning them strengths, generating a schedule, and then simulating the results of the games on the schedule. It then uses LARC.Rank to find strength estimates for every week, and then computes useful statistic on the data and returns the results in a list.
+  

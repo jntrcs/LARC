@@ -9,12 +9,13 @@
 
 load("MasterFunctionFile.RData")
 Rcpp::sourceCpp("cppFiles.cpp")
-analyzeExcel(path="Template.csv")
+##Defaults to Bradley-Terry, set useTM to TRUE for Thurstone-Mosteller
+analyzeExcel(path="Template.csv", useTM=F)
 
 
 
 
-analyzeExcel<-function(path)
+analyzeExcel<-function(path, useTM=FALSE)
 {
  dat<-read.csv(path) 
  dat$HomeTeam<-as.character(dat$HomeTeam)
@@ -24,5 +25,6 @@ analyzeExcel<-function(path)
  dat$Loser<-ifelse(dat$HomeScore<dat$AwayScore, dat$HomeTeam, dat$AwayTeam)
  names(dat)<-c("Home", "HomeScore", "Visitor", "VisitorScore", "Date", "Winner", "Loser")
  con<-dataconfigure(dat)
- LARC.Rank(con)
+ func<-ifelse(useTM, TMDensity, BTDensity)
+ LARC.Rank(con, func=func)
 }
