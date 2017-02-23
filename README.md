@@ -34,5 +34,9 @@ To run a miniature version of the simulation, run SampleSimulation.R. To see the
 
 Every season simulated produces a .RData file. SimDataLoader.R loads each file one at a time and conglomerates the data into useful groups in memory.
 
+<<<<<<< HEAD
 SimulationSetUp contains the main logic to simulate a season. Simulate1 conducts the bulk of the work by creating the teams, assigning them strengths, generating a schedule, and then simulating the results of the games on the schedule. It then uses LARC.Rank to find strength estimates for every week, and then computes useful statistic on the data and returns the results in a list.
+=======
+
+>>>>>>> aaac420ab3138d211b62dacbb3c6ce3d5adefdc6
   
