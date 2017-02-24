@@ -17,9 +17,15 @@ readFile<-function(path)
 }
 rac<-readFile("Racquetball.csv")
 config<-dataconfigure(rac)
-a<-cbind(LARC.Rank(config), LARC.Rank(config, func=TMDensity))
-names(a)<-c("BT Rank", "Name", "BT Strength", "Wins", "TM Rank",  "Name", "TM Strength", "Wins")
-View(a)
+a<-LARC.Rank(config)
+b<-LARC.Rank(config, func=TMDensity)
+library(qdapTools)
+
+com<-data.frame(a$Team, a$Rank, a$Strength, 
+           lookup(b$Team, key.match= a$Team, key.reassign = b$Rank), 
+           lookup(b$Team, key.match= a$Team, key.reassign = b$Strength))
+names(com)<-c("Player", "BT Rank", "BT Strength", "TM Rank", "TM Strength")
+View(com)
 
 brierOutcomesBT<-numeric(nrow(rac))
 boReqGameBT<-numeric(0)
