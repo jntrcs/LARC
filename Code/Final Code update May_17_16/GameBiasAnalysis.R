@@ -53,7 +53,9 @@ suffix<-c("BradleyTerryGamma", "ThurstoneMostellerNormal","Beta", "ExtremeBT")
 par(mfrow=c(4,1))
 for (i in suffix)
 {
-  hist(disparity[[i]], main=paste("Team Disparity Score for", i), xlim=c(.1,.35), ylab="# of Seasons",
+  a<-which(i==suffix)
+  titles<-c("Gamma", "Normal", "Beta", "Large Gamma")
+  hist(disparity[[i]], main=paste("Team Disparity Score for", titles[a]), xlim=c(.1,.35), ylab="# of Seasons",
        xlab="Average Win Percentage for Better Team", xaxt='n')
   abline(v=mean(disparity[[i]]), col="black", lwd=3)
   axis(1,at=seq(.05, to=.35, by=.05),labels=seq(.55, to=.85, by=.05))

@@ -19,7 +19,8 @@ legend("topleft", legend = c("Prior", "Posterior"), lty=c(2,1))
 
 dprior<-function(x)x*exp(-x)
 plot(density(finalBT[,3]), xlim=c(0,8), xlab=expression(paste("BT ", theta)), main="Alabama Football Prior/Posterior", ylim=c(0,.4))
-curve(dprior(x), add=T, lty=2)
+curve(dprior(x), lty=2, xlim=c(0,8))
+curve(dgamma(x, 2,1), col="red", add=T)
 legend("topright", legend = c("Prior", "Posterior"), lty=c(2,1))
 
 plot(density(finalBT[,42]), xlim=c(0,8), xlab=expression(paste("BT ", theta)), main="South Caronlina Football Prior/Posterior")

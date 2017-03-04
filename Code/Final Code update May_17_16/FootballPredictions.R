@@ -81,11 +81,11 @@ makePenaltyGraph<-function(penalties, lab="Bad Prediction Penalization", yax="Pe
 {
   BTPenalties<-sapply(penalties, FUN = function(vec){vec[1]})
   TMPenalties<-sapply(penalties, FUN = function(vec){vec[2]})
-  plot(TMPenalties, type='l', lty=2, col="Gray10", main=lab, ylab=yax,
+  plot(TMPenalties, type='l', lty=2, col="Red", main=lab, ylab=yax,
        xlab="Week Predicted", xaxt="n")
-  lines(BTPenalties, col="Black")
+  lines(BTPenalties, col="Blue")
   axis(1,at=1:length(BTPenalties),labels=2:(length(BTPenalties)+1))
-  legend(x=where,c("Bradley-Terry", "Thurstone-Mosteller"), col=c("Black", "Gray10"), lty=c(1,2))
+  legend(x=where,c("Bradley-Terry", "Thurstone-Mosteller"), col=c("Blue", "Red"), lty=c(1,2))
 }
 
 makeDifferenceGraph<-function(meanDifferences)
@@ -137,7 +137,7 @@ makePerformanceGraph(performance)
 
 brierScores<-lapply(2:(length(stripped2015data)-1), FUN=function(n){
   c(stripped2015data[[n]][[4]][[6]]$BTBrierScore, stripped2015data[[n]][[4]][[6]]$TMBrierScore)})
-makePenaltyGraph(brierScores, lab="Brier Scoring 2015 NCAA Football", yax="Brier score", where="topright")
+makePenaltyGraph(brierScores, lab="Brier Scoring 2015 NCAA Football", yax="Brier score (Lower=Better)", where="topright")
 apply(ldply(brierScores), 2, FUN=mean)
 
 logScores<-lapply(2:length(stripped2015data), FUN=function(n){
