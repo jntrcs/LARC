@@ -32,6 +32,9 @@ dataconfigure() creates the matrix that can be used by LARC.Rank. DataConfigure.
 ####RECREATING THE SIMULATION
 To run a miniature version of the simulation, run SampleSimulation.R. To see the full, parallelizable version that was run on a supercomputer, view SupercomputerSim.R
 
-Every season simulated produces a .RData file. SimDataLoader.R loads each file one at a time and conglomerates the data into useful groups in memory.
+Every season simulated produces a .RData file. SimDataLoader.R loads each file one at a time and conglomerates the data into useful groups in memory. SimulationResults.RData is a saved version of these from my simulation--load that to investigate the data we used for our calculations.
 
-SimulationSetUp contains the main logic to simulate a season. Simulate1 conducts the bulk of the work by creating the teams, assigning them strengths, generating a schedule, and then simulating the results of the games on the schedule. It then uses LARC.Rank to find strength estimates for every week, and then computes useful statistic on the data and returns the results in a list.
+SimulationSetUp contains the main logic to simulate a season. Simulate1() conducts the bulk of the work by creating the teams, assigning them strengths, generating a schedule, and then simulating the results of the games on the schedule. It then uses LARC.Rank to find strength estimates for every week, and then computes useful statistic on the data and returns the results in a list.
+
+
+This Git Repository contains several branches that contain interesting side-explorations not central to the main paper. A few of them were: simulating seasons that lasted much longer than 13 weeks (130). Simulating seasons by finding our strength estimates using a Metropolis-Hastings algorithm, simulating seasons where one teams strengths remained constant across seasons, etc.
