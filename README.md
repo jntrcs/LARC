@@ -38,3 +38,5 @@ SimulationSetUp contains the main logic to simulate a season. Simulate1() conduc
 
 
 This Git Repository contains several branches that contain interesting side-explorations not central to the main paper. A few of them were: simulating seasons that lasted much longer than 13 weeks (130). Simulating seasons by finding our strength estimates using a Metropolis-Hastings algorithm, simulating seasons where one teams strengths remained constant across seasons, etc.
+
+https://zenodo.org/badge/latestdoi/67469020
