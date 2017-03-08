@@ -1,4 +1,5 @@
 ##2016 Football 
+##Runs the datascraper to save the football data
 
 latestRaw<-datascrape("NCAAF")
 numGames<-table(c(latestRaw$Home, latestRaw$Visitor))
@@ -8,13 +9,8 @@ strippedRaw<-latestRaw[!(latestRaw$Home %in% takeOut | latestRaw$Visitor %in% ta
 
 save(all2016data,latestRaw,file="2016FootballData.RData") 
 save(stripped2016data, strippedRaw, file="Stripped2016FootballData.RData")
-#save(all2016data,latestRaw,file="Old2016FootballData.RData") 
 
-#This exists because the supercomputer could quite easily overwrite my existing work and I want to 
-#keep this easily available, also will be able to use for before and after comparisons
-all2016dataCopy<-all2016data
-latestRawCopy<-latestRaw
-save(all2016data, latestRaw, file="2016copy.RData")
+
 
 #The structure will be as follows: each item in the first list corresponds to what week it relates too. 
 #eg. all2016data[[1]] refers to week ones data

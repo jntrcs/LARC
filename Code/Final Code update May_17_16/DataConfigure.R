@@ -25,74 +25,7 @@
 # WinsVersus -- num -- t x t matrix of the number of times each team beats each team
 #
 #
-#df<-latestRaw
-#reldate<-"2016-10-31"
 
-#DEPRECATED
-olddataconfigure <- function(df, reldate=Sys.Date()-1, forsim=FALSE) {
-  df$Date <-as.Date(df$Date)
-  df<-df[df$Date<=reldate,]
-  tt <- length(unique(c(df$Home,df$Visitor)))
-  
-  if (forsim == TRUE) {
-    reldate <- Sys.Date() + 365
-# All future comments were added by Ala'a    
-# These commented out lines may need to be readded, I cannot figure out the purpose they serve
-# but they were causing issues with some datasets and I don't think omitting them causes any issues
-} 
-# else {
-# LD <- length(which(df$Date <= reldate))
-# while (is.na(df$HPTS[LD+1])) {
-#  reldate <- reldate - 1
-#  LD <- length(which(df$Date <= reldate))
-#}
-#}
-#  
-#these first lines create a new dataframe with Team, Strength, and Wins
-  data <- data.frame(sort(unique(c(df$Home,df$Visitor))),rep(1,tt),
-                     table(c(df$Winner,unique(c(df$Home,df$Visitor))))-1)
-  names(data) <- c("Team","Strength","Temp","WinsTotal")
-  data$Temp <- NULL
-#the rest of the lines within the function create the versus matrix by first creating
-# an empty ttxtt matrix and then filling it via a for loops.
-  mm <- matrix(0, tt, tt)
-  ww <- matrix(0, tt, tt)
-  pstn <- 0
-  for (i in data$Team){
-    for (n in data$Team){
-      pstn <- pstn + 1
-      x <- 0
-      z <- 0
-      for (y in 1:length(df$Date)){
-        if(df$Home[y]==i && df$Visitor[y]==n){
-          x <- x + 1
-          if((df$HPTS[y] < df$VPTS[y]) && forsim == FALSE){
-            z <- z + 1
-          }
-        }
-        if(df$Home[y]==n && df$Visitor[y]==i){
-          x <- x + 1
-          if((df$HPTS[y] > df$VPTS[y]) && forsim == FALSE){
-            z <- z + 1
-          }
-        }
-      }
-      mm[pstn] <- x
-      if(forsim == FALSE) {
-        ww[pstn] <- z
-      }
-    }
-  }
-  data$Versus <- mm
-  data$WinsVersus <- ww
-  data$Team <- as.character(data$Team)
-  
-  if (forsim == TRUE) {
-    data$WinsVersus <- NULL
-    data$WinsTotal <- NULL
-  }
-  return(data)
-}
 
 dataconfigure <- function(df, reldate=Sys.Date()-1, forsim=FALSE) {
   if (class(reldate)=="Date") 
@@ -109,7 +42,6 @@ dataconfigure <- function(df, reldate=Sys.Date()-1, forsim=FALSE) {
   data$Temp <- NULL
   #the rest of the lines within the function create the versus matrix by first creating
   # an empty ttxtt matrix and then filling it via a for loop.
-#  mm <- matrix(0, tt, tt)
   ww <- matrix(0, tt, tt)
 
   for (i in 1:nrow(df))
@@ -117,8 +49,7 @@ dataconfigure <- function(df, reldate=Sys.Date()-1, forsim=FALSE) {
     indexTeam1<-which(df$Home[i]==data$Team, arr.ind = TRUE)
     indexTeam2<-which(df$Visitor[i]==data$Team, arr.ind = TRUE)
     team1Won<-df$Home[i]==df$Winner[i]
-    #mm[indexTeam1,indexTeam2]<-mm[indexTeam1,indexTeam2]+1
-    #mm[indexTeam2,indexTeam1]<-mm[indexTeam2,indexTeam1]+1
+ 
     if (team1Won)
     {
       ww[indexTeam1,indexTeam2]<-ww[indexTeam1,indexTeam2]+1
@@ -156,5 +87,3 @@ attachMostRecentStrengths<-function(matrix, BTstrengths, TMStrengths)
   matrix
 }
 
-#for (i in 12:17)
-#all2015data[[i]][[1]]<-attachMostRecentStrengths(all2015data[[i]][[1]], all2015data[[11]][[2]], all2015data[[11]][[3]])

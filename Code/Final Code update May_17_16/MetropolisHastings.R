@@ -14,6 +14,26 @@ useEvery<-function(matDat, n)
   matDat[seq(from=1, to=nrow(matDat), by=n),]
 }
 
+newMetHast<-function(func, nSamples=10000, winsMatrix, sig=.1)
+{
+  p<-nrow(winsMatrix)
+  chain<-matrix(0, nrow=p, ncol=nrow(winsMatrix))
+  for (j in 2:nSamples)
+  {
+    for (i in 1:p)
+    {
+      cand<-rnorm(1, chain[j-1, i], sig)
+      strengths<-c(chain[j, min(1,i-1):(i-1)], chain[j-1, i:p])
+      newStrengths<-strengths
+      newStrengths[i]<-cand
+      r<-func(winsRow=winsMatrix[i,], lossesRow=winsMatrix[,i]), newStrengths)-func(winsMatrix[i,], winsMatrix[,i], strengths)
+      if (r>=log(runif(1)))
+      {
+        
+      }
+    }
+  }
+}
 
 MetHast<-function(func, nSamples=NULL, winsMatrix, rnormSD=.1, useTimer=F, time=NULL) ###warning: using the timer method currently uses 5GB of RAM 
 {

@@ -3,25 +3,15 @@
 #include<cmath>
 using namespace Rcpp;
 
-// This is a simple example of exporting a C++ function to R. You can
-// source this function into an R session using the Rcpp::sourceCpp 
-// function (or via the Source button on the editor toolbar). Learn
-// more about Rcpp at:
-//
-//   http://www.rcpp.org/
-//   http://adv-r.had.co.nz/Rcpp.html
-//   http://gallery.rcpp.org/
-//
+//This is the C++ functions for calculating the modes of the posterior distributions
+//run Rcpp::sourceCpp("cppFiles.cpp") before using these functions
 
 #include <cmath>
 //[[Rcpp::export]]
 double logBTDensity(NumericVector strengths, IntegerMatrix wins, NumericVector winsTotal, NumericVector magnificationfactor=1)
 {
-  //double mf=magnificationfactor.at(0);
   long double ans=1;
-  //double tooBig = pow(10, 200);
-  //double downer=pow(10, 45);
-  //NumericVector w;
+
   for (int i = 0; i<strengths.size(); ++i)
   {
     
@@ -51,9 +41,6 @@ double BTDensity(NumericVector strengths, IntegerMatrix wins, NumericVector wins
 {
   double mf=magnificationfactor.at(0);
   long double ans=1;
-  //double tooBig = pow(10, 200);
-  //double downer=pow(10, 45);
-  //NumericVector w;
   for (int i = 0; i<strengths.size(); ++i)
   {
     
@@ -82,6 +69,7 @@ double BTDensity(NumericVector strengths, IntegerMatrix wins, NumericVector wins
 //[[Rcpp::export]]
 double logTMDensity(NumericVector strengths, IntegerMatrix wins, NumericVector winsTotal=0, NumericVector magFac=1)
 {
+  //Normal cdf code from https://www.johndcook.com/blog/cpp_phi/, part of public domain
   double logoneoversqrt = -0.91893853320467274;
   double a1 =  0.254829592;
   double a2 = -0.284496736;
@@ -121,7 +109,7 @@ double logTMDensity(NumericVector strengths, IntegerMatrix wins, NumericVector w
 //[[Rcpp::export]]
 double TMDensity(NumericVector strengths, IntegerMatrix wins, NumericVector winsTotal=0, NumericVector magFac=1)
 {
-  //I need to cite the author of the phi function which I am copying in here. 
+  //Normal cdf code from https://www.johndcook.com/blog/cpp_phi/, part of public domain
   long double prior = 1;
   double oneoversqrt = 0.39894228040143267793994605993;
   double a1 =  0.254829592;

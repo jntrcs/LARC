@@ -1,9 +1,5 @@
-#This is a function to automate the datascrape of the NBA data. It could be adjusted to
-# accomodate other types of data as well, but for now it will only scrape for NBA data.
-#If the website down you use try this http://webcache.googleusercontent.com/search?q=cache:http://www.basketball-reference.com/leagues/NBA_2016_games.html
-#original website http://www.basketball-reference.com/leagues/NBA_
-#install.packages("XML")
-
+##This is the code for various datascrapers. Because we ended up using only NCAA football data, it is 
+#the only one that will work for sure. The others will probably need changed due to changes on the website, etc.
 #All specific sports are called within Datascrape(). Therefore any outside callers should call datascrape("Sport") and not the sport directly
 
 scrapeNBA<-function(playoffs=FALSE,year=substr(Sys.Date(),1,4))
@@ -221,6 +217,4 @@ datascrape <- function(datatype,playoffs=FALSE,year=substr(Sys.Date(),1,4), date
 
 raw2015<-datascrape("NCAAF", year=2015)
 latestRaw<-datascrape("NCAAF", year=2016)
-###TODO: fix parameters to require what is needed and respect choices. 
-#Fix NFL and NHL (I don't think I broke those)
-#Get rid of NCAAF warning message
+
