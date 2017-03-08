@@ -1,3 +1,5 @@
+#Was not used in the final analysis
+
 #The simulations function uses the simulate function and a partial data frame that can be created
 # with the sim.gen function then runs as many simulations of that data as you tell it to with the
 # second arguement (which is simulations and is set to 1000 as a default). The first arguement is a

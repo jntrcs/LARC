@@ -1,3 +1,5 @@
+##This function was not used in our final analysis
+
 #This file contains the LARC.Prob function which combs through the data and drops
 # each game one at a time and attempts to predict the outcome of that game. It can go
 # through the data and do this for every single game and this the best way to do it,

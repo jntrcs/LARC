@@ -78,8 +78,3 @@ LARC.Optim <- function(df, func = BTDensity, increment = 0.001,
   return(list(UpdatedStrengths=df$Strength,MaximizedPosterior=comp,Iterations=x))
 }
 
-#The following it a timed example of the function using an NBA data frame.
-# go <- proc.time()
-# NBAsimdf$Strength <- LARC.Optim(NBAdf)$UpdatedStrengths
-# clock <- proc.time() - go
-# clock

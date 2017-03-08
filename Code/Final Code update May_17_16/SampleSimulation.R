@@ -1,4 +1,5 @@
 ##Sample Simulation
+##this will simulate 8 seasons and save the output into 8 separate .rdata files
 
 load("MasterFunctionFile.RData")
 Rcpp::sourceCpp("cppFiles.cpp")

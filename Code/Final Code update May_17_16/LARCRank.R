@@ -1,8 +1,7 @@
 # LARC.Rank is the key computation function for computing the strengths of the teams 
-# testing 17 Sept 2016
-# testing 19 Sept 2016
-# This function returns a data frame that has the teams estimated strengths. Also the teams are ranked from highests to lows.
-#
+
+# This function returns a data frame that has the teams estimated strengths. Also the teams can be sorted by rank.
+
 # -- the input parameters are defined below
 #  
 # df -- the data frame containing the data for the strength estimates.  The data from has 5 columns and t rows, where t is the number of teams.
@@ -15,7 +14,7 @@
 #    ---- WinVersus -- a t by t matrix
 #                   -- the number of times each team beats each other team
 #
-# func -- which function (Bradley-Terry or Mostellor) is being used
+# func -- which function (Bradley-Terry or Mosteller) is being used
 #
 # increment -- the precision for which we are optomizing the strengths; default is 0.001, but this can be changed.
 #
@@ -28,12 +27,17 @@
 #
 # adj -- purpose TBD
 #
+#football--should always be false unless called by LARC.Rank.Football
+#
+#Sorted--Whether to sort teams by ranking or leave in original order
+#
 # functions invoked by LARC.Rank
 #  LARC.Optim
 
 
+
 #A small abstraction so that the last strengths are used when trying to find the new strengths.
-#Should speed things considerably
+#Purely for speed improvement
 LARC.Rank.Football<-function(df, func=BTDensity, increment = 0.001, 
                              iterations = Inf, dgt=3, magnificationfactor=1, adj=1, sorted=TRUE)
 {
@@ -74,7 +78,6 @@ LARC.Rank <- function(df, func=BTDensity, increment = 0.001,
   else
   {
     TempOrder<-df
-    #rank<-order(-df$UpdatedStrength)
   }
   Ranked <- data.frame(1:tt,TempOrder$Team,TempOrder$UpdatedStrength,TempOrder$WinsTotal)
   names(Ranked) <- c("Rank","Team","Strength","WinsTotal")
@@ -84,5 +87,3 @@ LARC.Rank <- function(df, func=BTDensity, increment = 0.001,
   return(Ranking)
 }
 
-#an example of this function creating a Ranking dataframe named NBARanking
-# NBARanking <- LARC.Rank(NBAdf)

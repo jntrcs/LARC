@@ -1,3 +1,5 @@
+#This function was not used in our final analysis
+
 #This file contains a function that drops each game from the data provided one at a time and then
 # uses the remaining data to compare the two models and see which one is more successful at
 # predicting the actual result of the game. It only takes one arguement in the form of a data frame.

@@ -2,6 +2,7 @@
 #The purpose of this script is to use the strengths after a given week of football (week 2) to predict the
 #next weeks games (week 3). And then to assess which function did so with a higher accuracy.
 
+#Inputs:
 #TMStrengths and BTStrengths are the Thurston-Mosteller and Bradley-Terry strengths produced by LARC.Rank
 #Schedule is the df produced by datascrape
 #Datevector is length two, beginning with the day to start and the day to end predictions for.
@@ -15,6 +16,9 @@
 #Model B would be penalized more for it's 5 misses then A for it's 95 misses.
 #The fourth item is the average difference (absolute value) between the two prediction methods
 #The fifth item is number of games predicted
+#The last two items are the Brier Score and the Log penalty score
+
+#The other functions make the graphs usedi n our analysis of real world data
 
 
 NCAAFPredictor<-function(BTStrengths,TMStrengths, schedule, dateVector)

@@ -1,3 +1,5 @@
+#Was not used in the final analysis
+
 #This function simulates the season of a partial data frame like those created by the sim.gen 
 # function. Taking that data frame as the first arguement and as a second arguement either BTWP
 # or TMWP for deciding the wins and loses of the teams for the simulation. This returns a list 

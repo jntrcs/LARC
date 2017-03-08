@@ -1,4 +1,4 @@
-#Racquetball analysis
+#Analysis of the Racquetball tournament data
 load("MasterFunctionFile.RData")
 
 Rcpp::sourceCpp("cppFiles.cpp")

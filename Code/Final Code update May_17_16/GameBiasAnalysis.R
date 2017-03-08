@@ -1,3 +1,5 @@
+#Used to make the plots showing game prediction bias MSE
+
 load("SimulationResults.RData")
 
 gameBiasGraph<-function(BTMatrix, TMMatrix, type)

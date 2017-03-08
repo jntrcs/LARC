@@ -13,7 +13,7 @@ save(BradleyTerryLARC, BTWP, dataconfigure, datascrape, find.mf, full.sim.gen, L
      predictionPercentage, findMSE, getConferenceMeans, pickBetaStrength, analyzeGameBias, correlationPlot,
      gameBiasGraph, msePlot, disparityScore, analyzeExcel, MetHast, handleBurnIn, useEvery, readFile,
      file="MasterFunctionFile.RData")
-#Removed: simulate, simulation,
+
 
 #Whenevere you need to load functions, call this command
 load("MasterFunctionFile.RData")

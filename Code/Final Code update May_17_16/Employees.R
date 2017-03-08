@@ -1,4 +1,4 @@
-# Employees is the 'Main' program for computing employee strengths based on 48 pairwise comparisons made by 12 ficitional employees
+#This is some fictional sample data of how pairwise comparisons could be used to rank employees
 # These fictional employees are called Judges in this code
 # Note -- as it stands now the code never uses the information about judges.  That is for future research
 # Each of the 48 comparisons have a 'judge,' a 'winner,' and a 'loser'

@@ -1,4 +1,4 @@
-##Metropolis Hastings.....
+##Metropolis Hastings algorithm: needs to be improved, we used mode estimates of strengths instead of this.
 load("MasterFunctionFile.RData")
 
 Rcpp::sourceCpp("cppFiles.cpp")

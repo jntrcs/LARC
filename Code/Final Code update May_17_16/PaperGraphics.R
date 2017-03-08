@@ -1,4 +1,4 @@
-##Paper graphics
+##Some graphics we explored for inclusion in the paper
 plot(0, type="n")
 par(mfrow=c(2,2),oma = c(0, 0, 4, 0))
 
