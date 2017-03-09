@@ -1,4 +1,6 @@
-#Wayne's problem
+#Illustrates a difference between the two methods: when a team is ranked by BT and they have played the same 
+#teams and have the same number of wins, their strengths will always be the same.
+#With TM, who they beat will influence their ranking.
 winsMatrix<-matrix(c(0,1,1,1,1,1,1,1,1,0,
                      0,0,1,1,1,1,1,1,0,0,
                      0,0,0,1,1,1,1,1,0,0,

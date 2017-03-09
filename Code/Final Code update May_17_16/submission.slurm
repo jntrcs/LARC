@@ -1,3 +1,4 @@
+#Necessary file for supercomputer submission
 #!/bin/bash
 
 #SBATCH --time=0:30:00   # walltime
@@ -5,7 +6,7 @@
 #SBATCH --nodes=3   # number of nodes
 #SBATCH --mem-per-cpu=1024M   # memory per CPU core
 #SBATCH -J "3000seasonsimulation"   # job name
-#SBATCH --mail-user=jcurtis210@gmail.com   # email address
+#SBATCH --mail-user=email@email.com   # email address
 #SBATCH --mail-type=BEGIN
 #SBATCH --mail-type=END
 

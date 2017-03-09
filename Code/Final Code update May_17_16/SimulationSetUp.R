@@ -1,4 +1,5 @@
-##Simulation function
+##The main function to simulate an entire football season
+
 useBT<-TRUE
 useBeta<-FALSE
 extremeBT<-TRUE
@@ -168,27 +169,3 @@ hist(b)
 mean(a)
 mean(b)
 
-####OLD CODE
-normTrueStrengths<-normalizeSample(simulation$teamSchedule$TrueStrength)
-#Should the mean strength be the sample or the population
-#Same with SD
-
-df<-data.frame(matrix(0, nrow=0, ncol=8))
-summaryOfResults$BTBias<-rep(0, 13)
-summaryOfResults$TMBias<-rep(0, 13)
-
-
-for (i in 1:13)
-{
-  weekBT<-normalizeSample(strengths[[i]]$BT$Strength) - normTrueStrengths
-  weekTM<-normalizeSample(strengths[[i]]$TM$Strength) - normTrueStrengths
-  
-  summaryOfResults$BTBias[i]<-mean(abs(weekBT))
-  summaryOfResults$TMBias[i]<-mean(abs(weekTM))
-  df<-rbind(df, data.frame(rep(i, 90), 1:90, strengths[[i]]$BT$Strength, strengths[[i]]$TM$Strength,
-                           weekBT, weekTM, strengths[[i]]$BT$Strength - summaryOfResults$TrueStrengths,
-                           strengths[[i]]$TM$Strength - summaryOfResults$TrueStrengths))
-  
-}
-names(df)<-c("Week", "Team", "BTPred", "TMPred", "BTBias", "TMBias", "RawBTBias", "RawTMBias")
-summaryOfResults$Dataframe<-df

@@ -1,5 +1,6 @@
-##Season analysis 
-load("MasterFunctionFile.RData")
+##Season analysis, by editing the range, you can recreate all the data inside the FootballData Lists
+l
+oad("MasterFunctionFile.RData")
 load("2016FootballData.RData")
 load("Stripped2016FootballData.RData")
 Rcpp::sourceCpp("cppFiles.cpp")
@@ -12,7 +13,7 @@ strippedRaw<-latestRaw[!(latestRaw$Home %in% takeOut | latestRaw$Visitor %in% ta
 
 dates<-seq(as.Date("2016-09-04"), to=as.Date("2016-12-05"), by=7)
 dates<-c(dates, as.Date("2017-01-10"))
-range<-15
+range<-13:15
 
 for (i in range)
 {

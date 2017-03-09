@@ -1,4 +1,4 @@
-#Win probability study
+#Investigation into the win probability of each game using end of season strengths on real data
 
 library(qdapTools)
 winnersStrength<-lookup(strippedRaw$Winner, as.character(stripped2016data[[15]][[2]]$Team), key.reassign=stripped2016data[[15]][[2]]$Strength)

@@ -1,4 +1,6 @@
 #SimDataLoader
+##Loads all the data files in the Results subfolder into memory
+
 load("MasterFunctionFile.RData")
 files<-paste0("Results/",list.files("Results/"))
 type<-factor()

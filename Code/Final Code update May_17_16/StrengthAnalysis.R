@@ -1,5 +1,4 @@
-#Strength Predictor MSE analysis
-
+###Not used in final analysis
 
 suffix<-c("BradleyTerryGamma", "Beta","ThurstoneMostellerNormal")
 sigti<-list()

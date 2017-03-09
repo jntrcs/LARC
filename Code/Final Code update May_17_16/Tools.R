@@ -1,3 +1,5 @@
+##Was not used in final analysis
+
 #This file includes six  functions:
 
 #BradleyTerryLARC: this function is the Bradley-Terry Model. It takes three arguments

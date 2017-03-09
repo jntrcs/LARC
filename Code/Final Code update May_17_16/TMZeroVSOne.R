@@ -1,3 +1,5 @@
+##Was not used in final analysis
+
 #These are tests to see if it matters where the strengths of the Thurstone-Mosteller model are
 # centered or not.
 

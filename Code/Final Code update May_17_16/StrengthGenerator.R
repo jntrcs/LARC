@@ -1,4 +1,4 @@
-##True Strength Generator
+##True Strength Generator and Game Simulator functions
 
 pickTMStrength<-function(mean = 0, paramB=NULL)
 {

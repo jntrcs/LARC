@@ -1,4 +1,4 @@
-###SuperMetHast
+###A file to run a Metropolis Hastings algorithm on the supercomputer
 
 load("MasterFunctionFile.RData")
 Rcpp::sourceCpp("cppFiles.cpp")

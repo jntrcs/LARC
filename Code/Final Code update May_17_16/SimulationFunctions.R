@@ -1,4 +1,4 @@
-#Simulation Functions
+#Contains several of the functions necessary for the simulation
 
 generateTeams<-function(useBT, beta=FALSE, extBT=FALSE)
 {
