@@ -110,8 +110,17 @@ makePerformanceGraph(performance)
 performance<-lapply(2:length(all2016data), FUN=function(n){all2016data[[n]][[4]][[2]]})
 makePerformanceGraph(performance)
 
+require(plyr)
 brierScores<-lapply(2:(length(stripped2016data)-1), FUN=function(n){
-  c(stripped2016data[[n]][[4]][[6]]$BTBrierScore, stripped2016data[[n]][[4]][[6]]$TMBrierScore)})
+  c(stripped2016data[[n]][[4]][[6]]$BTBrierScore*stripped2016data[[n]][[4]][[5]], 
+    stripped2016data[[n]][[4]][[6]]$TMBrierScore*stripped2016data[[n]][[4]][[5]])})
+totgames<-sapply(2:(length(stripped2016data)-1), FUN=function(n)stripped2016data[[n]][[4]][[5]])
+apply(ldply(brierScores)/sum(totgames), 2, sum)
+
+require(plyr)
+brierScores<-lapply(2:(length(stripped2016data)-1), FUN=function(n){
+  c(stripped2016data[[n]][[4]][[6]]$BTBrierScore, 
+    stripped2016data[[n]][[4]][[6]]$TMBrierScore)})
 makePenaltyGraph(brierScores, lab="Brier Scoring 2016 NCAA Football", yax="Brier score")
 apply(ldply(brierScores), 2, mean)
 
