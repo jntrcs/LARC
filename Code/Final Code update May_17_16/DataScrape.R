@@ -60,11 +60,11 @@ scrapeNFL<-function(playoffs=FALSE,year=substr(Sys.Date(),1,4)){
 }
 
 scrapeNCAAB<-function(playoffs=FALSE,year=substr(Sys.Date(),1,4)){
-  tables <- read.fwf(file=url("http://masseyratings.com/scores.php?s=284067&sub=11590&all=1&mode=3&sch=on&format=0"),
-                     skip=39, n=5869, widths=c(10, 2, 24, 3, 2, 24, 3, 10, 25),
-                     col.names=c("Date","Where1","Team1","PTS1","Where2","Team2","PTS2","OT?","Notes"))
+  tables <- read.fwf(file=url("http://www.masseyratings.com/scores.php?s=292154&sub=11590&all=1"),
+                   skip=39, widths=c(10, 2, 24, 3, 2, 24, 3, 10, 25),
+                    col.names=c("Date","Where1","Team1","PTS1","Where2","Team2","PTS2","OT?","Notes"))
   
-  table1 <- read.fwf(file=url("http://masseyratings.com/scores.php?s=284067&sub=11590&all=1&mode=3&sch=on&format=0"),
+  table1 <- read.fwf(file=url("http://www.masseyratings.com/scores.php?s=292154&sub=11590&all=1"),
                      skip=39, n=10, widths=c(19, 2, 24, 3, 2, 24, 3, 10, 16),
                      col.names=c("Date","Where1","Team1","PTS1","Where2","Team2","PTS2","OT?","Notes"))
   head(table1,3)
@@ -215,6 +215,6 @@ datascrape <- function(datatype,playoffs=FALSE,year=substr(Sys.Date(),1,4), date
   Scoresdf
 }
 
-raw2015<-datascrape("NCAAF", year=2015)
+raw2016<-datascrape("NCAAB", year=2016)
 latestRaw<-datascrape("NCAAF", year=2016)
 

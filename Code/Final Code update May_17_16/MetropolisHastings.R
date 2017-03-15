@@ -9,32 +9,61 @@ handleBurnIn<-function(matDat, numToRemove)
   return(matDat[numToRemove:nrow(matDat),])
 }
 
+newHandleBurnIn<-function(matDat, numToRemove)
+{
+  return(matDat[,(numToRemove+1):ncol(matDat)])
+}
+
 useEvery<-function(matDat, n)
 {
   matDat[seq(from=1, to=nrow(matDat), by=n),]
 }
 
-newMetHast<-function(func, nSamples=10000, winsMatrix, sig=.1)
+newMetHast<-function(func, nSamples=10000, winsMatrix, sig=1.8)
 {
+  winsTotal<-apply(winsMatrix, 1, sum)
   p<-nrow(winsMatrix)
-  chain<-matrix(0, nrow=p, ncol=nrow(winsMatrix))
+  chain<-matrix(0, nrow=p, ncol=nSamples)
+  chain[,1]<-ifelse(identical(logBTDensity, func), 1,0) #Starting values
+  mostRecent<-chain[,1]
+  mostRecentFunc<-func(mostRecent, winsMatrix, winsTotal)
+  acc<-0
   for (j in 2:nSamples)
   {
     for (i in 1:p)
     {
-      cand<-rnorm(1, chain[j-1, i], sig)
-      strengths<-c(chain[j, min(1,i-1):(i-1)], chain[j-1, i:p])
-      newStrengths<-strengths
+      cand<-rnorm(1, mostRecent[i], sig)
+      newStrengths<-mostRecent
       newStrengths[i]<-cand
-      r<-func(winsRow=winsMatrix[i,], lossesRow=winsMatrix[,i]), newStrengths)-func(winsMatrix[i,], winsMatrix[,i], strengths)
+      if (identical(logBTDensity, func) & cand<0)
+      {
+        r=-Inf
+      }
+      else{
+        new<-func(newStrengths, winsMatrix, winsTotal)
+      r<-new-mostRecentFunc}
       if (r>=log(runif(1)))
       {
-        
+        mostRecent[i]<-cand
+        mostRecentFunc<-new
+        chain[i, j]<- cand
+        acc<-acc+1
+      }
+      else{
+        chain[i,j]<-chain[i,j-1]
       }
     }
   }
+  return(list(Matrix=chain, Acceptance=acc/(nSamples*p)))
 }
 
+a=newMetHast(logBTDensity, nSamples = 1000, stripped2016data[[14]][[1]]$WinsVersus, sig=1.5)
+dat<-a[[1]]
+plot(dat[3,])
+apply(dat,1,mean)
+require(coda)
+sim<-as.mcmc(dat)
+autocorr(sim)
 MetHast<-function(func, nSamples=NULL, winsMatrix, rnormSD=.1, useTimer=F, time=NULL) ###warning: using the timer method currently uses 5GB of RAM 
 {
   

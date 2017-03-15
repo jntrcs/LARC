@@ -32,7 +32,6 @@ dataconfigure <- function(df, reldate=Sys.Date()-1, forsim=FALSE) {
     df$Date <-as.Date(df$Date)
   df<-df[df$Date<=reldate,]
   tt <- length(unique(c(df$Home,df$Visitor)))
-  
 
 
   #these first lines create a new dataframe with Team, Strength, and Wins
