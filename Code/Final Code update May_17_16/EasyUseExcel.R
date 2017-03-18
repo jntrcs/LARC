@@ -17,6 +17,8 @@ analyzeExcel(path="Template.csv", useTM=F)
 analyzeExcel<-function(path, useTM=FALSE)
 {
  dat<-read.csv(path) 
+ names(dat)<-c("HomeTeam", "HomeScore", "AwayTeam", "AwayScore") 
+ 
  dat$HomeTeam<-as.character(dat$HomeTeam)
  dat$AwayTeam<-as.character(dat$AwayTeam)
  dat$Date<-rep(Sys.Date()-2, nrow(dat))
@@ -27,3 +29,7 @@ analyzeExcel<-function(path, useTM=FALSE)
  func<-ifelse(useTM, TMDensity, BTDensity)
  LARC.Rank(con, func=func)
 }
+
+analyzeExcel("brawlData.txt")
+b=newMetHast(logBTDensity, 10000, con$WinsVersus, 1.4)
+
