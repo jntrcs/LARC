@@ -4,12 +4,19 @@ load("MasterFunctionFile.RData")
 Rcpp::sourceCpp("cppFiles.cpp")
 
 
-handleBurnIn<-function(matDat, numToRemove)
+
+
+analyzeMHMatrix<-function(dat)
 {
-  return(matDat[numToRemove:nrow(matDat),])
+  means<-apply(dat, 1, mean)
+  upperBound<-apply(dat, 1, function(i){quantile(i, .975)})
+  lowerBound<-apply(dat, 1, function(i){quantile(i, .025)})
+  a<-data.frame(means, lowerBound, upperBound)
+  names(a)<-c("Mean", "LowerBound", "UpperBound")
+  return(a)
 }
 
-newHandleBurnIn<-function(matDat, numToRemove)
+handleBurnIn<-function(matDat, numToRemove)
 {
   return(matDat[,(numToRemove+1):ncol(matDat)])
 }
