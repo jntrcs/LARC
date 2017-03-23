@@ -4,8 +4,6 @@ load("MasterFunctionFile.RData")
 Rcpp::sourceCpp("cppFiles.cpp")
 
 
-
-
 analyzeMHMatrix<-function(dat)
 {
   means<-apply(dat, 1, mean)
