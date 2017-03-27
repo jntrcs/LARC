@@ -109,6 +109,22 @@ generateConference<-function(teams)
   schedule[,3:11]
 }
 
+getWeekMatchups<-function(trank)
+{
+  match<-rep(0,length(trank))
+  for (i in 1:length(trank))
+  {
+    if (i%%2==1)
+    {
+      match[i]<-trank[i+1]
+    } else
+    {
+      match[i]<-trank[i-1]
+    }
+  }
+  match[order(trank)]
+}
+
 generateSeasonResults<-function(season, useBT, beta=FALSE)
 {
   type<-ifelse(useBT, "BT", ifelse(beta, "Beta", "TM"))
@@ -134,6 +150,30 @@ generateSeasonResults<-function(season, useBT, beta=FALSE)
     }
   }
     seasonGames
+}
+
+generateWeekResults<-function(season, week, useBT, beta=FALSE)
+{
+  type<-ifelse(useBT, "BT", ifelse(beta, "Beta", "TM"))
+  numGames<-nrow(season)/2
+  seasonGames<-data.frame(matrix(0, nrow=numGames, 5))
+  names(seasonGames)<-c("Date", "Home", "Visitor", "Winner", "HomeWinPerecent")
+  game<-0
+  week0Index<-which(names(season)=="Week1")-1
+    for (j in 1:nrow(season))
+    {
+      if (season[j, week+week0Index]>j)
+      {
+        game<-game+1
+        seasonGames$Date[game]<-week
+        seasonGames$Home[game]<-j
+        visitor<-season[j, i+week0Index]
+        seasonGames$Visitor[game]<-visitor
+        seasonGames$HomeWinPerecent[game]<-predictionPercentage(season$TrueStrength[j], season$TrueStrength[visitor], type)
+        seasonGames$Winner[game]<-ifelse(rbinom(1,1,seasonGames$HomeWinPerecent[game]), j, visitor)
+      }
+    }
+  seasonGames
 }
 
 disparityScore<-function(actuals)

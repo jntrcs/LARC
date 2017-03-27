@@ -14,12 +14,14 @@ simulate1<-function(useBT, useBeta = FALSE, extremeBT=FALSE)
   simulation<-list()
   simulation$teamSchedule<-generateTeamSchedule(useBT, beta, extBT)
   simulation$seasonGames<-generateSeasonResults(simulation$teamSchedule, useBT, beta)
-
+  
   strengths<-list()
   normTrueStrengths<-simulation$teamSchedule$TrueStrength-simulation$teamSchedule$ConferenceMeans
-  
+##eliminate everything after week 4
+    simulation$seasonGames<-simulation$seasonGames[simulation$seasonGames$Date<=4,]
+    simulation$teamSchedule<-simulation$teamSchedule[,1:8]
   ##ESTIMATE THE SEASON   
-  for (i in 1:13)
+  for (i in 1:4)
   {
     configured<-dataconfigure(simulation$seasonGames,reldate = i)
     if (i!=1)
@@ -27,6 +29,20 @@ simulate1<-function(useBT, useBeta = FALSE, extremeBT=FALSE)
     strengths[[i]]<-list()
     strengths[[i]]$BT<-LARC.Rank.Football(configured, func=BTDensity, sorted=FALSE)
     strengths[[i]]$TM<-LARC.Rank.Football(configured, func=TMDensity, sorted=FALSE)
+  }
+  for (i in 5:12)
+  {
+    if (i%%2==0) Trank <- order(-strengths[[i-1]]$TM$Strength) else 
+      Trank<- order(-strengths[[i-1]]$BT$Strength)
+      simulation$teamSchedule<-cbind(simulation$teamSchedule, getWeekMatchups(Trank))
+      names(simulation$teamSchedule)[i+4]<-paste0("Week",i)
+      simulation$seasonGames<-rbind(simulation$seasonGames, generateWeekResults(simulation$teamSchedule, i, useBT, beta))
+      configured<-dataconfigure(simulation$seasonGames,reldate = i)
+      if (i!=1)
+        configured<-attachMostRecentStrengths(configured, strengths[[i-1]]$BT, strengths[[i-1]]$TM)
+      strengths[[i]]<-list()
+      strengths[[i]]$BT<-LARC.Rank.Football(configured, func=BTDensity, sorted=FALSE)
+      strengths[[i]]$TM<-LARC.Rank.Football(configured, func=TMDensity, sorted=FALSE)
   }
   
   #ANALYZE THE SEASON
@@ -38,15 +54,15 @@ simulate1<-function(useBT, useBeta = FALSE, extremeBT=FALSE)
   summaryOfResults$centeringValue<- simulation$teamSchedule$ConferenceMeans - summaryOfResults$TrueStrengths
   summaryOfResults$strengths<-list()
   summaryOfResults$strengths$BT<-list()
-  summaryOfResults$strengths$BT<-lapply(1:13, FUN=function(i)strengths[[i]]$BT$Strength)
+  summaryOfResults$strengths$BT<-lapply(1:12, FUN=function(i)strengths[[i]]$BT$Strength)
   summaryOfResults$strengths$TM<-list()
-  summaryOfResults$strengths$TM<-lapply(1:13, FUN=function(i)strengths[[i]]$TM$Strength)
+  summaryOfResults$strengths$TM<-lapply(1:12, FUN=function(i)strengths[[i]]$TM$Strength)
   
   #Correlation
   summaryOfResults$SpearmanCorrelation<-list()
-  summaryOfResults$SpearmanCorrelation$BT<-rep(0,13)
-  summaryOfResults$SpearmanCorrelation$TM<-rep(0,13)
-  for (i in 1:13)
+  summaryOfResults$SpearmanCorrelation$BT<-rep(0,12)
+  summaryOfResults$SpearmanCorrelation$TM<-rep(0,12)
+  for (i in 1:12)
   {
     summaryOfResults$SpearmanCorrelation$BT[i]<-cor(summaryOfResults$TrueStrengths, strengths[[i]]$BT$Strength, method="spearman")
     summaryOfResults$SpearmanCorrelation$TM[i]<-cor(summaryOfResults$TrueStrengths, strengths[[i]]$TM$Strength, method="spearman")
