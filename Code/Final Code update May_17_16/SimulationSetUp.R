@@ -47,6 +47,7 @@ simulate1<-function(useBT, useBeta = FALSE, extremeBT=FALSE)
   
   #ANALYZE THE SEASON
   summaryOfResults<-list()
+  summaryOfResults$TourneyStyle<-T
   summaryOfResults$TrueStrengthType<-ifelse(useBT, ifelse(extBT, "ExtremeBT", "BradleyTerryGamma"), ifelse(beta,"Beta","ThurstoneMostellerNormal"))
   summaryOfResults$TrueStrengths<-simulation$teamSchedule$TrueStrength
 

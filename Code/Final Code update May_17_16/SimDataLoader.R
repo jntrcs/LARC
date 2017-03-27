@@ -2,7 +2,7 @@
 ##Loads all the data files in the Results subfolder into memory
 
 load("MasterFunctionFile.RData")
-files<-paste0("Results/",list.files("Results/"))
+files<-paste0("TourneyResults/",list.files("TourneyResults/"))
 type<-factor()
 trueStrengths<-list(BradleyTerryGamma=vector("list", 1),Beta=vector("list", 1), ThurstoneMostellerNormal=vector("list", 5), ExtremeBT=vector("list",5))
 centeringValues<-list(BradleyTerryGamma=vector("list", 1),Beta=vector("list", 1), ThurstoneMostellerNormal=vector("list", 5), ExtremeBT=vector("list",5))
@@ -13,7 +13,7 @@ weeklyGameBias<-list(BradleyTerryGamma=vector("list", 1),Beta=vector("list", 1),
 disparity<-list(BradleyTerryGamma=numeric(),Beta=numeric(), ThurstoneMostellerNormal=numeric(), ExtremeBT=numeric())
 
 indices<-rep(0,4) # BT then TM then Beta then EXTREMEBETA
-#for (i in 1:length(files))
+for (i in 1:length(files))
 {
   load(files[i])
   ifelse(dat$TrueStrengthType=="BradleyTerryGamma", index<-1,
