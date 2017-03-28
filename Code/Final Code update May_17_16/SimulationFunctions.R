@@ -167,7 +167,7 @@ generateWeekResults<-function(season, week, useBT, beta=FALSE)
         game<-game+1
         seasonGames$Date[game]<-week
         seasonGames$Home[game]<-j
-        visitor<-season[j, i+week0Index]
+        visitor<-season[j, week+week0Index]
         seasonGames$Visitor[game]<-visitor
         seasonGames$HomeWinPerecent[game]<-predictionPercentage(season$TrueStrength[j], season$TrueStrength[visitor], type)
         seasonGames$Winner[game]<-ifelse(rbinom(1,1,seasonGames$HomeWinPerecent[game]), j, visitor)
