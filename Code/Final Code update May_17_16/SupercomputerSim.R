@@ -11,7 +11,7 @@ neededFunc<- c("dataconfigure", "LARC.Rank.Football", "BTDensity", "TMDensity",
                "pickTMStrength", "pickBTStrength", "simHomeWin", "generateTeams","generateSchedule", 
                "generateConference","generateNonConference", "generateTeamSchedule", "generateSeasonResults",
                "predictionPercentage", "simulate1", "findMSE", "normalizeSample","getConferenceMeans", 
-               "pickBetaStrength","analyzeGameBias", "getWeekMatchups")
+               "pickBetaStrength","analyzeGameBias", "getWeekMatchups", "generateWeekResults")
 clusterExport(clust, neededFunc)
 
 parLapply(clust, 1:400, fun = function(i){
