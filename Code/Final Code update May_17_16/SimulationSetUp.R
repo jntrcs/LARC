@@ -50,6 +50,7 @@ simulate1<-function(useBT, useBeta = FALSE, extremeBT=FALSE)
   summaryOfResults$TourneyStyle<-T
   summaryOfResults$TrueStrengthType<-ifelse(useBT, ifelse(extBT, "ExtremeBT", "BradleyTerryGamma"), ifelse(beta,"Beta","ThurstoneMostellerNormal"))
   summaryOfResults$TrueStrengths<-simulation$teamSchedule$TrueStrength
+  summaryOfResults$Schedule<-simulation$teamSchedule
 
   #week over week MSE
   summaryOfResults$centeringValue<- simulation$teamSchedule$ConferenceMeans - summaryOfResults$TrueStrengths
