@@ -13,13 +13,13 @@ The files Stripped2015FootballData.RData and Stripped2016FootballData.RData cont
   2. The second element (stripped2016data[[1]][[2]]) contains the Bradley-Terry rankings ending at that weekof the season.
   3. The third element contains the Thurstone-Mosteller Rankings for the same time period
   4. The fourth element contains analysis of predictions using strengths from the previous week compared with actual outcomes. Therefore, the first week (stripped2016data[[1]][[4]])is NULL, but the following weeks      have information in the form of a list with the following elements:
-    1. All games played that week with predictions from both methods, actual outcomes, and summary statistics.
-    2. A count of which method predicted closer to the actual outcome
-    3. A penalty metric (which we didn't use in favor of brier scores)
-    4. The average difference in prediction for the two methods
-    5. The number of games in the week
-    6. The brier scores for each method
-    7. The log scores for each method (did not use in favor of brier scores)
+    a. All games played that week with predictions from both methods, actual outcomes, and summary statistics.
+    b. A count of which method predicted closer to the actual outcome
+    c. A penalty metric (which we didn't use in favor of brier scores)
+    d. The average difference in prediction for the two methods
+    e. The number of games in the week
+    f. The brier scores for each method
+    g. The log scores for each method (did not use in favor of brier scores)
   5. The fifth element lists the start and end dates for the time period covered
   
 2015/2016FootballData.RData contains the same data but with games where FBS teams played teams outside the FBS.
